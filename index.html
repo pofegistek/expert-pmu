@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Expert PMU</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-dim: rgba(201,169,110,0.15);
+      --bg: #0e0e0e;
+      --card: #161616;
+      --border: #222;
+      --text: #ffffff;
+      --muted: #888;
+      --dark-muted: #555;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px 0;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .header-location {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+      letter-spacing: 0.02em;
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .header-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    /* ── TOP TABS ── */
+    .top-tabs {
+      display: flex;
+      gap: 0;
+    }
+    .top-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .top-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── CONTENT ── */
+    .content {
+      padding: 16px 12px 90px;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin: 20px 0 10px;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    /* ── SERVICE CARD ── */
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .service-info { flex: 1; min-width: 0; }
+    .service-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .service-desc {
+      font-size: 12px;
+      color: var(--dark-muted);
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+    .service-price {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gold);
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-align: right;
+    }
+
+    /* ── MASTER CARD ── */
+    .master-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      margin-bottom: 10px;
+      min-height: 110px;
+    }
+    .master-photo {
+      width: 90px;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .master-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+    }
+    .master-avatar {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .master-body {
+      flex: 1;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .master-level {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+    .master-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .master-spec {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+      flex: 1;
+    }
+    .master-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      gap: 8px;
+    }
+    .master-meta {
+      font-size: 11px;
+      color: var(--dark-muted);
+      min-width: 0;
+    }
+    .master-price {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+    .btn-book {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-book:active { opacity: 0.75; }
+
+    /* ── ABOUT ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 14px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+      line-height: 1.3;
+    }
+    .about-block {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .about-block-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .contact-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .contact-text a { color: var(--gold); text-decoration: none; }
+    .why-text {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── BOTTOM NAV ── */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      display: flex;
+      height: 64px;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 500;
+      -webkit-tap-highlight-color: transparent;
+      transition: color 0.2s;
+      user-select: none;
+    }
+    .nav-btn .nav-icon { font-size: 20px; }
+    .nav-btn.active { color: var(--gold); }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <span class="header-location">Expert PMU · Москва</span>
+      <span class="header-badge">★ TOP-100 Beauty</span>
+    </div>
+    <div class="header-title">Центр косметологии и перманентного макияжа</div>
+    <div class="header-subtitle">Инны Фоменко</div>
+    <div class="top-tabs">
+      <div class="top-tab active" data-tab="services">Услуги</div>
+      <div class="top-tab" data-tab="masters">Мастера</div>
+      <div class="top-tab" data-tab="about">О нас</div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- УСЛУГИ -->
+    <div class="tab-pane active" id="tab-services">
+
+      <div class="section-title">Перманентный макияж</div>
+
+      <div class="service-card">
+        <div class="service-icon">✏️</div>
+        <div class="service-info">
+          <div class="service-name">Брови</div>
+          <div class="service-desc">Пудровое напыление, теневая растушёвка, перекрытие татуажа</div>
+        </div>
+        <div class="service-price">от 12 000 ₽</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">👄</div>
+        <div class="service-info">
+          <div class="service-name">Губы</div>
+          <div class="service-desc">Акварельные, помадный эффект, 3D, контур + растушёвка</div>
+        </div>
+        <div class="service-price">от 12 000 ₽</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">👁️</div>
+        <div class="service-info">
+          <div class="service-name">Веки и стрелки</div>
+          <div class="service-desc">Межресничное пространство, стрелки с растушёвкой</div>
+        </div>
+        <div class="service-price">от 12 000 ₽</div>
+      </div>
+
+      <div class="section-title">Удаление татуажа</div>
+
+      <div class="service-card">
+        <div class="service-icon">⚡</div>
+        <div class="service-info">
+          <div class="service-name">Лазер PicoSure / PicoPlus</div>
+          <div class="service-desc">Татуаж, тату, пигментные пятна, постакне</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🧴</div>
+        <div class="service-info">
+          <div class="service-name">Ремувер</div>
+          <div class="service-desc">Мягкое безлазерное удаление</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+      <div class="section-title">Аппаратная косметология</div>
+
+      <div class="service-card">
+        <div class="service-icon">✨</div>
+        <div class="service-info">
+          <div class="service-name">RF-лифтинг Morpheus8</div>
+          <div class="service-desc">Микроигольчатый лифтинг лица и тела</div>
+        </div>
+        <div class="service-price">63 000 ₽</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🔆</div>
+        <div class="service-info">
+          <div class="service-name">Фотоомоложение Lumecca</div>
+          <div class="service-desc">Пигментация, сосуды, выравнивание тона</div>
+        </div>
+        <div class="service-price">15 900 ₽</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">💎</div>
+        <div class="service-info">
+          <div class="service-name">SMAS-лифтинг Ultraformer</div>
+          <div class="service-desc">Безоперационная подтяжка лица и тела</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+      <div class="section-title">Инъекционная косметология</div>
+
+      <div class="service-card">
+        <div class="service-icon">💉</div>
+        <div class="service-info">
+          <div class="service-name">Ботулинотерапия</div>
+          <div class="service-desc">Диспорт, Миотокс, Full Face, Нефертити, гипергидроз</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🌸</div>
+        <div class="service-info">
+          <div class="service-name">Биоревитализация</div>
+          <div class="service-desc">Profhilo, Jalupro, NCTF HA</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">💋</div>
+        <div class="service-info">
+          <div class="service-name">Увеличение губ</div>
+          <div class="service-desc">Stylage, Belotero, Juvederm</div>
+        </div>
+        <div class="service-price">уточняйте</div>
+      </div>
+
+    </div><!-- /tab-services -->
+
+    <!-- МАСТЕРА -->
+    <div class="tab-pane" id="tab-masters">
+
+      <div class="section-title">VIP мастера</div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/natali.jpg" alt="Натали" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#3a2e1a;">Н</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
+          <div class="master-name">Натали</div>
+          <div class="master-spec">Бархатные брови, акварельные губы</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">16 000+ процедур</div>
+              <div class="master-price">от 48 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n62546.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/vidana.jpg" alt="Видана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#3a2e1a;">В</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
+          <div class="master-name">Видана</div>
+          <div class="master-spec">Пушистые брови, нюдовые губы, лёгкая рука</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">3 000+ работ</div>
+              <div class="master-price">от 36 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n521920.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Ведущие мастера</div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/kristina.jpg" alt="Кристина" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+          <div class="master-name">Кристина</div>
+          <div class="master-spec">Натуральный перманент, максимальная естественность</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">7+ лет опыта</div>
+              <div class="master-price">от 30 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n618275.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/katrin.jpg" alt="Катрин" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+          <div class="master-name">Катрин</div>
+          <div class="master-spec">BB Glow, акварельные губы, награда Maestro PM 2022</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">5 000+ работ</div>
+              <div class="master-price">от 30 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n501106.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/liana.jpg" alt="Лиана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a2e1a;">Л</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+          <div class="master-name">Лиана</div>
+          <div class="master-spec">Победитель Beauty Adrenalin — брови и губы</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">7 000+ процедур</div>
+              <div class="master-price">от 30 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n795398.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Топ-мастера</div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/svetlana.jpg" alt="Светлана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">С</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Светлана</div>
+          <div class="master-spec">Судья международных чемпионатов, 15 лет практики</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">20 000+ процедур</div>
+              <div class="master-price">от 15 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n1447051.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/kamila.jpg" alt="Камила" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">К</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Камила</div>
+          <div class="master-spec">Яркий выразительный результат</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">1 000+ клиентов</div>
+              <div class="master-price">от 30 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n963781.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/kris.jpg" alt="Крис" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">К</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Крис</div>
+          <div class="master-spec">Натуральный перманент + тату line work</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">3+ года опыта</div>
+              <div class="master-price">от 15 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n1109020.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/varvara.jpg" alt="Варвара" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Варвара</div>
+          <div class="master-spec">Лёгкие, естественные работы</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">Сотни клиентов</div>
+              <div class="master-price">от 15 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n984861.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/valeriya.jpg" alt="Валерия" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Валерия</div>
+          <div class="master-spec">Эксперт натурального перманентного макияжа</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">4 000+ процедур</div>
+              <div class="master-price">от 12 000 ₽</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n1449154.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/petr.jpg" alt="Пётр" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#1a1f2e;">П</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+          <div class="master-name">Пётр</div>
+          <div class="master-spec">Удаление лазером, единственный мастер-мужчина</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">10 000+ процедур</div>
+              <div class="master-price">Удаление лазером</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n1449154.yclients.com/company/40048/personal/menu?o=m431466')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Врач-косметолог</div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/olga.jpg" alt="Ольга Владимировна" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#22183a;">О</div>
+        </div>
+        <div class="master-body">
+          <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
+          <div class="master-name">Ольга Владимировна</div>
+          <div class="master-spec">К.м.н., дерматовенеролог, лазеротерапевт</div>
+          <div class="master-footer">
+            <div>
+              <div class="master-meta">Morpheus8, Lumecca, CO₂</div>
+              <div class="master-price">По записи</div>
+            </div>
+            <button class="btn-book" onclick="openLink('https://n1007529.yclients.com')">Записаться</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-masters -->
+
+    <!-- О НАС -->
+    <div class="tab-pane" id="tab-about">
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">50 000+</div>
+          <div class="stat-label">клиентов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">98%</div>
+          <div class="stat-label">возвращаются</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100+</div>
+          <div class="stat-label">млн в оборудование</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">25+</div>
+          <div class="stat-label">протоколов</div>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title">Контакты</div>
+        <div class="contact-row">
+          <span class="contact-icon">📍</span>
+          <span class="contact-text">Москва, Басманный переулок, 5</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">🕙</span>
+          <span class="contact-text">Ежедневно, 10:00–22:00</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">📞</span>
+          <span class="contact-text"><a href="tel:+79299910001">+7 (929) 991-00-01</a></span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-icon">✈️</span>
+          <span class="contact-text"><a href="https://t.me/fomenkoinnaa" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
+        </div>
+      </div>
+
+      <div class="about-block">
+        <div class="about-block-title">Почему Expert PMU</div>
+        <div class="why-text">
+          Лауреат TOP-100 Beauty Москвы. Медицинская лицензия, регулярные проверки Роспотребнадзора. Только сертифицированные препараты и аппараты премиум-класса. Центр основан Инной Фоменко — одним из ведущих специалистов России в области перманентного макияжа и косметологии.
+        </div>
+      </div>
+
+    </div><!-- /tab-about -->
+
+  </div><!-- /content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-btn active" data-tab="services">
+      <span class="nav-icon">✂️</span>
+      <span>Услуги</span>
+    </div>
+    <div class="nav-btn" data-tab="masters">
+      <span class="nav-icon">👤</span>
+      <span>Мастера</span>
+    </div>
+    <div class="nav-btn" data-tab="about">
+      <span class="nav-icon">ℹ️</span>
+      <span>О нас</span>
+    </div>
+  </nav>
+
+  <script>
+    // Init Telegram Web App
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+
+    // Open link via Telegram or fallback
+    function openLink(url) {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+        Telegram.WebApp.openLink(url);
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    // Tab switching
+    function switchTab(name) {
+      // Panes
+      document.querySelectorAll('.tab-pane').forEach(function(p) {
+        p.classList.remove('active');
+      });
+      var pane = document.getElementById('tab-' + name);
+      if (pane) pane.classList.add('active');
+
+      // Top tabs
+      document.querySelectorAll('.top-tab').forEach(function(t) {
+        t.classList.toggle('active', t.dataset.tab === name);
+      });
+
+      // Bottom nav
+      document.querySelectorAll('.nav-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.tab === name);
+      });
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Top tabs click
+    document.querySelectorAll('.top-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+      });
+    });
+
+    // Bottom nav click
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+      });
+    });
+  </script>
+</body>
+</html>
