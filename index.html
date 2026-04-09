@@ -373,7 +373,6 @@
     <div class="top-tabs">
       <div class="top-tab active" data-tab="services">Услуги</div>
       <div class="top-tab" data-tab="masters">Мастера</div>
-      <div class="top-tab" data-tab="portfolio">Работы</div>
       <div class="top-tab" data-tab="about">О нас</div>
     </div>
   </div>
@@ -800,37 +799,6 @@
 
     </div><!-- /tab-masters -->
 
-    <!-- ГАЛЕРЕЯ РАБОТ -->
-    <div class="tab-pane" id="tab-portfolio">
-      <div class="section-title">Наши работы</div>
-      <div class="gallery-grid">
-        <div class="gallery-card">
-          <div class="gallery-icon">✏️</div>
-          <div class="gallery-label">Брови</div>
-          <div class="gallery-sub">Пудровое напыление, акварель, теневая техника</div>
-        </div>
-        <div class="gallery-card">
-          <div class="gallery-icon">👄</div>
-          <div class="gallery-label">Губы</div>
-          <div class="gallery-sub">Акварельные, помадный эффект, 3D-объём</div>
-        </div>
-        <div class="gallery-card">
-          <div class="gallery-icon">👁️</div>
-          <div class="gallery-label">Веки</div>
-          <div class="gallery-sub">Межресничное пространство, стрелки</div>
-        </div>
-        <div class="gallery-card">
-          <div class="gallery-icon">💎</div>
-          <div class="gallery-label">Косметология</div>
-          <div class="gallery-sub">Лифтинг, омоложение, инъекции</div>
-        </div>
-      </div>
-      <div onclick="window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/'):window.open('https://www.instagram.com/expert_pmu/','_blank')" style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:16px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
-        <span style="font-size:15px;font-weight:600;color:#fff;">Наш Instagram</span>
-        <span style="font-size:20px;color:var(--gold);">›</span>
-      </div>
-    </div><!-- /tab-portfolio -->
-
     <!-- О НАС -->
     <div class="tab-pane" id="tab-about">
       <div class="stats-grid">
@@ -913,6 +881,11 @@
           Лауреат TOP-100 Beauty Москвы. Медицинская лицензия, регулярные проверки Роспотребнадзора. Только сертифицированные препараты и аппараты премиум-класса. Центр основан Инной Фоменко — одним из ведущих специалистов России в области перманентного макияжа и косметологии.
         </div>
       </div>
+      <div class="about-block" style="margin-top:20px;">
+        <div class="about-block-title">Наши работы</div>
+        <div class="why-text" style="margin-bottom:16px;">Смотрите примеры работ наших мастеров в Instagram</div>
+        <button onclick="window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/'):window.open('https://www.instagram.com/expert_pmu/','_blank')" style="width:100%;background:#c9a96e;color:#000;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Наш Instagram</button>
+      </div>
     </div><!-- /tab-about -->
 
   </div><!-- /content -->
@@ -926,10 +899,6 @@
     <div class="nav-btn" data-tab="masters">
       <span class="nav-icon">👤</span>
       <span>Мастера</span>
-    </div>
-    <div class="nav-btn" data-tab="portfolio">
-      <span class="nav-icon">🖼️</span>
-      <span>Работы</span>
     </div>
     <div class="nav-btn" data-tab="about">
       <span class="nav-icon">ℹ️</span>
