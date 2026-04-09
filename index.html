@@ -434,7 +434,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Брови')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Губы">
@@ -447,7 +447,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Губы')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
@@ -460,7 +460,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Веки и стрелки')">Записаться</button>
           </div>
         </div>
 
@@ -475,7 +475,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Лазерное удаление PicoSure / PicoPlus')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Ремувер (безлазерное удаление)">
@@ -488,7 +488,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Ремувер (безлазерное удаление)')">Записаться</button>
           </div>
         </div>
 
@@ -503,7 +503,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">63 000 ₽</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('RF-лифтинг Morpheus8')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Фотоомоложение Lumecca">
@@ -516,7 +516,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">15 900 ₽</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Фотоомоложение Lumecca')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="SMAS-лифтинг Ultraformer">
@@ -529,7 +529,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('SMAS-лифтинг Ultraformer')">Записаться</button>
           </div>
         </div>
 
@@ -544,7 +544,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Ботулинотерапия')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Биоревитализация">
@@ -557,7 +557,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Биоревитализация')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Увеличение губ">
@@ -570,7 +570,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте</div>
-            <button class="btn-service">Записаться</button>
+            <button class="btn-service" onclick="bookService('Увеличение губ')">Записаться</button>
           </div>
         </div>
       </div>
@@ -978,25 +978,6 @@
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
 
-    // ── Записаться buttons — bind directly to each button, card itself is NOT clickable ──
-    document.querySelectorAll('.btn-service').forEach(function(btn) {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        var card = btn.closest ? btn.closest('.service-card') : (function(el){
-          while(el){ if(el.classList&&el.classList.contains('service-card'))return el; el=el.parentNode; } return null;
-        })(btn.parentNode);
-        if (card) selectService(card);
-      });
-      btn.addEventListener('touchend', function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        var card = btn.closest ? btn.closest('.service-card') : (function(el){
-          while(el){ if(el.classList&&el.classList.contains('service-card'))return el; el=el.parentNode; } return null;
-        })(btn.parentNode);
-        if (card) selectService(card);
-      });
-    });
-
     // ── Masters data ──
     var MASTERS = [
       { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
@@ -1030,6 +1011,19 @@
     };
 
     var currentService = '';
+
+    function bookService(serviceName) {
+      currentService = serviceName;
+      document.getElementById('pick-title').textContent = serviceName;
+      var names = SERVICE_MASTERS[serviceName] || [];
+      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
+      var list = document.getElementById('pick-list');
+      list.innerHTML = '';
+      masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
+      document.getElementById('services-list').style.display = 'none';
+      document.getElementById('masters-pick').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     function selectService(card) {
       var service = card.dataset.service;
