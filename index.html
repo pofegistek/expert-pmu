@@ -179,10 +179,6 @@
       margin-bottom: 8px;
       transition: border-color 0.2s, background 0.2s;
     }
-    .service-card.selected {
-      border-color: var(--gold);
-      background: rgba(201,169,110,0.07);
-    }
     .service-card-top { display: flex; align-items: center; gap: 12px; }
     .service-card-footer {
       display: flex;
@@ -994,7 +990,6 @@
       if (name !== 'services') {
         document.getElementById('masters-pick').style.display = 'none';
         document.getElementById('services-list').style.display = 'block';
-        document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
       }
       document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
       var pane = document.getElementById('tab-' + name);
@@ -1014,27 +1009,23 @@
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
 
-    // ── Service card delegation — only .btn-service triggers booking ──
-    var servicesList = document.getElementById('services-list');
-    function findCard(el) {
-      while (el && el !== servicesList) {
-        if (el.classList && el.classList.contains('service-card')) return el;
-        el = el.parentNode;
-      }
-      return null;
-    }
-    function isBtnService(el) {
-      return el && el.classList && el.classList.contains('btn-service');
-    }
-    servicesList.addEventListener('click', function(e) {
-      if (!isBtnService(e.target)) return;
-      var card = findCard(e.target);
-      if (card) selectService(card);
-    });
-    servicesList.addEventListener('touchend', function(e) {
-      if (!isBtnService(e.target)) return;
-      var card = findCard(e.target);
-      if (card) { e.preventDefault(); selectService(card); }
+    // ── Записаться buttons — bind directly to each button, card itself is NOT clickable ──
+    document.querySelectorAll('.btn-service').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var card = btn.closest ? btn.closest('.service-card') : (function(el){
+          while(el){ if(el.classList&&el.classList.contains('service-card'))return el; el=el.parentNode; } return null;
+        })(btn.parentNode);
+        if (card) selectService(card);
+      });
+      btn.addEventListener('touchend', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        var card = btn.closest ? btn.closest('.service-card') : (function(el){
+          while(el){ if(el.classList&&el.classList.contains('service-card'))return el; el=el.parentNode; } return null;
+        })(btn.parentNode);
+        if (card) selectService(card);
+      });
     });
 
     // ── Masters data ──
@@ -1075,7 +1066,6 @@
       var service = card.dataset.service;
       currentService = service;
       document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
-      card.classList.add('selected');
       document.getElementById('pick-title').textContent = service;
       var names = SERVICE_MASTERS[service] || [];
       var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
