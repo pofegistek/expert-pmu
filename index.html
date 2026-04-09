@@ -216,6 +216,35 @@
       transition: opacity 0.15s;
     }
     .btn-service:active { opacity: 0.75; }
+    .btn-works {
+      width: 100%; background: transparent; color: var(--gold);
+      border: 1px solid rgba(201,169,110,0.4); border-radius: 8px;
+      padding: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
+    }
+    .btn-works:active { opacity: 0.7; }
+    /* Works modal */
+    .works-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.85); align-items: flex-end; justify-content: center;
+    }
+    .works-modal-overlay.open { display: flex; }
+    .works-modal-sheet {
+      background: #0e0e0e; border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 85vh; overflow-y: auto;
+      padding: 16px; padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .works-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .works-modal-title { font-size: 17px; font-weight: 700; color: #fff; }
+    .works-modal-close {
+      background: #2a2a2a; border: none; color: #fff; border-radius: 50%;
+      width: 30px; height: 30px; font-size: 18px; cursor: pointer; line-height: 30px; text-align: center;
+    }
+    .works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .works-grid img { width: 100%; border-radius: 10px; display: block; aspect-ratio: 3/4; object-fit: cover; }
 
     /* ── MASTER PICK LIST ── */
     .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -423,6 +452,15 @@
           <button class="btn-promo" onclick="openBookingModal('Ольга Владимировна','Endolift — безоперационная подтяжка')">Записаться со скидкой</button>
         </div>
 
+        <!-- КОНТАКТ БЛОК -->
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;">Остались вопросы? Напишите нам</div>
+          <div style="display:flex;gap:10px;">
+            <button onclick="openLink('https://t.me/+79299910001')" style="flex:1;background:var(--gold);color:#000;border:none;border-radius:10px;padding:11px 8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Telegram</button>
+            <button onclick="openLink('tel:+79299910001')" style="flex:1;background:#1e1e1e;color:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Позвонить</button>
+          </div>
+        </div>
+
         <!-- УСЛУГИ -->
         <div class="section-title">Перманентный макияж</div>
         <div class="service-card" data-service="Брови">
@@ -437,6 +475,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Брови')">Записаться</button>
           </div>
+          <button class="btn-works" onclick="openWorksModal('Брови')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Губы">
           <div class="service-card-top">
@@ -450,6 +489,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Губы')">Записаться</button>
           </div>
+          <button class="btn-works" onclick="openWorksModal('Губы')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
           <div class="service-card-top">
@@ -463,6 +503,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Веки и стрелки')">Записаться</button>
           </div>
+          <button class="btn-works" onclick="openWorksModal('Веки')">Смотреть работы</button>
         </div>
 
         <div class="section-title">Удаление татуажа</div>
@@ -604,6 +645,7 @@
           <div class="master-footer">
             <div class="master-price">от 48 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n62546.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -621,6 +663,7 @@
           <div class="master-footer">
             <div class="master-price">от 36 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n521920.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -639,6 +682,7 @@
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n618275.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -656,6 +700,7 @@
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n501106.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -673,6 +718,7 @@
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n795398.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -691,6 +737,7 @@
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1447051.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -708,6 +755,7 @@
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n963781.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -725,6 +773,7 @@
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1109020.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -742,6 +791,7 @@
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n984861.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -759,6 +809,7 @@
           <div class="master-footer">
             <div class="master-price">от 12 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1449154.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -776,6 +827,7 @@
           <div class="master-footer">
             <div class="master-price">Удаление лазером</div>
             <button class="btn-book" onclick="openLink('https://n1449154.yclients.com/company/40048/personal/menu?o=m431466')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -794,6 +846,7 @@
           <div class="master-footer">
             <div class="master-price">По записи</div>
             <button class="btn-book" onclick="openLink('https://n1007529.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
       </div>
@@ -1005,6 +1058,17 @@
     </div>
   </nav>
 
+  <!-- WORKS MODAL -->
+  <div class="works-modal-overlay" id="works-modal">
+    <div class="works-modal-sheet">
+      <div class="works-modal-header">
+        <div class="works-modal-title" id="works-modal-title">Наши работы</div>
+        <button class="works-modal-close" onclick="closeWorksModal()">×</button>
+      </div>
+      <div class="works-grid" id="works-grid"></div>
+    </div>
+  </div>
+
   <!-- BOOKING MODAL -->
   <div class="modal-overlay" id="booking-modal">
     <div class="modal-sheet">
@@ -1046,7 +1110,7 @@
 
     function openLink(url) {
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        Telegram.WebApp.openLink(url);
+        Telegram.WebApp.openLink(url, {try_instant_view: false});
       } else {
         window.open(url, '_blank');
       }
@@ -1238,6 +1302,26 @@
     function closeModal() {
       document.getElementById('booking-modal').classList.remove('open');
     }
+
+    // ── Works modal ──
+    var WORKS_PHOTOS = {
+      'Брови':  ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg','images/works/brows_4.jpg','images/works/brows_5.jpg'],
+      'Губы':   ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg','images/works/lips_4.jpg','images/works/lips_5.jpg'],
+      'Веки':   ['images/works/eyelid_1.jpg','images/works/eyelid_2.jpg','images/works/eyelid_3.jpg','images/works/eyelid_4.jpg','images/works/eyelid_5.jpg'],
+    };
+    function openWorksModal(category) {
+      var photos = WORKS_PHOTOS[category] || [];
+      document.getElementById('works-modal-title').textContent = category;
+      var grid = document.getElementById('works-grid');
+      grid.innerHTML = photos.map(function(p) { return '<img src="' + p + '" alt="' + category + '">'; }).join('');
+      document.getElementById('works-modal').classList.add('open');
+    }
+    function closeWorksModal() {
+      document.getElementById('works-modal').classList.remove('open');
+    }
+    document.getElementById('works-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeWorksModal();
+    });
 
     document.getElementById('booking-modal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
