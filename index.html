@@ -177,14 +177,8 @@
       flex-direction: column;
       gap: 10px;
       margin-bottom: 8px;
-      cursor: pointer;
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
       transition: border-color 0.2s, background 0.2s;
-      -webkit-tap-highlight-color: transparent;
     }
-    .service-card:active { background: #1e1e1e; }
     .service-card.selected {
       border-color: var(--gold);
       background: rgba(201,169,110,0.07);
@@ -1024,7 +1018,7 @@
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
 
-    // ── Service card delegation (click + touchend for iOS WebView) ──
+    // ── Service card delegation — only .btn-service triggers booking ──
     var servicesList = document.getElementById('services-list');
     function findCard(el) {
       while (el && el !== servicesList) {
@@ -1033,12 +1027,17 @@
       }
       return null;
     }
+    function isBtnService(el) {
+      return el && el.classList && el.classList.contains('btn-service');
+    }
     servicesList.addEventListener('click', function(e) {
-      var card = e.target.closest ? e.target.closest('.service-card') : findCard(e.target);
+      if (!isBtnService(e.target)) return;
+      var card = findCard(e.target);
       if (card) selectService(card);
     });
     servicesList.addEventListener('touchend', function(e) {
-      var card = e.target.closest ? e.target.closest('.service-card') : findCard(e.target);
+      if (!isBtnService(e.target)) return;
+      var card = findCard(e.target);
       if (card) { e.preventDefault(); selectService(card); }
     });
 
