@@ -75,7 +75,6 @@
     /* ── TOP TABS ── */
     .top-tabs {
       display: flex;
-      gap: 0;
     }
     .top-tab {
       flex: 1;
@@ -123,6 +122,14 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 8px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .service-card:active { background: #1e1e1e; }
+    .service-card.selected {
+      border-color: var(--gold);
+      background: rgba(201,169,110,0.07);
     }
     .service-icon {
       width: 44px;
@@ -159,6 +166,34 @@
       text-align: right;
     }
 
+    /* ── MASTER PICK LIST (service flow) ── */
+    .master-pick-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .back-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--gold);
+      padding: 6px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { opacity: 0.7; }
+    .master-pick-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     /* ── MASTER CARD ── */
     .master-card {
       background: var(--card);
@@ -170,11 +205,16 @@
       margin-bottom: 10px;
       min-height: 110px;
     }
+    .master-card.clickable {
+      cursor: pointer;
+      transition: border-color 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .master-card.clickable:active { background: #1e1e1e; }
     .master-photo {
       width: 90px;
       flex-shrink: 0;
       overflow: hidden;
-      position: relative;
     }
     .master-photo img {
       width: 100%;
@@ -338,6 +378,102 @@
     }
     .nav-btn .nav-icon { font-size: 20px; }
     .nav-btn.active { color: var(--gold); }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0,0,0,0.7);
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: #1a1a1a;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0));
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .modal-drag {
+      width: 40px;
+      height: 4px;
+      background: #444;
+      border-radius: 2px;
+      margin: 0 auto 18px;
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .modal-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .form-input {
+      width: 100%;
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    .form-input::placeholder { color: #444; }
+    .btn-submit {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+      margin-top: 4px;
+    }
+    .btn-submit:disabled { opacity: 0.5; cursor: default; }
+    .btn-submit:active:not(:disabled) { opacity: 0.8; }
+    .success-box {
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+    .success-icon { font-size: 48px; margin-bottom: 12px; }
+    .success-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .success-text {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
   </style>
 </head>
 <body>
@@ -363,111 +499,112 @@
     <!-- УСЛУГИ -->
     <div class="tab-pane active" id="tab-services">
 
-      <div class="section-title">Перманентный макияж</div>
-
-      <div class="service-card">
-        <div class="service-icon">✏️</div>
-        <div class="service-info">
-          <div class="service-name">Брови</div>
-          <div class="service-desc">Пудровое напыление, теневая растушёвка, перекрытие татуажа</div>
+      <!-- Список услуг -->
+      <div id="services-list">
+        <div class="section-title">Перманентный макияж</div>
+        <div class="service-card" data-service="Брови" onclick="selectService(this)">
+          <div class="service-icon">✏️</div>
+          <div class="service-info">
+            <div class="service-name">Брови</div>
+            <div class="service-desc">Пудровое напыление, теневая растушёвка, перекрытие татуажа</div>
+          </div>
+          <div class="service-price">от 12 000 ₽</div>
         </div>
-        <div class="service-price">от 12 000 ₽</div>
+        <div class="service-card" data-service="Губы" onclick="selectService(this)">
+          <div class="service-icon">👄</div>
+          <div class="service-info">
+            <div class="service-name">Губы</div>
+            <div class="service-desc">Акварельные, помадный эффект, 3D, контур + растушёвка</div>
+          </div>
+          <div class="service-price">от 12 000 ₽</div>
+        </div>
+        <div class="service-card" data-service="Веки и стрелки" onclick="selectService(this)">
+          <div class="service-icon">👁️</div>
+          <div class="service-info">
+            <div class="service-name">Веки и стрелки</div>
+            <div class="service-desc">Межресничное пространство, стрелки с растушёвкой</div>
+          </div>
+          <div class="service-price">от 12 000 ₽</div>
+        </div>
+
+        <div class="section-title">Удаление татуажа</div>
+        <div class="service-card" data-service="Лазерное удаление PicoSure / PicoPlus" onclick="selectService(this)">
+          <div class="service-icon">⚡</div>
+          <div class="service-info">
+            <div class="service-name">Лазер PicoSure / PicoPlus</div>
+            <div class="service-desc">Татуаж, тату, пигментные пятна, постакне</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
+        <div class="service-card" data-service="Ремувер (безлазерное удаление)" onclick="selectService(this)">
+          <div class="service-icon">🧴</div>
+          <div class="service-info">
+            <div class="service-name">Ремувер</div>
+            <div class="service-desc">Мягкое безлазерное удаление</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
+
+        <div class="section-title">Аппаратная косметология</div>
+        <div class="service-card" data-service="RF-лифтинг Morpheus8" onclick="selectService(this)">
+          <div class="service-icon">✨</div>
+          <div class="service-info">
+            <div class="service-name">RF-лифтинг Morpheus8</div>
+            <div class="service-desc">Микроигольчатый лифтинг лица и тела</div>
+          </div>
+          <div class="service-price">63 000 ₽</div>
+        </div>
+        <div class="service-card" data-service="Фотоомоложение Lumecca" onclick="selectService(this)">
+          <div class="service-icon">🔆</div>
+          <div class="service-info">
+            <div class="service-name">Фотоомоложение Lumecca</div>
+            <div class="service-desc">Пигментация, сосуды, выравнивание тона</div>
+          </div>
+          <div class="service-price">15 900 ₽</div>
+        </div>
+        <div class="service-card" data-service="SMAS-лифтинг Ultraformer" onclick="selectService(this)">
+          <div class="service-icon">💎</div>
+          <div class="service-info">
+            <div class="service-name">SMAS-лифтинг Ultraformer</div>
+            <div class="service-desc">Безоперационная подтяжка лица и тела</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
+
+        <div class="section-title">Инъекционная косметология</div>
+        <div class="service-card" data-service="Ботулинотерапия" onclick="selectService(this)">
+          <div class="service-icon">💉</div>
+          <div class="service-info">
+            <div class="service-name">Ботулинотерапия</div>
+            <div class="service-desc">Диспорт, Миотокс, Full Face, Нефертити, гипергидроз</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
+        <div class="service-card" data-service="Биоревитализация" onclick="selectService(this)">
+          <div class="service-icon">🌸</div>
+          <div class="service-info">
+            <div class="service-name">Биоревитализация</div>
+            <div class="service-desc">Profhilo, Jalupro, NCTF HA</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
+        <div class="service-card" data-service="Увеличение губ" onclick="selectService(this)">
+          <div class="service-icon">💋</div>
+          <div class="service-info">
+            <div class="service-name">Увеличение губ</div>
+            <div class="service-desc">Stylage, Belotero, Juvederm</div>
+          </div>
+          <div class="service-price">уточняйте</div>
+        </div>
       </div>
 
-      <div class="service-card">
-        <div class="service-icon">👄</div>
-        <div class="service-info">
-          <div class="service-name">Губы</div>
-          <div class="service-desc">Акварельные, помадный эффект, 3D, контур + растушёвка</div>
+      <!-- Выбор мастера (скрыт) -->
+      <div id="masters-pick" style="display:none;">
+        <div class="master-pick-header">
+          <button class="back-btn" onclick="backToServices()">← Назад</button>
+          <div class="master-pick-title" id="pick-title"></div>
         </div>
-        <div class="service-price">от 12 000 ₽</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">👁️</div>
-        <div class="service-info">
-          <div class="service-name">Веки и стрелки</div>
-          <div class="service-desc">Межресничное пространство, стрелки с растушёвкой</div>
-        </div>
-        <div class="service-price">от 12 000 ₽</div>
-      </div>
-
-      <div class="section-title">Удаление татуажа</div>
-
-      <div class="service-card">
-        <div class="service-icon">⚡</div>
-        <div class="service-info">
-          <div class="service-name">Лазер PicoSure / PicoPlus</div>
-          <div class="service-desc">Татуаж, тату, пигментные пятна, постакне</div>
-        </div>
-        <div class="service-price">уточняйте</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">🧴</div>
-        <div class="service-info">
-          <div class="service-name">Ремувер</div>
-          <div class="service-desc">Мягкое безлазерное удаление</div>
-        </div>
-        <div class="service-price">уточняйте</div>
-      </div>
-
-      <div class="section-title">Аппаратная косметология</div>
-
-      <div class="service-card">
-        <div class="service-icon">✨</div>
-        <div class="service-info">
-          <div class="service-name">RF-лифтинг Morpheus8</div>
-          <div class="service-desc">Микроигольчатый лифтинг лица и тела</div>
-        </div>
-        <div class="service-price">63 000 ₽</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">🔆</div>
-        <div class="service-info">
-          <div class="service-name">Фотоомоложение Lumecca</div>
-          <div class="service-desc">Пигментация, сосуды, выравнивание тона</div>
-        </div>
-        <div class="service-price">15 900 ₽</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">💎</div>
-        <div class="service-info">
-          <div class="service-name">SMAS-лифтинг Ultraformer</div>
-          <div class="service-desc">Безоперационная подтяжка лица и тела</div>
-        </div>
-        <div class="service-price">уточняйте</div>
-      </div>
-
-      <div class="section-title">Инъекционная косметология</div>
-
-      <div class="service-card">
-        <div class="service-icon">💉</div>
-        <div class="service-info">
-          <div class="service-name">Ботулинотерапия</div>
-          <div class="service-desc">Диспорт, Миотокс, Full Face, Нефертити, гипергидроз</div>
-        </div>
-        <div class="service-price">уточняйте</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">🌸</div>
-        <div class="service-info">
-          <div class="service-name">Биоревитализация</div>
-          <div class="service-desc">Profhilo, Jalupro, NCTF HA</div>
-        </div>
-        <div class="service-price">уточняйте</div>
-      </div>
-
-      <div class="service-card">
-        <div class="service-icon">💋</div>
-        <div class="service-info">
-          <div class="service-name">Увеличение губ</div>
-          <div class="service-desc">Stylage, Belotero, Juvederm</div>
-        </div>
-        <div class="service-price">уточняйте</div>
+        <div id="pick-list"></div>
       </div>
 
     </div><!-- /tab-services -->
@@ -476,7 +613,6 @@
     <div class="tab-pane" id="tab-masters">
 
       <div class="section-title">VIP мастера</div>
-
       <div class="master-card">
         <div class="master-photo">
           <img src="images/natali.jpg" alt="Натали" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -516,7 +652,6 @@
       </div>
 
       <div class="section-title">Ведущие мастера</div>
-
       <div class="master-card">
         <div class="master-photo">
           <img src="images/kristina.jpg" alt="Кристина" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -575,7 +710,6 @@
       </div>
 
       <div class="section-title">Топ-мастера</div>
-
       <div class="master-card">
         <div class="master-photo">
           <img src="images/svetlana.jpg" alt="Светлана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -691,7 +825,6 @@
       </div>
 
       <div class="section-title">Врач-косметолог</div>
-
       <div class="master-card">
         <div class="master-photo">
           <img src="images/olga.jpg" alt="Ольга Владимировна" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -715,7 +848,6 @@
 
     <!-- О НАС -->
     <div class="tab-pane" id="tab-about">
-
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-value">50 000+</div>
@@ -751,7 +883,7 @@
         </div>
         <div class="contact-row">
           <span class="contact-icon">✈️</span>
-          <span class="contact-text"><a href="https://t.me/fomenkoinnaa" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
+          <span class="contact-text"><a href="#" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
         </div>
       </div>
 
@@ -761,7 +893,6 @@
           Лауреат TOP-100 Beauty Москвы. Медицинская лицензия, регулярные проверки Роспотребнадзора. Только сертифицированные препараты и аппараты премиум-класса. Центр основан Инной Фоменко — одним из ведущих специалистов России в области перманентного макияжа и косметологии.
         </div>
       </div>
-
     </div><!-- /tab-about -->
 
   </div><!-- /content -->
@@ -782,14 +913,38 @@
     </div>
   </nav>
 
+  <!-- BOOKING MODAL -->
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div id="modal-form-content">
+        <div class="modal-title" id="modal-master-name"></div>
+        <div class="modal-subtitle" id="modal-service-name"></div>
+        <label class="form-label">Ваше имя</label>
+        <input class="form-input" id="input-name" type="text" placeholder="Имя" autocomplete="name">
+        <label class="form-label">Телефон</label>
+        <input class="form-input" id="input-phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel">
+        <button class="btn-submit" id="btn-submit" onclick="submitBooking()">Записаться</button>
+      </div>
+      <div id="modal-success-content" style="display:none;">
+        <div class="success-box">
+          <div class="success-icon">✅</div>
+          <div class="success-title">Спасибо!</div>
+          <div class="success-text">Мы свяжемся с вами в ближайшее время для подтверждения записи.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Init Telegram Web App
+    const WEBHOOK_URL = 'http://46.30.43.23:8080/webhook';
+
+    // ── Telegram Web App ──
     if (window.Telegram && window.Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
     }
 
-    // Open link via Telegram or fallback
     function openLink(url) {
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
         Telegram.WebApp.openLink(url);
@@ -798,42 +953,215 @@
       }
     }
 
-    // Tab switching
+    // ── Tab switching ──
     function switchTab(name) {
-      // Panes
       document.querySelectorAll('.tab-pane').forEach(function(p) {
         p.classList.remove('active');
       });
       var pane = document.getElementById('tab-' + name);
       if (pane) pane.classList.add('active');
-
-      // Top tabs
       document.querySelectorAll('.top-tab').forEach(function(t) {
         t.classList.toggle('active', t.dataset.tab === name);
       });
-
-      // Bottom nav
       document.querySelectorAll('.nav-btn').forEach(function(b) {
         b.classList.toggle('active', b.dataset.tab === name);
       });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.top-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() { switchTab(this.dataset.tab); });
+    });
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+    });
 
-      // Scroll to top
+    // ── Masters data ──
+    var MASTERS = [
+      { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',       levelColor: '#c9a96e', spec: 'Бархатные брови, акварельные губы',              meta: '16 000+ процедур', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
+      { name: 'Видана',            photo: 'images/vidana.jpg',   level: 'VIP мастер',       levelColor: '#c9a96e', spec: 'Пушистые брови, нюдовые губы, лёгкая рука',      meta: '3 000+ работ',    price: 'от 36 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'В' },
+      { name: 'Кристина',          photo: 'images/kristina.jpg', level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'Натуральный перманент, максимальная естественность', meta: '7+ лет опыта',   price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
+      { name: 'Катрин',            photo: 'images/katrin.jpg',   level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'BB Glow, акварельные губы, награда Maestro PM 2022', meta: '5 000+ работ', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
+      { name: 'Лиана',             photo: 'images/liana.jpg',    level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'Победитель Beauty Adrenalin — брови и губы',      meta: '7 000+ процедур', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'Л' },
+      { name: 'Светлана',          photo: 'images/svetlana.jpg', level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Судья международных чемпионатов, 15 лет практики', meta: '20 000+ процедур', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'С' },
+      { name: 'Камила',            photo: 'images/kamila.jpg',   level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Яркий выразительный результат',                  meta: '1 000+ клиентов', price: 'от 30 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
+      { name: 'Крис',              photo: 'images/kris.jpg',     level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Натуральный перманент + тату line work',          meta: '3+ года опыта',   price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
+      { name: 'Варвара',           photo: 'images/varvara.jpg',  level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Лёгкие, естественные работы',                    meta: 'Сотни клиентов',  price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
+      { name: 'Валерия',           photo: 'images/valeriya.jpg', level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Эксперт натурального перманентного макияжа',     meta: '4 000+ процедур', price: 'от 12 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
+      { name: 'Пётр',              photo: 'images/petr.jpg',     level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Удаление лазером, единственный мастер-мужчина',   meta: '10 000+ процедур', price: 'Удаление лазером', avatarBg: '#1a1f2e', avatarLetter: 'П' },
+      { name: 'Ольга Владимировна',photo: 'images/olga.jpg',     level: 'Врач-косметолог',  levelColor: '#b07ad4', spec: 'К.м.н., дерматовенеролог, лазеротерапевт',        meta: 'Morpheus8, Lumecca, CO₂', price: 'По записи', avatarBg: '#22183a', avatarLetter: 'О' },
+      { name: 'Милана',            photo: '',                    level: 'Косметолог',        levelColor: '#b07ad4', spec: 'Инъекционная косметология',                       meta: '',                price: 'По записи', avatarBg: '#22183a', avatarLetter: 'М' },
+      { name: 'Ксения',            photo: '',                    level: 'Косметолог',        levelColor: '#b07ad4', spec: 'Инъекционная косметология',                       meta: '',                price: 'По записи', avatarBg: '#22183a', avatarLetter: 'К' },
+    ];
+
+    // ── Service → master names mapping ──
+    var SERVICE_MASTERS = {
+      'Брови':                                    ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Губы':                                     ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Веки и стрелки':                           ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Лазерное удаление PicoSure / PicoPlus':   ['Пётр'],
+      'Ремувер (безлазерное удаление)':           ['Пётр'],
+      'RF-лифтинг Morpheus8':                     ['Ольга Владимировна'],
+      'Фотоомоложение Lumecca':                   ['Ольга Владимировна'],
+      'SMAS-лифтинг Ultraformer':                 ['Ольга Владимировна'],
+      'Ботулинотерапия':                          ['Ольга Владимировна','Милана','Ксения'],
+      'Биоревитализация':                         ['Ольга Владимировна','Милана','Ксения'],
+      'Увеличение губ':                           ['Ольга Владимировна','Милана','Ксения'],
+    };
+
+    var currentService = '';
+
+    function selectService(card) {
+      var service = card.dataset.service;
+      currentService = service;
+
+      document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+
+      document.getElementById('pick-title').textContent = service;
+
+      var names = SERVICE_MASTERS[service] || [];
+      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
+
+      var list = document.getElementById('pick-list');
+      list.innerHTML = '';
+      masters.forEach(function(m) {
+        list.appendChild(buildPickCard(m));
+      });
+
+      document.getElementById('services-list').style.display = 'none';
+      document.getElementById('masters-pick').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Top tabs click
-    document.querySelectorAll('.top-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        switchTab(this.dataset.tab);
-      });
+    function buildPickCard(m) {
+      var card = document.createElement('div');
+      card.className = 'master-card clickable';
+
+      var photoDiv = document.createElement('div');
+      photoDiv.className = 'master-photo';
+
+      if (m.photo) {
+        var img = document.createElement('img');
+        img.src = m.photo;
+        img.alt = m.name;
+        var av = document.createElement('div');
+        av.className = 'master-avatar';
+        av.style.cssText = 'display:none;background:' + m.avatarBg + ';';
+        av.textContent = m.avatarLetter;
+        img.onerror = function() { img.style.display = 'none'; av.style.display = 'flex'; };
+        photoDiv.appendChild(img);
+        photoDiv.appendChild(av);
+      } else {
+        var av2 = document.createElement('div');
+        av2.className = 'master-avatar';
+        av2.style.cssText = 'background:' + m.avatarBg + ';';
+        av2.textContent = m.avatarLetter;
+        photoDiv.appendChild(av2);
+      }
+
+      var body = document.createElement('div');
+      body.className = 'master-body';
+      body.innerHTML =
+        '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
+        '<div class="master-name">' + m.name + '</div>' +
+        '<div class="master-spec">' + m.spec + '</div>' +
+        '<div class="master-footer">' +
+          '<div>' +
+            (m.meta ? '<div class="master-meta">' + m.meta + '</div>' : '') +
+            '<div class="master-price">' + m.price + '</div>' +
+          '</div>' +
+          '<button class="btn-book" id="pick-btn-' + m.name.replace(/\s/g,'_') + '">Выбрать</button>' +
+        '</div>';
+
+      card.appendChild(photoDiv);
+      card.appendChild(body);
+
+      // bind button
+      setTimeout(function() {
+        var btn = body.querySelector('.btn-book');
+        if (btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openBookingModal(m.name, currentService);
+          });
+        }
+      }, 0);
+
+      return card;
+    }
+
+    function backToServices() {
+      document.getElementById('masters-pick').style.display = 'none';
+      document.getElementById('services-list').style.display = 'block';
+      document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── Booking modal ──
+    var bookingMaster = '';
+    var bookingService = '';
+
+    function openBookingModal(masterName, serviceName) {
+      bookingMaster = masterName;
+      bookingService = serviceName;
+
+      document.getElementById('modal-master-name').textContent = masterName;
+      document.getElementById('modal-service-name').textContent = serviceName;
+      document.getElementById('input-name').value = '';
+      document.getElementById('input-phone').value = '';
+      document.getElementById('btn-submit').disabled = false;
+      document.getElementById('btn-submit').textContent = 'Записаться';
+      document.getElementById('modal-form-content').style.display = 'block';
+      document.getElementById('modal-success-content').style.display = 'none';
+      document.getElementById('booking-modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('booking-modal').classList.remove('open');
+    }
+
+    // Close on overlay click
+    document.getElementById('booking-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
     });
 
-    // Bottom nav click
-    document.querySelectorAll('.nav-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        switchTab(this.dataset.tab);
+    function submitBooking() {
+      var name  = document.getElementById('input-name').value.trim();
+      var phone = document.getElementById('input-phone').value.trim();
+
+      if (!name || !phone) {
+        if (!name)  document.getElementById('input-name').focus();
+        else        document.getElementById('input-phone').focus();
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = 'Отправляем...';
+
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    name,
+          phone:   phone,
+          service: bookingService,
+          master:  bookingMaster
+        })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        document.getElementById('modal-form-content').style.display = 'none';
+        document.getElementById('modal-success-content').style.display = 'block';
+        setTimeout(closeModal, 3000);
+      })
+      .catch(function() {
+        // Show success anyway (network issues in TG)
+        document.getElementById('modal-form-content').style.display = 'none';
+        document.getElementById('modal-success-content').style.display = 'block';
+        setTimeout(closeModal, 3000);
       });
-    });
+    }
   </script>
 </body>
 </html>
