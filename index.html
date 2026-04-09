@@ -123,6 +123,9 @@
       gap: 12px;
       margin-bottom: 8px;
       cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
       transition: border-color 0.2s, background 0.2s;
       -webkit-tap-highlight-color: transparent;
     }
@@ -502,7 +505,7 @@
       <!-- Список услуг -->
       <div id="services-list">
         <div class="section-title">Перманентный макияж</div>
-        <div class="service-card" data-service="Брови" onclick="selectService(this)">
+        <div class="service-card" data-service="Брови">
           <div class="service-icon">✏️</div>
           <div class="service-info">
             <div class="service-name">Брови</div>
@@ -510,7 +513,7 @@
           </div>
           <div class="service-price">от 12 000 ₽</div>
         </div>
-        <div class="service-card" data-service="Губы" onclick="selectService(this)">
+        <div class="service-card" data-service="Губы">
           <div class="service-icon">👄</div>
           <div class="service-info">
             <div class="service-name">Губы</div>
@@ -518,7 +521,7 @@
           </div>
           <div class="service-price">от 12 000 ₽</div>
         </div>
-        <div class="service-card" data-service="Веки и стрелки" onclick="selectService(this)">
+        <div class="service-card" data-service="Веки и стрелки">
           <div class="service-icon">👁️</div>
           <div class="service-info">
             <div class="service-name">Веки и стрелки</div>
@@ -528,7 +531,7 @@
         </div>
 
         <div class="section-title">Удаление татуажа</div>
-        <div class="service-card" data-service="Лазерное удаление PicoSure / PicoPlus" onclick="selectService(this)">
+        <div class="service-card" data-service="Лазерное удаление PicoSure / PicoPlus">
           <div class="service-icon">⚡</div>
           <div class="service-info">
             <div class="service-name">Лазер PicoSure / PicoPlus</div>
@@ -536,7 +539,7 @@
           </div>
           <div class="service-price">уточняйте</div>
         </div>
-        <div class="service-card" data-service="Ремувер (безлазерное удаление)" onclick="selectService(this)">
+        <div class="service-card" data-service="Ремувер (безлазерное удаление)">
           <div class="service-icon">🧴</div>
           <div class="service-info">
             <div class="service-name">Ремувер</div>
@@ -546,7 +549,7 @@
         </div>
 
         <div class="section-title">Аппаратная косметология</div>
-        <div class="service-card" data-service="RF-лифтинг Morpheus8" onclick="selectService(this)">
+        <div class="service-card" data-service="RF-лифтинг Morpheus8">
           <div class="service-icon">✨</div>
           <div class="service-info">
             <div class="service-name">RF-лифтинг Morpheus8</div>
@@ -554,7 +557,7 @@
           </div>
           <div class="service-price">63 000 ₽</div>
         </div>
-        <div class="service-card" data-service="Фотоомоложение Lumecca" onclick="selectService(this)">
+        <div class="service-card" data-service="Фотоомоложение Lumecca">
           <div class="service-icon">🔆</div>
           <div class="service-info">
             <div class="service-name">Фотоомоложение Lumecca</div>
@@ -562,7 +565,7 @@
           </div>
           <div class="service-price">15 900 ₽</div>
         </div>
-        <div class="service-card" data-service="SMAS-лифтинг Ultraformer" onclick="selectService(this)">
+        <div class="service-card" data-service="SMAS-лифтинг Ultraformer">
           <div class="service-icon">💎</div>
           <div class="service-info">
             <div class="service-name">SMAS-лифтинг Ultraformer</div>
@@ -572,7 +575,7 @@
         </div>
 
         <div class="section-title">Инъекционная косметология</div>
-        <div class="service-card" data-service="Ботулинотерапия" onclick="selectService(this)">
+        <div class="service-card" data-service="Ботулинотерапия">
           <div class="service-icon">💉</div>
           <div class="service-info">
             <div class="service-name">Ботулинотерапия</div>
@@ -580,7 +583,7 @@
           </div>
           <div class="service-price">уточняйте</div>
         </div>
-        <div class="service-card" data-service="Биоревитализация" onclick="selectService(this)">
+        <div class="service-card" data-service="Биоревитализация">
           <div class="service-icon">🌸</div>
           <div class="service-info">
             <div class="service-name">Биоревитализация</div>
@@ -588,7 +591,7 @@
           </div>
           <div class="service-price">уточняйте</div>
         </div>
-        <div class="service-card" data-service="Увеличение губ" onclick="selectService(this)">
+        <div class="service-card" data-service="Увеличение губ">
           <div class="service-icon">💋</div>
           <div class="service-info">
             <div class="service-name">Увеличение губ</div>
@@ -973,6 +976,35 @@
     });
     document.querySelectorAll('.nav-btn').forEach(function(btn) {
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+    });
+
+    // ── Service card delegation (click + touchend for iOS WebView) ──
+    var servicesList = document.getElementById('services-list');
+    function handleServiceClick(e) {
+      var card = e.target.closest ? e.target.closest('.service-card')
+                                  : (function(el) {
+                                      while (el && el !== servicesList) {
+                                        if (el.classList && el.classList.contains('service-card')) return el;
+                                        el = el.parentNode;
+                                      }
+                                      return null;
+                                    })(e.target);
+      if (card) selectService(card);
+    }
+    servicesList.addEventListener('click', handleServiceClick);
+    servicesList.addEventListener('touchend', function(e) {
+      var card = e.target.closest ? e.target.closest('.service-card')
+                                  : (function(el) {
+                                      while (el && el !== servicesList) {
+                                        if (el.classList && el.classList.contains('service-card')) return el;
+                                        el = el.parentNode;
+                                      }
+                                      return null;
+                                    })(e.target);
+      if (card) {
+        e.preventDefault();
+        selectService(card);
+      }
     });
 
     // ── Masters data ──
