@@ -73,14 +73,12 @@
     }
 
     /* ── TOP TABS ── */
-    .top-tabs {
-      display: flex;
-    }
+    .top-tabs { display: flex; }
     .top-tab {
       flex: 1;
       text-align: center;
-      padding: 8px 0;
-      font-size: 13px;
+      padding: 8px 2px;
+      font-size: 11px;
       font-weight: 500;
       color: var(--muted);
       cursor: pointer;
@@ -88,16 +86,12 @@
       transition: color 0.2s, border-color 0.2s;
       user-select: none;
       -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
-    .top-tab.active {
-      color: var(--gold);
-      border-bottom-color: var(--gold);
-    }
+    .top-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
     /* ── CONTENT ── */
-    .content {
-      padding: 16px 12px 90px;
-    }
+    .content { padding: 16px 12px 90px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
@@ -111,6 +105,67 @@
       margin: 20px 0 10px;
     }
     .section-title:first-child { margin-top: 0; }
+
+    /* ── PROMO CARDS ── */
+    .promo-card {
+      background: var(--card);
+      border: 1px solid var(--gold);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .promo-badge {
+      position: absolute;
+      top: 0; right: 0;
+      background: var(--gold);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 0 14px 0 10px;
+    }
+    .promo-icon { font-size: 24px; margin-bottom: 6px; }
+    .promo-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      padding-right: 56px;
+    }
+    .promo-prices {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .promo-old {
+      font-size: 13px;
+      color: var(--dark-muted);
+      text-decoration: line-through;
+    }
+    .promo-new {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .btn-promo {
+      width: 100%;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-promo:active { opacity: 0.75; }
 
     /* ── SERVICE CARD ── */
     .service-card {
@@ -135,66 +190,31 @@
       background: rgba(201,169,110,0.07);
     }
     .service-icon {
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 12px;
       background: rgba(255,255,255,0.05);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
     }
     .service-info { flex: 1; min-width: 0; }
     .service-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 14px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .service-desc {
-      font-size: 12px;
-      color: var(--dark-muted);
-      margin-top: 2px;
-      line-height: 1.4;
-    }
-    .service-price {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--gold);
-      white-space: nowrap;
-      flex-shrink: 0;
-      text-align: right;
-    }
+    .service-desc { font-size: 12px; color: var(--dark-muted); margin-top: 2px; line-height: 1.4; }
+    .service-price { font-size: 13px; font-weight: 600; color: var(--gold); white-space: nowrap; flex-shrink: 0; text-align: right; }
 
-    /* ── MASTER PICK LIST (service flow) ── */
-    .master-pick-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
+    /* ── MASTER PICK LIST ── */
+    .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .back-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--gold);
-      padding: 6px 12px;
-      font-size: 13px;
-      cursor: pointer;
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--gold); padding: 6px 12px; font-size: 13px; cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .back-btn:active { opacity: 0.7; }
     .master-pick-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 15px; font-weight: 700; color: var(--text);
+      flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
     /* ── MASTER CARD ── */
@@ -206,277 +226,125 @@
       align-items: stretch;
       overflow: hidden;
       margin-bottom: 10px;
-      min-height: 110px;
+      min-height: 80px;
     }
-    .master-card.clickable {
-      cursor: pointer;
-      transition: border-color 0.2s;
-      -webkit-tap-highlight-color: transparent;
-    }
+    .master-card.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
     .master-card.clickable:active { background: #1e1e1e; }
-    .master-photo {
-      width: 90px;
-      flex-shrink: 0;
-      overflow: hidden;
-    }
-    .master-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center top;
-      display: block;
-    }
+    .master-photo { width: 80px; flex-shrink: 0; overflow: hidden; }
+    .master-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
     .master-avatar {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      font-weight: 700;
-      color: #fff;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700; color: #fff;
     }
     .master-body {
-      flex: 1;
-      padding: 11px 12px;
-      display: flex;
-      flex-direction: column;
+      flex: 1; padding: 10px 12px;
+      display: flex; flex-direction: column; justify-content: space-between;
       min-width: 0;
     }
-    .master-level {
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 3px;
-    }
-    .master-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 3px;
-    }
-    .master-spec {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.35;
-      flex: 1;
-    }
-    .master-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 8px;
-      gap: 8px;
-    }
-    .master-meta {
-      font-size: 11px;
-      color: var(--dark-muted);
-      min-width: 0;
-    }
-    .master-price {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--gold);
-      white-space: nowrap;
-    }
+    .master-level { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .master-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .master-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+    .master-price { font-size: 12px; font-weight: 600; color: var(--gold); white-space: nowrap; }
     .btn-book {
-      background: var(--gold);
-      color: #000;
-      border: none;
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity 0.15s;
+      background: var(--gold); color: #000; border: none; border-radius: 8px;
+      padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
+      flex-shrink: 0; -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
     }
     .btn-book:active { opacity: 0.75; }
 
+    /* ── GALLERY ── */
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gallery-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      aspect-ratio: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; padding: 16px;
+    }
+    .gallery-icon { font-size: 36px; }
+    .gallery-label { font-size: 15px; font-weight: 700; color: var(--gold); text-align: center; }
+    .gallery-sub { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; }
+
+    /* ── REVIEWS ── */
+    .review-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .review-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .review-stars { font-size: 13px; color: var(--gold); letter-spacing: 1px; }
+    .review-text { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
     /* ── ABOUT ── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px 14px;
-      text-align: center;
-    }
-    .stat-value {
-      font-size: 22px;
-      font-weight: 800;
-      color: var(--gold);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 5px;
-      line-height: 1.3;
-    }
-    .about-block {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-    }
-    .about-block-title {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-    .contact-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 7px 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; text-align: center; }
+    .stat-value { font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.3; }
+    .about-block { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .about-block-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    .contact-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
     .contact-row:last-child { border-bottom: none; }
     .contact-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
     .contact-text { font-size: 13px; color: var(--text); line-height: 1.4; }
     .contact-text a { color: var(--gold); text-decoration: none; }
-    .why-text {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
+    .why-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
     /* ── BOTTOM NAV ── */
     .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      display: flex;
-      height: 64px;
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg); border-top: 1px solid var(--border);
+      display: flex; height: 64px;
       padding-bottom: env(safe-area-inset-bottom, 0);
     }
     .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 3px;
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 500;
-      -webkit-tap-highlight-color: transparent;
-      transition: color 0.2s;
-      user-select: none;
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      cursor: pointer; color: var(--muted); font-size: 9px; font-weight: 500;
+      -webkit-tap-highlight-color: transparent; transition: color 0.2s; user-select: none;
     }
-    .nav-btn .nav-icon { font-size: 20px; }
+    .nav-btn .nav-icon { font-size: 18px; }
     .nav-btn.active { color: var(--gold); }
 
-    /* ── MODAL OVERLAY ── */
+    /* ── MODAL ── */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: rgba(0,0,0,0.7);
-      align-items: flex-end;
-      justify-content: center;
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); align-items: flex-end; justify-content: center;
     }
     .modal-overlay.open { display: flex; }
     .modal-sheet {
-      background: #1a1a1a;
-      border-radius: 20px 20px 0 0;
-      width: 100%;
-      max-width: 480px;
-      padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0));
-      animation: slideUp 0.25s ease;
+      background: #1a1a1a; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+      padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0)); animation: slideUp 0.25s ease;
     }
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to   { transform: translateY(0); }
-    }
-    .modal-drag {
-      width: 40px;
-      height: 4px;
-      background: #444;
-      border-radius: 2px;
-      margin: 0 auto 18px;
-    }
-    .modal-title {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 4px;
-    }
-    .modal-subtitle {
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 18px;
-    }
-    .form-label {
-      display: block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-weight: 500;
-    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-drag { width: 40px; height: 4px; background: #444; border-radius: 2px; margin: 0 auto 18px; }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .modal-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+    .form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
     .form-input {
-      width: 100%;
-      background: #111;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-size: 15px;
-      font-family: inherit;
-      outline: none;
-      margin-bottom: 14px;
-      transition: border-color 0.2s;
+      width: 100%; background: #111; border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; color: var(--text); font-size: 15px; font-family: inherit;
+      outline: none; margin-bottom: 14px; transition: border-color 0.2s;
     }
     .form-input:focus { border-color: var(--gold); }
     .form-input::placeholder { color: #444; }
     .btn-submit {
-      width: 100%;
-      background: var(--gold);
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      padding: 14px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity 0.15s;
-      margin-top: 4px;
+      width: 100%; background: var(--gold); color: #000; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s; margin-top: 4px;
     }
     .btn-submit:disabled { opacity: 0.5; cursor: default; }
     .btn-submit:active:not(:disabled) { opacity: 0.8; }
-    .success-box {
-      text-align: center;
-      padding: 20px 0 10px;
-    }
+    .success-box { text-align: center; padding: 20px 0 10px; }
     .success-icon { font-size: 48px; margin-bottom: 12px; }
-    .success-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 6px;
-    }
-    .success-text {
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
+    .success-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .success-text { font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .success-phone { font-size: 15px; font-weight: 600; color: var(--gold); margin-top: 12px; }
   </style>
 </head>
 <body>
@@ -492,6 +360,7 @@
     <div class="top-tabs">
       <div class="top-tab active" data-tab="services">Услуги</div>
       <div class="top-tab" data-tab="masters">Мастера</div>
+      <div class="top-tab" data-tab="portfolio">Работы</div>
       <div class="top-tab" data-tab="about">О нас</div>
     </div>
   </div>
@@ -504,6 +373,44 @@
 
       <!-- Список услуг -->
       <div id="services-list">
+
+        <!-- АКЦИИ -->
+        <div class="section-title">🔥 Акции</div>
+
+        <div class="promo-card">
+          <div class="promo-badge">АКЦИЯ</div>
+          <div class="promo-icon">🔆</div>
+          <div class="promo-name">Фотоомоложение Lumecca</div>
+          <div class="promo-prices">
+            <span class="promo-new">15 900 ₽</span>
+            <span class="promo-old">30 000 ₽</span>
+          </div>
+          <button class="btn-promo" onclick="openBookingModal('Ольга Владимировна','Фотоомоложение Lumecca')">Записаться со скидкой</button>
+        </div>
+
+        <div class="promo-card">
+          <div class="promo-badge">АКЦИЯ</div>
+          <div class="promo-icon">✨</div>
+          <div class="promo-name">RF-лифтинг Morpheus8</div>
+          <div class="promo-prices">
+            <span class="promo-new">63 000 ₽</span>
+            <span class="promo-old">80 000 ₽</span>
+          </div>
+          <button class="btn-promo" onclick="openBookingModal('Ольга Владимировна','RF-лифтинг Morpheus8')">Записаться со скидкой</button>
+        </div>
+
+        <div class="promo-card">
+          <div class="promo-badge">АКЦИЯ</div>
+          <div class="promo-icon">💎</div>
+          <div class="promo-name">Endolift — безоперационная подтяжка</div>
+          <div class="promo-prices">
+            <span class="promo-new">110 000 ₽</span>
+            <span class="promo-old">125 000 ₽</span>
+          </div>
+          <button class="btn-promo" onclick="openBookingModal('Ольга Владимировна','Endolift — безоперационная подтяжка')">Записаться со скидкой</button>
+        </div>
+
+        <!-- УСЛУГИ -->
         <div class="section-title">Перманентный макияж</div>
         <div class="service-card" data-service="Брови">
           <div class="service-icon">✏️</div>
@@ -622,14 +529,12 @@
           <div class="master-avatar" style="display:none;background:#3a2e1a;">Н</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
-          <div class="master-name">Натали</div>
-          <div class="master-spec">Бархатные брови, акварельные губы</div>
+          <div>
+            <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
+            <div class="master-name">Натали</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">16 000+ процедур</div>
-              <div class="master-price">от 48 000 ₽</div>
-            </div>
+            <div class="master-price">от 48 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n62546.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -641,14 +546,12 @@
           <div class="master-avatar" style="display:none;background:#3a2e1a;">В</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
-          <div class="master-name">Видана</div>
-          <div class="master-spec">Пушистые брови, нюдовые губы, лёгкая рука</div>
+          <div>
+            <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
+            <div class="master-name">Видана</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">3 000+ работ</div>
-              <div class="master-price">от 36 000 ₽</div>
-            </div>
+            <div class="master-price">от 36 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n521920.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -661,14 +564,12 @@
           <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-          <div class="master-name">Кристина</div>
-          <div class="master-spec">Натуральный перманент, максимальная естественность</div>
+          <div>
+            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+            <div class="master-name">Кристина</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">7+ лет опыта</div>
-              <div class="master-price">от 30 000 ₽</div>
-            </div>
+            <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n618275.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -680,14 +581,12 @@
           <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-          <div class="master-name">Катрин</div>
-          <div class="master-spec">BB Glow, акварельные губы, награда Maestro PM 2022</div>
+          <div>
+            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+            <div class="master-name">Катрин</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">5 000+ работ</div>
-              <div class="master-price">от 30 000 ₽</div>
-            </div>
+            <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n501106.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -699,14 +598,12 @@
           <div class="master-avatar" style="display:none;background:#1a2e1a;">Л</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-          <div class="master-name">Лиана</div>
-          <div class="master-spec">Победитель Beauty Adrenalin — брови и губы</div>
+          <div>
+            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
+            <div class="master-name">Лиана</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">7 000+ процедур</div>
-              <div class="master-price">от 30 000 ₽</div>
-            </div>
+            <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n795398.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -719,14 +616,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">С</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Светлана</div>
-          <div class="master-spec">Судья международных чемпионатов, 15 лет практики</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Светлана</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">20 000+ процедур</div>
-              <div class="master-price">от 15 000 ₽</div>
-            </div>
+            <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1447051.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -738,14 +633,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">К</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Камила</div>
-          <div class="master-spec">Яркий выразительный результат</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Камила</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">1 000+ клиентов</div>
-              <div class="master-price">от 30 000 ₽</div>
-            </div>
+            <div class="master-price">от 30 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n963781.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -757,14 +650,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">К</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Крис</div>
-          <div class="master-spec">Натуральный перманент + тату line work</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Крис</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">3+ года опыта</div>
-              <div class="master-price">от 15 000 ₽</div>
-            </div>
+            <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1109020.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -776,14 +667,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Варвара</div>
-          <div class="master-spec">Лёгкие, естественные работы</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Варвара</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">Сотни клиентов</div>
-              <div class="master-price">от 15 000 ₽</div>
-            </div>
+            <div class="master-price">от 15 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n984861.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -795,14 +684,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Валерия</div>
-          <div class="master-spec">Эксперт натурального перманентного макияжа</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Валерия</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">4 000+ процедур</div>
-              <div class="master-price">от 12 000 ₽</div>
-            </div>
+            <div class="master-price">от 12 000 ₽</div>
             <button class="btn-book" onclick="openLink('https://n1449154.yclients.com')">Записаться</button>
           </div>
         </div>
@@ -814,14 +701,12 @@
           <div class="master-avatar" style="display:none;background:#1a1f2e;">П</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-          <div class="master-name">Пётр</div>
-          <div class="master-spec">Удаление лазером, единственный мастер-мужчина</div>
+          <div>
+            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
+            <div class="master-name">Пётр</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">10 000+ процедур</div>
-              <div class="master-price">Удаление лазером</div>
-            </div>
+            <div class="master-price">Удаление лазером</div>
             <button class="btn-book" onclick="openLink('https://n1449154.yclients.com/company/40048/personal/menu?o=m431466')">Записаться</button>
           </div>
         </div>
@@ -834,20 +719,53 @@
           <div class="master-avatar" style="display:none;background:#22183a;">О</div>
         </div>
         <div class="master-body">
-          <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
-          <div class="master-name">Ольга Владимировна</div>
-          <div class="master-spec">К.м.н., дерматовенеролог, лазеротерапевт</div>
+          <div>
+            <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
+            <div class="master-name">Ольга Владимировна</div>
+          </div>
           <div class="master-footer">
-            <div>
-              <div class="master-meta">Morpheus8, Lumecca, CO₂</div>
-              <div class="master-price">По записи</div>
-            </div>
+            <div class="master-price">По записи</div>
             <button class="btn-book" onclick="openLink('https://n1007529.yclients.com')">Записаться</button>
           </div>
         </div>
       </div>
 
     </div><!-- /tab-masters -->
+
+    <!-- ГАЛЕРЕЯ РАБОТ -->
+    <div class="tab-pane" id="tab-portfolio">
+      <div class="section-title">Наши работы</div>
+      <div class="gallery-grid">
+        <div class="gallery-card">
+          <div class="gallery-icon">✏️</div>
+          <div class="gallery-label">Брови</div>
+          <div class="gallery-sub">Пудровое напыление, акварель, теневая техника</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-icon">👄</div>
+          <div class="gallery-label">Губы</div>
+          <div class="gallery-sub">Акварельные, помадный эффект, 3D-объём</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-icon">👁️</div>
+          <div class="gallery-label">Веки</div>
+          <div class="gallery-sub">Межресничное пространство, стрелки</div>
+        </div>
+        <div class="gallery-card">
+          <div class="gallery-icon">💎</div>
+          <div class="gallery-label">Косметология</div>
+          <div class="gallery-sub">Лифтинг, омоложение, инъекции</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <div class="about-block" style="text-align:center;">
+          <div style="font-size:28px;margin-bottom:8px;">📸</div>
+          <div class="about-block-title" style="margin-bottom:6px;">Больше работ в Instagram</div>
+          <div class="why-text" style="margin-bottom:14px;">Следите за нашими последними работами и акциями в социальных сетях.</div>
+          <button class="btn-promo" onclick="openLink('https://t.me/fomenkoinnaa')" style="max-width:220px;margin:0 auto;">Наш Telegram-канал</button>
+        </div>
+      </div>
+    </div><!-- /tab-portfolio -->
 
     <!-- О НАС -->
     <div class="tab-pane" id="tab-about">
@@ -870,7 +788,42 @@
         </div>
       </div>
 
-      <div class="about-block">
+      <!-- ОТЗЫВЫ -->
+      <div class="section-title">Отзывы клиентов</div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Анна К.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Делала пудровые брови у Натали — результат превзошёл все ожидания! Форма идеальная, цвет натуральный. Уже три подруги записались по моей рекомендации.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Мария Л.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Проходила курс Lumecca у Ольги Владимировны. После первой процедуры пигментные пятна посветлели, кожа стала ровнее. Очень внимательный и профессиональный врач.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Екатерина В.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Делала акварельные губы у Видaны. Болезненно почти не было, восстановление прошло быстро. Результат — нежный и естественный, именно то, что хотела!</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Светлана Д.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">RF-лифтинг Morpheus8 — потрясающий эффект! Овал лица подтянулся, текстура кожи заметно улучшилась. Рекомендую всем, кому за 35 — это работает!</div>
+      </div>
+
+      <div class="about-block" style="margin-top:20px;">
         <div class="about-block-title">Контакты</div>
         <div class="contact-row">
           <span class="contact-icon">📍</span>
@@ -910,6 +863,10 @@
       <span class="nav-icon">👤</span>
       <span>Мастера</span>
     </div>
+    <div class="nav-btn" data-tab="portfolio">
+      <span class="nav-icon">🖼️</span>
+      <span>Работы</span>
+    </div>
     <div class="nav-btn" data-tab="about">
       <span class="nav-icon">ℹ️</span>
       <span>О нас</span>
@@ -938,6 +895,9 @@
           <div class="success-icon">✅</div>
           <div class="success-title">Спасибо!</div>
           <div class="success-text">Мы свяжемся с вами в ближайшее время для подтверждения записи.</div>
+          <div class="success-phone">
+            <a href="tel:+79299910001" style="color:var(--gold);text-decoration:none;">+7 (929) 991-00-01</a>
+          </div>
         </div>
       </div>
     </div>
@@ -962,9 +922,13 @@
 
     // ── Tab switching ──
     function switchTab(name) {
-      document.querySelectorAll('.tab-pane').forEach(function(p) {
-        p.classList.remove('active');
-      });
+      // Reset services view when leaving
+      if (name !== 'services') {
+        document.getElementById('masters-pick').style.display = 'none';
+        document.getElementById('services-list').style.display = 'block';
+        document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
+      }
+      document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
       var pane = document.getElementById('tab-' + name);
       if (pane) pane.classList.add('active');
       document.querySelectorAll('.top-tab').forEach(function(t) {
@@ -984,64 +948,52 @@
 
     // ── Service card delegation (click + touchend for iOS WebView) ──
     var servicesList = document.getElementById('services-list');
-    function handleServiceClick(e) {
-      var card = e.target.closest ? e.target.closest('.service-card')
-                                  : (function(el) {
-                                      while (el && el !== servicesList) {
-                                        if (el.classList && el.classList.contains('service-card')) return el;
-                                        el = el.parentNode;
-                                      }
-                                      return null;
-                                    })(e.target);
-      if (card) selectService(card);
-    }
-    servicesList.addEventListener('click', handleServiceClick);
-    servicesList.addEventListener('touchend', function(e) {
-      var card = e.target.closest ? e.target.closest('.service-card')
-                                  : (function(el) {
-                                      while (el && el !== servicesList) {
-                                        if (el.classList && el.classList.contains('service-card')) return el;
-                                        el = el.parentNode;
-                                      }
-                                      return null;
-                                    })(e.target);
-      if (card) {
-        e.preventDefault();
-        selectService(card);
+    function findCard(el) {
+      while (el && el !== servicesList) {
+        if (el.classList && el.classList.contains('service-card')) return el;
+        el = el.parentNode;
       }
+      return null;
+    }
+    servicesList.addEventListener('click', function(e) {
+      var card = e.target.closest ? e.target.closest('.service-card') : findCard(e.target);
+      if (card) selectService(card);
+    });
+    servicesList.addEventListener('touchend', function(e) {
+      var card = e.target.closest ? e.target.closest('.service-card') : findCard(e.target);
+      if (card) { e.preventDefault(); selectService(card); }
     });
 
     // ── Masters data ──
     var MASTERS = [
-      { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',       levelColor: '#c9a96e', spec: 'Бархатные брови, акварельные губы',              meta: '16 000+ процедур', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
-      { name: 'Видана',            photo: 'images/vidana.jpg',   level: 'VIP мастер',       levelColor: '#c9a96e', spec: 'Пушистые брови, нюдовые губы, лёгкая рука',      meta: '3 000+ работ',    price: 'от 36 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'В' },
-      { name: 'Кристина',          photo: 'images/kristina.jpg', level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'Натуральный перманент, максимальная естественность', meta: '7+ лет опыта',   price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
-      { name: 'Катрин',            photo: 'images/katrin.jpg',   level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'BB Glow, акварельные губы, награда Maestro PM 2022', meta: '5 000+ работ', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
-      { name: 'Лиана',             photo: 'images/liana.jpg',    level: 'Ведущий мастер',   levelColor: '#7abf7a', spec: 'Победитель Beauty Adrenalin — брови и губы',      meta: '7 000+ процедур', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'Л' },
-      { name: 'Светлана',          photo: 'images/svetlana.jpg', level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Судья международных чемпионатов, 15 лет практики', meta: '20 000+ процедур', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'С' },
-      { name: 'Камила',            photo: 'images/kamila.jpg',   level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Яркий выразительный результат',                  meta: '1 000+ клиентов', price: 'от 30 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
-      { name: 'Крис',              photo: 'images/kris.jpg',     level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Натуральный перманент + тату line work',          meta: '3+ года опыта',   price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
-      { name: 'Варвара',           photo: 'images/varvara.jpg',  level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Лёгкие, естественные работы',                    meta: 'Сотни клиентов',  price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
-      { name: 'Валерия',           photo: 'images/valeriya.jpg', level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Эксперт натурального перманентного макияжа',     meta: '4 000+ процедур', price: 'от 12 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
-      { name: 'Пётр',              photo: 'images/petr.jpg',     level: 'Топ-мастер',       levelColor: '#7a9fd4', spec: 'Удаление лазером, единственный мастер-мужчина',   meta: '10 000+ процедур', price: 'Удаление лазером', avatarBg: '#1a1f2e', avatarLetter: 'П' },
-      { name: 'Ольга Владимировна',photo: 'images/olga.jpg',     level: 'Врач-косметолог',  levelColor: '#b07ad4', spec: 'К.м.н., дерматовенеролог, лазеротерапевт',        meta: 'Morpheus8, Lumecca, CO₂', price: 'По записи', avatarBg: '#22183a', avatarLetter: 'О' },
-      { name: 'Милана',            photo: '',                    level: 'Косметолог',        levelColor: '#b07ad4', spec: 'Инъекционная косметология',                       meta: '',                price: 'По записи', avatarBg: '#22183a', avatarLetter: 'М' },
-      { name: 'Ксения',            photo: '',                    level: 'Косметолог',        levelColor: '#b07ad4', spec: 'Инъекционная косметология',                       meta: '',                price: 'По записи', avatarBg: '#22183a', avatarLetter: 'К' },
+      { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
+      { name: 'Видана',            photo: 'images/vidana.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 36 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'В' },
+      { name: 'Кристина',          photo: 'images/kristina.jpg', level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
+      { name: 'Катрин',            photo: 'images/katrin.jpg',   level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
+      { name: 'Лиана',             photo: 'images/liana.jpg',    level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'Л' },
+      { name: 'Светлана',          photo: 'images/svetlana.jpg', level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'С' },
+      { name: 'Камила',            photo: 'images/kamila.jpg',   level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 30 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
+      { name: 'Крис',              photo: 'images/kris.jpg',     level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
+      { name: 'Варвара',           photo: 'images/varvara.jpg',  level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
+      { name: 'Валерия',           photo: 'images/valeriya.jpg', level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 12 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
+      { name: 'Пётр',              photo: 'images/petr.jpg',     level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'Лазерное удаление', avatarBg: '#1a1f2e', avatarLetter: 'П' },
+      { name: 'Ольга Владимировна',photo: 'images/olga.jpg',     level: 'Врач-косметолог', levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'О' },
+      { name: 'Милана',            photo: '',                    level: 'Косметолог',       levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'М' },
+      { name: 'Ксения',            photo: '',                    level: 'Косметолог',       levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'К' },
     ];
 
-    // ── Service → master names mapping ──
     var SERVICE_MASTERS = {
-      'Брови':                                    ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Губы':                                     ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Веки и стрелки':                           ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Лазерное удаление PicoSure / PicoPlus':   ['Пётр'],
-      'Ремувер (безлазерное удаление)':           ['Пётр'],
-      'RF-лифтинг Morpheus8':                     ['Ольга Владимировна'],
-      'Фотоомоложение Lumecca':                   ['Ольга Владимировна'],
-      'SMAS-лифтинг Ultraformer':                 ['Ольга Владимировна'],
-      'Ботулинотерапия':                          ['Ольга Владимировна','Милана','Ксения'],
-      'Биоревитализация':                         ['Ольга Владимировна','Милана','Ксения'],
-      'Увеличение губ':                           ['Ольга Владимировна','Милана','Ксения'],
+      'Брови':                                  ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Губы':                                   ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Веки и стрелки':                         ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Лазерное удаление PicoSure / PicoPlus':  ['Пётр'],
+      'Ремувер (безлазерное удаление)':         ['Пётр'],
+      'RF-лифтинг Morpheus8':                   ['Ольга Владимировна'],
+      'Фотоомоложение Lumecca':                 ['Ольга Владимировна'],
+      'SMAS-лифтинг Ultraformer':               ['Ольга Владимировна'],
+      'Ботулинотерапия':                        ['Ольга Владимировна','Милана','Ксения'],
+      'Биоревитализация':                       ['Ольга Владимировна','Милана','Ксения'],
+      'Увеличение губ':                         ['Ольга Владимировна','Милана','Ксения'],
     };
 
     var currentService = '';
@@ -1049,21 +1001,14 @@
     function selectService(card) {
       var service = card.dataset.service;
       currentService = service;
-
       document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
       card.classList.add('selected');
-
       document.getElementById('pick-title').textContent = service;
-
       var names = SERVICE_MASTERS[service] || [];
       var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
-
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
-      masters.forEach(function(m) {
-        list.appendChild(buildPickCard(m));
-      });
-
+      masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
       document.getElementById('services-list').style.display = 'none';
       document.getElementById('masters-pick').style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1098,21 +1043,18 @@
       var body = document.createElement('div');
       body.className = 'master-body';
       body.innerHTML =
-        '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
-        '<div class="master-name">' + m.name + '</div>' +
-        '<div class="master-spec">' + m.spec + '</div>' +
+        '<div>' +
+          '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
+          '<div class="master-name">' + m.name + '</div>' +
+        '</div>' +
         '<div class="master-footer">' +
-          '<div>' +
-            (m.meta ? '<div class="master-meta">' + m.meta + '</div>' : '') +
-            '<div class="master-price">' + m.price + '</div>' +
-          '</div>' +
-          '<button class="btn-book" id="pick-btn-' + m.name.replace(/\s/g,'_') + '">Выбрать</button>' +
+          '<div class="master-price">' + m.price + '</div>' +
+          '<button class="btn-book">Выбрать</button>' +
         '</div>';
 
       card.appendChild(photoDiv);
       card.appendChild(body);
 
-      // bind button
       setTimeout(function() {
         var btn = body.querySelector('.btn-book');
         if (btn) {
@@ -1137,29 +1079,23 @@
     var bookingMaster = '';
     var bookingService = '';
 
-    // Try to get Telegram username automatically
     var tgUsername = '';
     try {
       var tgUser = window.Telegram && window.Telegram.WebApp &&
                    window.Telegram.WebApp.initDataUnsafe &&
                    window.Telegram.WebApp.initDataUnsafe.user;
-      if (tgUser && tgUser.username) {
-        tgUsername = '@' + tgUser.username;
-      }
+      if (tgUser && tgUser.username) tgUsername = '@' + tgUser.username;
     } catch(e) {}
 
     function openBookingModal(masterName, serviceName) {
       bookingMaster = masterName;
       bookingService = serviceName;
-
       document.getElementById('modal-master-name').textContent = masterName;
       document.getElementById('modal-service-name').textContent = serviceName;
       document.getElementById('input-name').value = '';
       document.getElementById('input-phone').value = '';
       document.getElementById('btn-submit').disabled = false;
       document.getElementById('btn-submit').textContent = 'Записаться';
-
-      // Telegram username: auto-fill if available, hide field; else show field
       var tgRow = document.getElementById('tg-username-row');
       var tgInput = document.getElementById('input-tg');
       if (tgUsername) {
@@ -1169,7 +1105,6 @@
         tgInput.value = '';
         tgRow.style.display = 'block';
       }
-
       document.getElementById('modal-form-content').style.display = 'block';
       document.getElementById('modal-success-content').style.display = 'none';
       document.getElementById('booking-modal').classList.add('open');
@@ -1179,7 +1114,6 @@
       document.getElementById('booking-modal').classList.remove('open');
     }
 
-    // Close on overlay click
     document.getElementById('booking-modal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
     });
@@ -1188,39 +1122,29 @@
       var name  = document.getElementById('input-name').value.trim();
       var phone = document.getElementById('input-phone').value.trim();
       var tg    = tgUsername || document.getElementById('input-tg').value.trim();
-
       if (!name || !phone) {
-        if (!name)  document.getElementById('input-name').focus();
-        else        document.getElementById('input-phone').focus();
+        if (!name) document.getElementById('input-name').focus();
+        else document.getElementById('input-phone').focus();
         return;
       }
-
       var btn = document.getElementById('btn-submit');
       btn.disabled = true;
       btn.textContent = 'Отправляем...';
-
       fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name:     name,
-          phone:    phone,
-          telegram: tg || '—',
-          service:  bookingService,
-          master:   bookingMaster
-        })
+        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: bookingService, master: bookingMaster })
       })
       .then(function(r) { return r.json(); })
       .then(function() {
         document.getElementById('modal-form-content').style.display = 'none';
         document.getElementById('modal-success-content').style.display = 'block';
-        setTimeout(closeModal, 3000);
+        setTimeout(closeModal, 4000);
       })
       .catch(function() {
-        // Show success anyway (network issues in TG)
         document.getElementById('modal-form-content').style.display = 'none';
         document.getElementById('modal-success-content').style.display = 'block';
-        setTimeout(closeModal, 3000);
+        setTimeout(closeModal, 4000);
       });
     }
   </script>
