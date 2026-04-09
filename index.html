@@ -609,7 +609,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 48 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n62546.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Натали')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -626,7 +626,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 36 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n521920.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Видана')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -644,7 +644,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n618275.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Кристина')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -661,7 +661,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n501106.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Катрин')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -678,7 +678,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n795398.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Лиана')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -696,7 +696,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n1447051.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Светлана')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -713,7 +713,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n963781.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Камила')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -730,7 +730,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n1109020.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Крис')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -747,7 +747,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n984861.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Варвара')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -764,7 +764,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 12 000 ₽</div>
-            <button class="btn-book" onclick="openLink('https://n1449154.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Валерия')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -781,7 +781,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">Удаление лазером</div>
-            <button class="btn-book" onclick="openLink('https://n1449154.yclients.com/company/40048/personal/menu?o=m431466')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Пётр')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -799,7 +799,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">По записи</div>
-            <button class="btn-book" onclick="openLink('https://n1007529.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Ольга Владимировна')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -817,7 +817,7 @@
           </div>
           <div class="master-footer">
             <div class="master-price">По записи</div>
-            <button class="btn-book" onclick="openLink('https://n2020266.yclients.com')">Записаться</button>
+            <button class="btn-book" onclick="openBookingModalForMaster('Милана Аслановна')">Выбрать</button>
           </div>
         </div>
       </div>
@@ -1062,6 +1062,22 @@
       <div id="modal-form-content">
         <div class="modal-title" id="modal-master-name"></div>
         <div class="modal-subtitle" id="modal-service-name"></div>
+        <div id="service-select-row" style="display:none;margin-bottom:12px;">
+          <label class="form-label">Услуга</label>
+          <select id="modal-service-select" class="form-input" style="background:#1a1a1a;color:#fff;border:1px solid #333;border-radius:10px;padding:11px 14px;font-size:14px;width:100%;appearance:none;-webkit-appearance:none;">
+            <option value="">— выберите услугу —</option>
+            <option>Брови</option>
+            <option>Губы</option>
+            <option>Веки и стрелки</option>
+            <option>Удаление лазером</option>
+            <option>RF-лифтинг Morpheus8</option>
+            <option>Фотоомоложение Lumecca</option>
+            <option>SMAS-лифтинг</option>
+            <option>Ботулинотерапия</option>
+            <option>Биоревитализация</option>
+            <option>Увеличение губ</option>
+          </select>
+        </div>
         <label class="form-label">Ваше имя</label>
         <input class="form-input" id="input-name" type="text" placeholder="Имя" autocomplete="name">
         <label class="form-label">Телефон</label>
@@ -1266,7 +1282,20 @@
       bookingMaster = masterName;
       bookingService = serviceName;
       document.getElementById('modal-master-name').textContent = masterName;
-      document.getElementById('modal-service-name').textContent = serviceName;
+      var serviceNameEl = document.getElementById('modal-service-name');
+      var serviceSelectRow = document.getElementById('service-select-row');
+      var serviceSelect = document.getElementById('modal-service-select');
+      if (serviceName) {
+        serviceNameEl.textContent = serviceName;
+        serviceNameEl.style.display = 'block';
+        serviceSelectRow.style.display = 'none';
+        serviceSelect.value = '';
+      } else {
+        serviceNameEl.textContent = '';
+        serviceNameEl.style.display = 'none';
+        serviceSelectRow.style.display = 'block';
+        serviceSelect.value = '';
+      }
       document.getElementById('input-name').value = '';
       document.getElementById('input-phone').value = '';
       document.getElementById('btn-submit').disabled = false;
@@ -1283,6 +1312,10 @@
       document.getElementById('modal-form-content').style.display = 'block';
       document.getElementById('modal-success-content').style.display = 'none';
       document.getElementById('booking-modal').classList.add('open');
+    }
+
+    function openBookingModalForMaster(masterName) {
+      openBookingModal(masterName, '');
     }
 
     function closeModal() {
@@ -1343,9 +1376,14 @@
       var name  = document.getElementById('input-name').value.trim();
       var phone = document.getElementById('input-phone').value.trim();
       var tg    = tgUsername || document.getElementById('input-tg').value.trim();
+      var service = bookingService || document.getElementById('modal-service-select').value;
       if (!name || !phone) {
         if (!name) document.getElementById('input-name').focus();
         else document.getElementById('input-phone').focus();
+        return;
+      }
+      if (!service) {
+        document.getElementById('modal-service-select').focus();
         return;
       }
       var btn = document.getElementById('btn-submit');
@@ -1354,7 +1392,7 @@
       fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: bookingService, master: bookingMaster })
+        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: service, master: bookingMaster })
       })
       .then(function(r) { return r.json(); })
       .then(function() {
