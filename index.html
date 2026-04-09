@@ -927,6 +927,10 @@
         <input class="form-input" id="input-name" type="text" placeholder="Имя" autocomplete="name">
         <label class="form-label">Телефон</label>
         <input class="form-input" id="input-phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel">
+        <div id="tg-username-row">
+          <label class="form-label">Telegram (необязательно)</label>
+          <input class="form-input" id="input-tg" type="text" placeholder="@username">
+        </div>
         <button class="btn-submit" id="btn-submit" onclick="submitBooking()">Записаться</button>
       </div>
       <div id="modal-success-content" style="display:none;">
@@ -940,7 +944,7 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'http://46.30.43.23:8080/webhook';
+    const WEBHOOK_URL = 'https://46-30-43-23.sslip.io:4443/webhook';
 
     // ── Telegram Web App ──
     if (window.Telegram && window.Telegram.WebApp) {
@@ -1133,6 +1137,17 @@
     var bookingMaster = '';
     var bookingService = '';
 
+    // Try to get Telegram username automatically
+    var tgUsername = '';
+    try {
+      var tgUser = window.Telegram && window.Telegram.WebApp &&
+                   window.Telegram.WebApp.initDataUnsafe &&
+                   window.Telegram.WebApp.initDataUnsafe.user;
+      if (tgUser && tgUser.username) {
+        tgUsername = '@' + tgUser.username;
+      }
+    } catch(e) {}
+
     function openBookingModal(masterName, serviceName) {
       bookingMaster = masterName;
       bookingService = serviceName;
@@ -1143,6 +1158,18 @@
       document.getElementById('input-phone').value = '';
       document.getElementById('btn-submit').disabled = false;
       document.getElementById('btn-submit').textContent = 'Записаться';
+
+      // Telegram username: auto-fill if available, hide field; else show field
+      var tgRow = document.getElementById('tg-username-row');
+      var tgInput = document.getElementById('input-tg');
+      if (tgUsername) {
+        tgInput.value = tgUsername;
+        tgRow.style.display = 'none';
+      } else {
+        tgInput.value = '';
+        tgRow.style.display = 'block';
+      }
+
       document.getElementById('modal-form-content').style.display = 'block';
       document.getElementById('modal-success-content').style.display = 'none';
       document.getElementById('booking-modal').classList.add('open');
@@ -1160,6 +1187,7 @@
     function submitBooking() {
       var name  = document.getElementById('input-name').value.trim();
       var phone = document.getElementById('input-phone').value.trim();
+      var tg    = tgUsername || document.getElementById('input-tg').value.trim();
 
       if (!name || !phone) {
         if (!name)  document.getElementById('input-name').focus();
@@ -1175,10 +1203,11 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name:    name,
-          phone:   phone,
-          service: bookingService,
-          master:  bookingMaster
+          name:     name,
+          phone:    phone,
+          telegram: tg || '—',
+          service:  bookingService,
+          master:   bookingMaster
         })
       })
       .then(function(r) { return r.json(); })
