@@ -475,7 +475,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Брови')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Брови')">Смотреть работы</button>
+          <button class="btn-works" onclick="openWorksModal('Брови', 'Камила')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Губы">
           <div class="service-card-top">
@@ -489,7 +489,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Губы')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Губы')">Смотреть работы</button>
+          <button class="btn-works" onclick="openWorksModal('Губы', 'Натали')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
           <div class="service-card-top">
@@ -503,7 +503,7 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Веки и стрелки')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Веки')">Смотреть работы</button>
+          <button class="btn-works" onclick="openWorksModal('Веки', 'Кристина')">Смотреть работы</button>
         </div>
 
         <div class="section-title">Удаление татуажа</div>
@@ -846,6 +846,25 @@
           <div class="master-footer">
             <div class="master-price">По записи</div>
             <button class="btn-book" onclick="openLink('https://n1007529.yclients.com')">Записаться</button>
+            <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="master-card">
+        <div class="master-photo">
+          <img src="images/milana.jpg" alt="Милана Аслановна" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="master-avatar" style="display:none;background:#10001a;color:#b07ad4;">М</div>
+        </div>
+        <div class="master-body">
+          <div>
+            <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
+            <div class="master-name">Милана Аслановна</div>
+            <div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">Инъекции · нити · RF-лифтинг</div>
+          </div>
+          <div class="master-footer">
+            <div class="master-price">По записи</div>
+            <button class="btn-book" onclick="openLink('https://n2020266.yclients.com')">Записаться</button>
             <button class="btn-book" style="background:transparent;color:var(--gold);border:1px solid rgba(201,169,110,0.5);font-size:11px;" onclick="openLink('https://www.instagram.com/expert_pmu/')">Работы</button>
           </div>
         </div>
@@ -1305,15 +1324,24 @@
 
     // ── Works modal ──
     var WORKS_PHOTOS = {
-      'Брови':  ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg','images/works/brows_4.jpg','images/works/brows_5.jpg'],
-      'Губы':   ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg','images/works/lips_4.jpg','images/works/lips_5.jpg'],
-      'Веки':   ['images/works/eyelid_1.jpg','images/works/eyelid_2.jpg','images/works/eyelid_3.jpg','images/works/eyelid_4.jpg','images/works/eyelid_5.jpg'],
+      'Брови':  {photos: ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg','images/works/brows_4.jpg','images/works/brows_5.jpg'], master: 'Камила'},
+      'Губы':   {photos: ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg','images/works/lips_4.jpg','images/works/lips_5.jpg'],  master: 'Натали'},
+      'Веки':   {photos: ['images/works/eyelid_1.jpg','images/works/eyelid_2.jpg','images/works/eyelid_3.jpg','images/works/eyelid_4.jpg','images/works/eyelid_5.jpg'], master: 'Кристина'},
     };
-    function openWorksModal(category) {
-      var photos = WORKS_PHOTOS[category] || [];
-      document.getElementById('works-modal-title').textContent = category;
+    function openWorksModal(category, masterName) {
+      var entry = WORKS_PHOTOS[category] || {};
+      var photos = entry.photos || [];
+      var master = masterName || entry.master || '';
+      var title = masterName ? 'Работы — ' + masterName : category;
+      document.getElementById('works-modal-title').textContent = title;
       var grid = document.getElementById('works-grid');
-      grid.innerHTML = photos.map(function(p) { return '<img src="' + p + '" alt="' + category + '">'; }).join('');
+      grid.innerHTML = photos.map(function(p) {
+        var caption = master ? 'Работа мастера ' + master : '';
+        return '<div style="display:flex;flex-direction:column;">'
+          + '<img src="' + p + '" alt="' + category + '">'
+          + (caption ? '<div style="font-size:11px;color:#c9a96e;text-align:center;margin-top:4px;">' + caption + '</div>' : '')
+          + '</div>';
+      }).join('');
       document.getElementById('works-modal').classList.add('open');
     }
     function closeWorksModal() {
