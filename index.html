@@ -174,8 +174,8 @@
       border-radius: 14px;
       padding: 12px 14px;
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      gap: 10px;
       margin-bottom: 8px;
       cursor: pointer;
       touch-action: manipulation;
@@ -188,6 +188,15 @@
     .service-card.selected {
       border-color: var(--gold);
       background: rgba(201,169,110,0.07);
+    }
+    .service-card-top { display: flex; align-items: center; gap: 12px; }
+    .service-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
     .service-icon {
       width: 44px; height: 44px;
@@ -202,7 +211,21 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .service-desc { font-size: 12px; color: var(--dark-muted); margin-top: 2px; line-height: 1.4; }
-    .service-price { font-size: 13px; font-weight: 600; color: var(--gold); white-space: nowrap; flex-shrink: 0; text-align: right; }
+    .service-price { font-size: 13px; font-weight: 600; color: var(--gold); white-space: nowrap; }
+    .btn-service {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-service:active { opacity: 0.75; }
 
     /* ── MASTER PICK LIST ── */
     .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
@@ -413,98 +436,153 @@
         <!-- УСЛУГИ -->
         <div class="section-title">Перманентный макияж</div>
         <div class="service-card" data-service="Брови">
-          <div class="service-icon">✏️</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">✏️</div>
+            <div class="service-info">
             <div class="service-name">Брови</div>
             <div class="service-desc">Пудровое напыление, теневая растушёвка, перекрытие татуажа</div>
           </div>
-          <div class="service-price">от 12 000 ₽</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">от 12 000 ₽</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Губы">
-          <div class="service-icon">👄</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">👄</div>
+            <div class="service-info">
             <div class="service-name">Губы</div>
             <div class="service-desc">Акварельные, помадный эффект, 3D, контур + растушёвка</div>
           </div>
-          <div class="service-price">от 12 000 ₽</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">от 12 000 ₽</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
-          <div class="service-icon">👁️</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">👁️</div>
+            <div class="service-info">
             <div class="service-name">Веки и стрелки</div>
             <div class="service-desc">Межресничное пространство, стрелки с растушёвкой</div>
           </div>
-          <div class="service-price">от 12 000 ₽</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">от 12 000 ₽</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
 
         <div class="section-title">Удаление татуажа</div>
         <div class="service-card" data-service="Лазерное удаление PicoSure / PicoPlus">
-          <div class="service-icon">⚡</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">⚡</div>
+            <div class="service-info">
             <div class="service-name">Лазер PicoSure / PicoPlus</div>
             <div class="service-desc">Татуаж, тату, пигментные пятна, постакне</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Ремувер (безлазерное удаление)">
-          <div class="service-icon">🧴</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">🧴</div>
+            <div class="service-info">
             <div class="service-name">Ремувер</div>
             <div class="service-desc">Мягкое безлазерное удаление</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
 
         <div class="section-title">Аппаратная косметология</div>
         <div class="service-card" data-service="RF-лифтинг Morpheus8">
-          <div class="service-icon">✨</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">✨</div>
+            <div class="service-info">
             <div class="service-name">RF-лифтинг Morpheus8</div>
             <div class="service-desc">Микроигольчатый лифтинг лица и тела</div>
           </div>
-          <div class="service-price">63 000 ₽</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">63 000 ₽</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Фотоомоложение Lumecca">
-          <div class="service-icon">🔆</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">🔆</div>
+            <div class="service-info">
             <div class="service-name">Фотоомоложение Lumecca</div>
             <div class="service-desc">Пигментация, сосуды, выравнивание тона</div>
           </div>
-          <div class="service-price">15 900 ₽</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">15 900 ₽</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="SMAS-лифтинг Ultraformer">
-          <div class="service-icon">💎</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">💎</div>
+            <div class="service-info">
             <div class="service-name">SMAS-лифтинг Ultraformer</div>
             <div class="service-desc">Безоперационная подтяжка лица и тела</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
 
         <div class="section-title">Инъекционная косметология</div>
         <div class="service-card" data-service="Ботулинотерапия">
-          <div class="service-icon">💉</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">💉</div>
+            <div class="service-info">
             <div class="service-name">Ботулинотерапия</div>
             <div class="service-desc">Диспорт, Миотокс, Full Face, Нефертити, гипергидроз</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Биоревитализация">
-          <div class="service-icon">🌸</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">🌸</div>
+            <div class="service-info">
             <div class="service-name">Биоревитализация</div>
             <div class="service-desc">Profhilo, Jalupro, NCTF HA</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
         <div class="service-card" data-service="Увеличение губ">
-          <div class="service-icon">💋</div>
-          <div class="service-info">
+          <div class="service-card-top">
+            <div class="service-icon">💋</div>
+            <div class="service-info">
             <div class="service-name">Увеличение губ</div>
             <div class="service-desc">Stylage, Belotero, Juvederm</div>
           </div>
-          <div class="service-price">уточняйте</div>
+          </div>
+          <div class="service-card-footer">
+            <div class="service-price">уточняйте</div>
+            <button class="btn-service">Записаться</button>
+          </div>
         </div>
       </div>
 
