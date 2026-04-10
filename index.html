@@ -1432,6 +1432,22 @@
 
     var MASTER_PHOTOS = {
       'Катрин': {
+        'Брови': [
+          'images/works/katrin/IMG_0012.JPG',
+          'images/works/katrin/IMG_0296.JPEG',
+          'images/works/katrin/IMG_0671.JPG',
+          'images/works/katrin/IMG_3809.JPEG',
+          'images/works/katrin/IMG_4159.jpg',
+          'images/works/katrin/brovi_7.jpg',
+        ],
+        'Губы': [
+          'images/works/katrin/IMG_1362.JPG',
+          'images/works/katrin/IMG_5503.JPEG',
+          'images/works/katrin/IMG_7766.JPEG',
+        ],
+        'Веки': [
+          'images/works/katrin/IMG_7840.JPEG',
+        ],
         'all': [
           'images/works/katrin/IMG_0012.JPG',
           'images/works/katrin/IMG_0296.JPEG',
@@ -1446,6 +1462,22 @@
         ],
       },
       'Видана': {
+        'Брови': [
+          'images/works/vidana/IMG_6714.JPEG',
+          'images/works/vidana/whatsapp_1.jpg',
+          'images/works/vidana/whatsapp_3.jpg',
+        ],
+        'Губы': [
+          'images/works/vidana/IMG_1251.JPEG',
+          'images/works/vidana/IMG_5291.JPEG',
+          'images/works/vidana/IMG_6321.JPEG',
+          'images/works/vidana/IMG_6713.JPEG',
+        ],
+        'Веки': [
+          'images/works/vidana/IMG_4161.jpg',
+          'images/works/vidana/IMG_5852.JPEG',
+          'images/works/vidana/whatsapp_2.jpg',
+        ],
         'all': [
           'images/works/vidana/IMG_1251.JPEG',
           'images/works/vidana/IMG_4161.jpg',
@@ -1487,7 +1519,12 @@
     function openMasterWorks(masterName) {
       var masterData = MASTER_PHOTOS[masterName];
       if (!masterData) return;
-      var photos = masterData['all'] || [];
+      var service = currentService || '';
+      var photos;
+      if (service.indexOf('Бров') !== -1) photos = masterData['Брови'] || masterData['all'];
+      else if (service.indexOf('Губ') !== -1) photos = masterData['Губы'] || masterData['all'];
+      else if (service.indexOf('Век') !== -1) photos = masterData['Веки'] || masterData['all'];
+      else photos = masterData['all'];
       if (!photos || !photos.length) return;
       document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
       var grid = document.getElementById('works-grid');
