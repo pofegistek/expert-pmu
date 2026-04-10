@@ -1162,6 +1162,10 @@
         document.getElementById('masters-pick').style.display = 'none';
         document.getElementById('services-list').style.display = 'block';
       }
+      // Сбрасываем текущую услугу при прямом переходе на вкладку Мастера
+      if (name === 'masters') {
+        currentService = '';
+      }
       document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
       var pane = document.getElementById('tab-' + name);
       if (pane) pane.classList.add('active');
