@@ -622,7 +622,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 48 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Натали')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Натали')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Натали')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -639,7 +642,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 36 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Видана')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Видана')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Видана')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -657,7 +663,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Кристина')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Кристина')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Кристина')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -674,7 +683,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Катрин')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Катрин')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Катрин')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -691,7 +703,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Лиана')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Лиана')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Лиана')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -709,7 +724,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Светлана')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Светлана')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Светлана')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -726,7 +744,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Камила')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Камила')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Камила')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -743,7 +764,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Крис')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Крис')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Крис')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -760,7 +784,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Варвара')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Варвара')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Варвара')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -777,7 +804,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 12 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Валерия')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Валерия')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Валерия')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1406,6 +1436,29 @@
     document.getElementById('works-modal').addEventListener('click', function(e) {
       if (e.target === this) closeWorksModal();
     });
+
+    var MASTER_PHOTOS = {
+      'Натали':   ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Видана':   ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Кристина': ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Катрин':   ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg'],
+      'Лиана':    ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg'],
+      'Светлана': ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Камила':   ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Крис':     ['images/works/eyelid_1.jpg'],
+      'Варвара':  ['images/works/brows_1.jpg','images/works/brows_2.jpg','images/works/brows_3.jpg'],
+      'Валерия':  ['images/works/lips_1.jpg','images/works/lips_2.jpg','images/works/lips_3.jpg'],
+    };
+    function openMasterWorks(masterName) {
+      var photos = MASTER_PHOTOS[masterName] || [];
+      if (!photos.length) return;
+      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
+      var grid = document.getElementById('works-grid');
+      grid.innerHTML = photos.map(function(src) {
+        return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+      }).join('');
+      document.getElementById('works-modal').classList.add('open');
+    }
 
     document.getElementById('booking-modal').addEventListener('click', function(e) {
       if (e.target === this) closeModal();
