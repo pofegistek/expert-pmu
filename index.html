@@ -1487,12 +1487,7 @@
     function openMasterWorks(masterName) {
       var masterData = MASTER_PHOTOS[masterName];
       if (!masterData) return;
-      var service = currentService || '';
-      var photos;
-      if (service.indexOf('Бров') !== -1) photos = masterData['Брови'] || masterData['all'];
-      else if (service.indexOf('Губ') !== -1) photos = masterData['Губы'] || masterData['all'];
-      else if (service.indexOf('Век') !== -1) photos = masterData['Веки'] || masterData['all'];
-      else photos = masterData['all'];
+      var photos = masterData['all'] || [];
       if (!photos || !photos.length) return;
       document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
       var grid = document.getElementById('works-grid');
