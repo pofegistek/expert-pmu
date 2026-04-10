@@ -1271,6 +1271,9 @@
 
       var body = document.createElement('div');
       body.className = 'master-body';
+      var worksBtn = MASTER_PHOTOS[m.name]
+        ? '<button class="btn-works js-works-btn">Примеры работ</button>'
+        : '';
       body.innerHTML =
         '<div>' +
           '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
@@ -1278,7 +1281,10 @@
         '</div>' +
         '<div class="master-footer">' +
           '<div class="master-price">' + m.price + '</div>' +
-          '<button class="btn-book">Выбрать</button>' +
+          '<div style="display:flex;gap:6px;">' +
+            worksBtn +
+            '<button class="btn-book">Выбрать</button>' +
+          '</div>' +
         '</div>';
 
       card.appendChild(photoDiv);
@@ -1290,6 +1296,13 @@
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
             openBookingModal(m.name, currentService);
+          });
+        }
+        var wBtn = body.querySelector('.js-works-btn');
+        if (wBtn) {
+          wBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            openMasterWorks(m.name);
           });
         }
       }, 0);
