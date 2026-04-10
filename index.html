@@ -439,7 +439,6 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Брови')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Брови', 'Камила')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Губы">
           <div class="service-card-top">
@@ -453,7 +452,6 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Губы')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Губы', 'Натали')">Смотреть работы</button>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
           <div class="service-card-top">
@@ -467,7 +465,6 @@
             <div class="service-price">от 12 000 ₽</div>
             <button class="btn-service" onclick="bookService('Веки и стрелки')">Записаться</button>
           </div>
-          <button class="btn-works" onclick="openWorksModal('Веки', 'Кристина')">Смотреть работы</button>
         </div>
 
         <div class="section-title">УДАЛЕНИЕ ТАТУ + ТАТУАЖА</div>
@@ -1411,19 +1408,41 @@
     });
 
     var MASTER_PHOTOS = {
-      'Натали': [
-        'images/works/натали/IMG_1201.JPEG',
-        'images/works/натали/IMG_4267.JPEG',
-        'images/works/натали/IMG_4270.JPEG',
-        'images/works/натали/IMG_4593.JPEG',
-        'images/works/натали/IMG_5035.JPG',
-        'images/works/натали/WhatsApp Image 2022-08-27 at 17.16.15.jpeg',
-        'images/works/натали/Веки 2.jpg',
-      ],
+      'Натали': {
+        'Брови': [
+          'images/works/натали/IMG_1201.JPEG',
+          'images/works/натали/WhatsApp Image 2022-08-27 at 17.16.15.jpeg',
+          'images/works/натали/Веки 2.jpg',
+        ],
+        'Губы': [
+          'images/works/натали/IMG_4267.JPEG',
+          'images/works/натали/IMG_4593.JPEG',
+          'images/works/натали/IMG_5035.JPG',
+        ],
+        'Веки': [
+          'images/works/натали/IMG_4270.JPEG',
+        ],
+        'all': [
+          'images/works/натали/IMG_1201.JPEG',
+          'images/works/натали/IMG_4267.JPEG',
+          'images/works/натали/IMG_4270.JPEG',
+          'images/works/натали/IMG_4593.JPEG',
+          'images/works/натали/IMG_5035.JPG',
+          'images/works/натали/WhatsApp Image 2022-08-27 at 17.16.15.jpeg',
+          'images/works/натали/Веки 2.jpg',
+        ],
+      },
     };
     function openMasterWorks(masterName) {
-      var photos = MASTER_PHOTOS[masterName] || [];
-      if (!photos.length) return;
+      var masterData = MASTER_PHOTOS[masterName];
+      if (!masterData) return;
+      var service = currentService || '';
+      var photos;
+      if (service.indexOf('Бров') !== -1) photos = masterData['Брови'];
+      else if (service.indexOf('Губ') !== -1) photos = masterData['Губы'];
+      else if (service.indexOf('Век') !== -1) photos = masterData['Веки'];
+      else photos = masterData['all'];
+      if (!photos || !photos.length) return;
       document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
       var grid = document.getElementById('works-grid');
       grid.innerHTML = photos.map(function(src) {
