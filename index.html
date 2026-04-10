@@ -639,7 +639,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 36 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Видана')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Видана')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Видана')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1425,6 +1428,20 @@
     });
 
     var MASTER_PHOTOS = {
+      'Видана': {
+        'all': [
+          'images/works/vidana/IMG_1251.JPEG',
+          'images/works/vidana/IMG_4161.jpg',
+          'images/works/vidana/IMG_5291.JPEG',
+          'images/works/vidana/IMG_5852.JPEG',
+          'images/works/vidana/IMG_6321.JPEG',
+          'images/works/vidana/IMG_6713.JPEG',
+          'images/works/vidana/IMG_6714.JPEG',
+          'images/works/vidana/whatsapp_1.jpg',
+          'images/works/vidana/whatsapp_2.jpg',
+          'images/works/vidana/whatsapp_3.jpg',
+        ],
+      },
       'Натали': {
         'Брови': [
           'images/works/natali/IMG_1201.JPEG',
