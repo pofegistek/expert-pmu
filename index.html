@@ -663,23 +663,6 @@
       <div class="section-title">Ведущие мастера</div>
       <div class="master-card">
         <div class="master-photo">
-          <img src="images/kristina.jpg" alt="Кристина" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-            <div class="master-name">Кристина</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Кристина')">Выбрать</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
           <img src="images/katrin.jpg" alt="Катрин" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
           <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
         </div>
@@ -710,7 +693,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 30 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Лиана')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Лиана')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Лиана')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1207,7 +1193,6 @@
     var MASTERS = [
       { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
       { name: 'Видана',            photo: 'images/vidana.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 36 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'В' },
-      { name: 'Кристина',          photo: 'images/kristina.jpg', level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
       { name: 'Катрин',            photo: 'images/katrin.jpg',   level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
       { name: 'Лиана',             photo: 'images/liana.jpg',    level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'Л' },
       { name: 'Светлана',          photo: 'images/svetlana.jpg', level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'С' },
@@ -1222,9 +1207,9 @@
     ];
 
     var SERVICE_MASTERS = {
-      'Брови':                                  ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Губы':                                   ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Веки и стрелки':                         ['Натали','Видана','Кристина','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Брови':                                  ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Губы':                                   ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
+      'Веки и стрелки':                         ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
       'Удаление на неодиме':                     ['Пётр'],
       'Лазерное удаление (неодим)':              ['Пётр'],
       'Пикосекундный аппарат PicoSure / PicoPlus': ['Пётр'],
@@ -1445,6 +1430,32 @@
     });
 
     var MASTER_PHOTOS = {
+      'Лиана': {
+        'Брови': [
+          'images/works/liana/IMG_4148.jpg',
+          'images/works/liana/IMG_4395.JPEG',
+          'images/works/liana/IMG_4978.JPEG',
+          'images/works/liana/IMG_5055.JPEG',
+          'images/works/liana/IMG_5532.JPEG',
+          'images/works/liana/IMG_6882.JPG',
+        ],
+        'Губы': [
+          'images/works/liana/IMG_2717.JPEG',
+          'images/works/liana/IMG_5054.JPEG',
+          'images/works/liana/IMG_6067.JPEG',
+        ],
+        'all': [
+          'images/works/liana/IMG_2717.JPEG',
+          'images/works/liana/IMG_4148.jpg',
+          'images/works/liana/IMG_4395.JPEG',
+          'images/works/liana/IMG_4978.JPEG',
+          'images/works/liana/IMG_5054.JPEG',
+          'images/works/liana/IMG_5055.JPEG',
+          'images/works/liana/IMG_5532.JPEG',
+          'images/works/liana/IMG_6067.JPEG',
+          'images/works/liana/IMG_6882.JPG',
+        ],
+      },
       'Катрин': {
         'Брови': [
           'images/works/katrin/IMG_0012.JPG',
