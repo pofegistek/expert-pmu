@@ -748,7 +748,10 @@
           </div>
           <div class="master-footer">
             <div class="master-price">от 15 000 ₽</div>
-            <button class="btn-book" onclick="openBookingModalForMaster('Крис')">Выбрать</button>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-works" onclick="openMasterWorks('Крис')">Примеры работ</button>
+              <button class="btn-book" onclick="openBookingModalForMaster('Крис')">Выбрать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1433,6 +1436,36 @@
     });
 
     var MASTER_PHOTOS = {
+      'Крис': {
+        'Брови': [
+          'images/works/kris/IMG_0784.PNG',
+          'images/works/kris/IMG_0785.PNG',
+          'images/works/kris/IMG_0787.PNG',
+          'images/works/kris/IMG_0791.PNG',
+          'images/works/kris/photo_2.jpg',
+        ],
+        'Губы': [
+          'images/works/kris/IMG_0788.PNG',
+          'images/works/kris/IMG_0790.PNG',
+          'images/works/kris/photo_1.jpg',
+        ],
+        'Веки': [
+          'images/works/kris/IMG_6103.JPEG',
+          'images/works/kris/whatsapp_1.jpg',
+        ],
+        'all': [
+          'images/works/kris/IMG_0784.PNG',
+          'images/works/kris/IMG_0785.PNG',
+          'images/works/kris/IMG_0787.PNG',
+          'images/works/kris/IMG_0788.PNG',
+          'images/works/kris/IMG_0790.PNG',
+          'images/works/kris/IMG_0791.PNG',
+          'images/works/kris/IMG_6103.JPEG',
+          'images/works/kris/photo_1.jpg',
+          'images/works/kris/photo_2.jpg',
+          'images/works/kris/whatsapp_1.jpg',
+        ],
+      },
       'Варвара': {
         'Брови': [
           'images/works/varya/img_1.jpg',
