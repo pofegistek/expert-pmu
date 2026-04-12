@@ -852,6 +852,8 @@
         </div>
       </div>
 
+      <div id="dynamic-masters-container"></div>
+
     </div><!-- /tab-masters -->
 
     <!-- О НАС -->
@@ -1790,6 +1792,53 @@
     }, 1000);
 
     var hiddenMasters = [];
+
+    // ── Dynamic masters from VPS ──────────────────────────────────────────────
+    fetch('https://46.30.43.23.sslip.io:9443/masters')
+      .then(function(r) { return r.json(); })
+      .then(function(dynMasters) {
+        if (!Array.isArray(dynMasters) || dynMasters.length === 0) return;
+        var container = document.getElementById('dynamic-masters-container');
+        dynMasters.forEach(function(m) {
+          // Добавляем в массив MASTERS для букинга
+          if (!MASTERS.find(function(x) { return x.name === m.name; })) {
+            MASTERS.push(m);
+          }
+          // Добавляем в SERVICE_MASTERS
+          (m.services || []).forEach(function(svc) {
+            if (!SERVICE_MASTERS[svc]) SERVICE_MASTERS[svc] = [];
+            if (SERVICE_MASTERS[svc].indexOf(m.name) === -1) {
+              SERVICE_MASTERS[svc].push(m.name);
+            }
+          });
+          // Рендерим статическую карточку на вкладке Мастера
+          var works = MASTER_PHOTOS[m.name]
+            ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
+            : '';
+          var card = document.createElement('div');
+          card.className = 'master-card';
+          card.innerHTML =
+            '<div class="master-photo">' +
+              '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+              '<div class="master-avatar" style="display:none;background:' + m.avatarBg + ';">' + m.avatarLetter + '</div>' +
+            '</div>' +
+            '<div class="master-body">' +
+              '<div>' +
+                '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
+                '<div class="master-name">' + m.name + '</div>' +
+              '</div>' +
+              '<div class="master-footer">' +
+                '<div class="master-price">' + m.price + '</div>' +
+                '<div style="display:flex;gap:6px;">' +
+                  works +
+                  '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>';
+          if (container) container.appendChild(card);
+        });
+      })
+      .catch(function() {});
   </script>
 </body>
 </html>
