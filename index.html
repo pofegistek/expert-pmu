@@ -1173,7 +1173,16 @@
     }
 
     // ── Tab switching ──
+    function haptic(type, value) {
+      var hf = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback;
+      if (!hf) return;
+      if (type === 'impact') hf.impactOccurred(value || 'light');
+      else if (type === 'notification') hf.notificationOccurred(value || 'success');
+      else if (type === 'selection') hf.selectionChanged();
+    }
+
     function switchTab(name) {
+      haptic('selection');
       // Reset services view when leaving
       if (name !== 'services') {
         document.getElementById('masters-pick').style.display = 'none';
@@ -1316,6 +1325,7 @@
         if (btn) {
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
+            haptic('impact', 'light');
             openBookingModal(m.name, currentService);
           });
         }
@@ -1351,6 +1361,7 @@
     } catch(e) {}
 
     function openBookingModal(masterName, serviceName) {
+      haptic('impact', 'medium');
       bookingMaster = masterName;
       bookingService = serviceName;
       document.getElementById('modal-master-name').textContent = masterName;
@@ -1672,6 +1683,7 @@
       },
     };
     function openMasterWorks(masterName) {
+      haptic('impact', 'light');
       var masterData = MASTER_PHOTOS[masterName];
       if (!masterData) return;
       var service = currentService || '';
@@ -1717,11 +1729,13 @@
       })
       .then(function(r) { return r.json(); })
       .then(function() {
+        haptic('notification', 'success');
         document.getElementById('modal-form-content').style.display = 'none';
         document.getElementById('modal-success-content').style.display = 'block';
         setTimeout(closeModal, 4000);
       })
       .catch(function() {
+        haptic('notification', 'success');
         document.getElementById('modal-form-content').style.display = 'none';
         document.getElementById('modal-success-content').style.display = 'block';
         setTimeout(closeModal, 4000);
