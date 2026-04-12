@@ -1728,6 +1728,31 @@
       });
     }
 
+    // ── Prices ───────────────────────────────────────────────────────────────
+    var PRICE_SERVICE_MAP = {
+      'брови':            'Брови',
+      'губы':             'Губы',
+      'веки':             'Веки и стрелки',
+      'RF-лифтинг':       'RF-лифтинг Morpheus8',
+      'Lumecca':          'Фотоомоложение Lumecca',
+      'Удаление лазером': 'Пикосекундный аппарат PicoSure / PicoPlus',
+      'Ботулинотерапия':  'Ботулинотерапия',
+      'Биоревитализация': 'Биоревитализация',
+    };
+    fetch('http://46.30.43.23:8080/prices')
+      .then(function(r) { return r.json(); })
+      .then(function(prices) {
+        Object.keys(prices).forEach(function(key) {
+          var svcName = PRICE_SERVICE_MAP[key];
+          if (!svcName) return;
+          var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
+          if (!card) return;
+          var el = card.querySelector('.service-price');
+          if (el) el.textContent = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
+        });
+      })
+      .catch(function() {});
+
     // ── Hidden masters ────────────────────────────────────────────────────────
     fetch('http://46.30.43.23:8080/hidden-masters')
       .then(function(r) { return r.json(); })
