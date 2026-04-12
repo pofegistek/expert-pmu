@@ -1753,26 +1753,30 @@
       'Ботулинотерапия':  'Ботулинотерапия',
       'Биоревитализация': 'Биоревитализация',
     };
-    fetch('https://46.30.43.23.sslip.io:9443/prices')
-      .then(function(r) { return r.json(); })
-      .then(function(prices) {
-        console.log('[prices] received:', prices);
-        Object.keys(prices).forEach(function(key) {
-          var svcName = PRICE_SERVICE_MAP[key];
-          console.log('[prices] key="' + key + '" → svcName="' + svcName + '"');
-          if (!svcName) { console.warn('[prices] no mapping for key:', key); return; }
-          var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
-          console.log('[prices] card found:', !!card, 'for data-service="' + svcName + '"');
-          if (!card) return;
-          var el = card.querySelector('.service-price');
-          if (el) {
-            var newText = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
-            console.log('[prices] updating', svcName, '→', newText);
-            el.textContent = newText;
-          }
-        });
-      })
-      .catch(function(e) { console.error('[prices] fetch error:', e); });
+    document.addEventListener('DOMContentLoaded', function() {
+      setTimeout(function() {
+        fetch('https://46.30.43.23.sslip.io:9443/prices')
+          .then(function(r) { return r.json(); })
+          .then(function(prices) {
+            console.log('[prices] received:', prices);
+            Object.keys(prices).forEach(function(key) {
+              var svcName = PRICE_SERVICE_MAP[key];
+              console.log('[prices] key="' + key + '" → svcName="' + svcName + '"');
+              if (!svcName) { console.warn('[prices] no mapping for key:', key); return; }
+              var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
+              console.log('[prices] card found:', !!card, 'for data-service="' + svcName + '"');
+              if (!card) return;
+              var el = card.querySelector('.service-price');
+              if (el) {
+                var newText = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
+                console.log('[prices] updating', svcName, '→', newText);
+                el.textContent = newText;
+              }
+            });
+          })
+          .catch(function(e) { console.error('[prices] fetch error:', e); });
+      }, 500);
+    });
 
     // ── Hidden masters ────────────────────────────────────────────────────────
     fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
