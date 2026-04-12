@@ -1783,6 +1783,28 @@
         .catch(function(e) { console.error('[prices] fetch error:', e); });
     }, 500);
 
+    // ── Static master prices ──────────────────────────────────────────────────
+    setTimeout(function() {
+      fetch('https://46.30.43.23.sslip.io:9443/static-master-prices')
+        .then(function(r) { return r.json(); })
+        .then(function(prices) {
+          if (!prices || typeof prices !== 'object') return;
+          document.querySelectorAll('.master-card').forEach(function(card) {
+            var nameEl = card.querySelector('.master-name');
+            if (!nameEl) return;
+            var name = nameEl.textContent.trim();
+            // ищем ключ без учёта регистра
+            var key = Object.keys(prices).find(function(k) {
+              return k.toLowerCase() === name.toLowerCase();
+            });
+            if (key === undefined) return;
+            var priceEl = card.querySelector('.master-price');
+            if (priceEl) priceEl.textContent = 'от ' + String(prices[key]).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+          });
+        })
+        .catch(function() {});
+    }, 600);
+
     // ── Hidden masters ────────────────────────────────────────────────────────
     setTimeout(function() {
       fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
