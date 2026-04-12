@@ -1156,7 +1156,7 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://46-30-43-23.sslip.io:4443/webhook';
+    const WEBHOOK_URL = 'https://46.30.43.23.sslip.io:9443/webhook';
 
     // ── Telegram Web App ──
     if (window.Telegram && window.Telegram.WebApp) {
@@ -1739,7 +1739,7 @@
       'Ботулинотерапия':  'Ботулинотерапия',
       'Биоревитализация': 'Биоревитализация',
     };
-    fetch('http://46.30.43.23:8080/prices')
+    fetch('https://46.30.43.23.sslip.io:9443/prices')
       .then(function(r) { return r.json(); })
       .then(function(prices) {
         Object.keys(prices).forEach(function(key) {
@@ -1754,7 +1754,7 @@
       .catch(function() {});
 
     // ── Hidden masters ────────────────────────────────────────────────────────
-    fetch('http://46.30.43.23:8080/hidden-masters')
+    fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
       .then(function(r) { return r.json(); })
       .then(function(hidden) {
         if (!Array.isArray(hidden) || hidden.length === 0) return;
