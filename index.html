@@ -1771,21 +1771,23 @@
     }, 500);
 
     // ── Hidden masters ────────────────────────────────────────────────────────
-    fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
-      .then(function(r) { return r.json(); })
-      .then(function(hidden) {
-        if (!Array.isArray(hidden) || hidden.length === 0) return;
-        // Скрываем статические карточки мастеров на вкладке Мастера
-        document.querySelectorAll('.master-card').forEach(function(card) {
-          var nameEl = card.querySelector('.master-name');
-          if (nameEl && hidden.indexOf(nameEl.textContent.trim()) !== -1) {
-            card.style.display = 'none';
-          }
-        });
-        // Скрываем из динамического списка MASTERS (выбор в процессе записи)
-        hiddenMasters = hidden;
-      })
-      .catch(function() {});
+    setTimeout(function() {
+      fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
+        .then(function(r) { return r.json(); })
+        .then(function(hidden) {
+          if (!Array.isArray(hidden) || hidden.length === 0) return;
+          // Скрываем статические карточки мастеров на вкладке Мастера
+          document.querySelectorAll('.master-card').forEach(function(card) {
+            var nameEl = card.querySelector('.master-name');
+            if (nameEl && hidden.indexOf(nameEl.textContent.trim()) !== -1) {
+              card.style.display = 'none';
+            }
+          });
+          // Скрываем из динамического списка MASTERS (выбор в процессе записи)
+          hiddenMasters = hidden;
+        })
+        .catch(function() {});
+    }, 1000);
 
     var hiddenMasters = [];
   </script>
