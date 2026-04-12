@@ -660,6 +660,8 @@
         </div>
       </div>
 
+      <div id="dyn-vip"></div>
+
       <div class="section-title">Ведущие мастера</div>
       <div class="master-card">
         <div class="master-photo">
@@ -720,6 +722,8 @@
           </div>
         </div>
       </div>
+
+      <div id="dyn-vedushchie"></div>
 
       <div class="section-title">Топ-мастера</div>
       <div class="master-card">
@@ -816,6 +820,8 @@
         </div>
       </div>
 
+      <div id="dyn-top"></div>
+
       <div class="section-title">Врач-косметолог</div>
       <div class="master-card">
         <div class="master-photo">
@@ -852,7 +858,12 @@
         </div>
       </div>
 
-      <div id="dynamic-masters-container"></div>
+      <div id="dyn-vrach"></div>
+
+      <div id="section-master" style="display:none;">
+        <div class="section-title">Мастера</div>
+        <div id="dyn-master"></div>
+      </div>
 
     </div><!-- /tab-masters -->
 
@@ -1794,11 +1805,25 @@
     var hiddenMasters = [];
 
     // ── Dynamic masters from VPS ──────────────────────────────────────────────
+    var DYN_LEVEL_COLORS = {
+      'VIP мастер':      '#c9a96e',
+      'Ведущий мастер':  '#7abf7a',
+      'Топ-мастер':      '#7a9fd4',
+      'Мастер':          '#888',
+      'Врач-косметолог': '#b07ad4',
+    };
+    var DYN_LEVEL_CONTAINER = {
+      'VIP мастер':      'dyn-vip',
+      'Ведущий мастер':  'dyn-vedushchie',
+      'Топ-мастер':      'dyn-top',
+      'Врач-косметолог': 'dyn-vrach',
+      'Мастер':          'dyn-master',
+    };
+
     fetch('https://46.30.43.23.sslip.io:9443/masters')
       .then(function(r) { return r.json(); })
       .then(function(dynMasters) {
         if (!Array.isArray(dynMasters) || dynMasters.length === 0) return;
-        var container = document.getElementById('dynamic-masters-container');
         dynMasters.forEach(function(m) {
           // Добавляем в массив MASTERS для букинга
           if (!MASTERS.find(function(x) { return x.name === m.name; })) {
@@ -1811,30 +1836,44 @@
               SERVICE_MASTERS[svc].push(m.name);
             }
           });
-          // Рендерим статическую карточку на вкладке Мастера
-          var works = MASTER_PHOTOS[m.name]
+
+          // Цвет уровня: из API или из карты
+          var levelColor = DYN_LEVEL_COLORS[m.level] || m.levelColor || '#888';
+
+          // Кнопка примеров работ (используем MASTER_PHOTOS как для статических)
+          var worksBtn = MASTER_PHOTOS[m.name]
             ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
             : '';
+
+          // Карточка
           var card = document.createElement('div');
           card.className = 'master-card';
           card.innerHTML =
             '<div class="master-photo">' +
               '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-              '<div class="master-avatar" style="display:none;background:' + m.avatarBg + ';">' + m.avatarLetter + '</div>' +
+              '<div class="master-avatar" style="display:none;background:' + (m.avatarBg || '#1e1e2e') + ';">' + (m.avatarLetter || m.name[0]) + '</div>' +
             '</div>' +
             '<div class="master-body">' +
               '<div>' +
-                '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
+                '<div class="master-level" style="color:' + levelColor + ';">' + m.level + '</div>' +
                 '<div class="master-name">' + m.name + '</div>' +
               '</div>' +
               '<div class="master-footer">' +
                 '<div class="master-price">' + m.price + '</div>' +
                 '<div style="display:flex;gap:6px;">' +
-                  works +
+                  worksBtn +
                   '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>' +
                 '</div>' +
               '</div>' +
             '</div>';
+
+          // Вставляем в нужную секцию по уровню
+          var containerId = DYN_LEVEL_CONTAINER[m.level] || 'dyn-vrach';
+          var container = document.getElementById(containerId);
+          if (containerId === 'dyn-master') {
+            var sec = document.getElementById('section-master');
+            if (sec) sec.style.display = '';
+          }
           if (container) container.appendChild(card);
         });
       })
