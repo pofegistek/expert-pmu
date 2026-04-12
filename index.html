@@ -437,7 +437,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service" onclick="bookService('Брови')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Брови')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Губы">
@@ -450,7 +450,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service" onclick="bookService('Губы')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Губы')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Веки и стрелки">
@@ -463,7 +463,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 12 000 ₽</div>
-            <button class="btn-service" onclick="bookService('Веки и стрелки')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Веки и стрелки')">Записаться</button>
           </div>
         </div>
 
@@ -478,7 +478,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">уточняйте цену</div>
-            <button class="btn-service" onclick="bookService('Удаление на неодиме')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Удаление на неодиме')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Лазерное удаление (неодим)">
@@ -492,7 +492,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 2 000 ₽</div>
-            <button class="btn-service" onclick="bookService('Лазерное удаление (неодим)')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Лазерное удаление (неодим)')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Пикосекундный аппарат PicoSure / PicoPlus">
@@ -505,7 +505,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 4 800 ₽</div>
-            <button class="btn-service" onclick="bookService('Пикосекундный аппарат PicoSure / PicoPlus')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Пикосекундный аппарат PicoSure / PicoPlus')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Удаление ремувером">
@@ -518,7 +518,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 5 500 ₽</div>
-            <button class="btn-service" onclick="bookService('Удаление ремувером')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Удаление ремувером')">Записаться</button>
           </div>
         </div>
 
@@ -574,7 +574,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 9 900 ₽</div>
-            <button class="btn-service" onclick="bookService('Ботулинотерапия')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Ботулинотерапия')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Биоревитализация">
@@ -587,7 +587,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 13 500 ₽</div>
-            <button class="btn-service" onclick="bookService('Биоревитализация')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Биоревитализация')">Записаться</button>
           </div>
         </div>
         <div class="service-card" data-service="Увеличение губ">
@@ -600,7 +600,7 @@
           </div>
           <div class="service-card-footer">
             <div class="service-price">от 20 500 ₽</div>
-            <button class="btn-service" onclick="bookService('Увеличение губ')">Записаться</button>
+            <button class="btn-service" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; bookService('Увеличение губ')">Записаться</button>
           </div>
         </div>
       </div>
@@ -1764,7 +1764,7 @@
             var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
             if (!card) return;
             var el = card.querySelector('.service-price');
-            if (el) el.textContent = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
+            if (el) el.textContent = 'от ' + String(prices[key]).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
           });
         })
         .catch(function(e) { console.error('[prices] fetch error:', e); });
