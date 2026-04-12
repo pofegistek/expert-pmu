@@ -1756,16 +1756,23 @@
     fetch('https://46.30.43.23.sslip.io:9443/prices')
       .then(function(r) { return r.json(); })
       .then(function(prices) {
+        console.log('[prices] received:', prices);
         Object.keys(prices).forEach(function(key) {
           var svcName = PRICE_SERVICE_MAP[key];
-          if (!svcName) return;
+          console.log('[prices] key="' + key + '" → svcName="' + svcName + '"');
+          if (!svcName) { console.warn('[prices] no mapping for key:', key); return; }
           var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
+          console.log('[prices] card found:', !!card, 'for data-service="' + svcName + '"');
           if (!card) return;
           var el = card.querySelector('.service-price');
-          if (el) el.textContent = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
+          if (el) {
+            var newText = 'от ' + prices[key].toLocaleString('ru-RU') + ' ₽';
+            console.log('[prices] updating', svcName, '→', newText);
+            el.textContent = newText;
+          }
         });
       })
-      .catch(function() {});
+      .catch(function(e) { console.error('[prices] fetch error:', e); });
 
     // ── Hidden masters ────────────────────────────────────────────────────────
     fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
