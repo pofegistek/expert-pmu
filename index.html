@@ -1240,7 +1240,7 @@
       currentService = serviceName;
       document.getElementById('pick-title').textContent = serviceName;
       var names = SERVICE_MASTERS[serviceName] || [];
-      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
+      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; });
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
       masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
@@ -1255,7 +1255,7 @@
       document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
       document.getElementById('pick-title').textContent = service;
       var names = SERVICE_MASTERS[service] || [];
-      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1; });
+      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; });
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
       masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
@@ -1727,6 +1727,25 @@
         setTimeout(closeModal, 4000);
       });
     }
+
+    // ── Hidden masters ────────────────────────────────────────────────────────
+    fetch('http://46.30.43.23:8080/hidden-masters')
+      .then(function(r) { return r.json(); })
+      .then(function(hidden) {
+        if (!Array.isArray(hidden) || hidden.length === 0) return;
+        // Скрываем статические карточки мастеров на вкладке Мастера
+        document.querySelectorAll('.master-card').forEach(function(card) {
+          var nameEl = card.querySelector('.master-name');
+          if (nameEl && hidden.indexOf(nameEl.textContent.trim()) !== -1) {
+            card.style.display = 'none';
+          }
+        });
+        // Скрываем из динамического списка MASTERS (выбор в процессе записи)
+        hiddenMasters = hidden;
+      })
+      .catch(function() {});
+
+    var hiddenMasters = [];
   </script>
 </body>
 </html>
