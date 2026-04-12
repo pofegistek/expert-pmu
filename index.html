@@ -1695,16 +1695,75 @@
         ],
       },
     };
+    // Динамические фото работ (загружают��я с VPS /master-works)
+    var dynWorks = {};
+    var DYN_CAT_MAP = {
+      'brows':   'Брови',
+      'lips':    'Губы',
+      'eyes':    'Веки',
+      'removal': 'Удаление',
+      'cosmo':   'Косметология',
+    };
+    var SVC_CAT_MAP = {
+      'Бров': 'brows',
+      'Губ':  'lips',
+      'Век':  'eyes',
+      'удал': 'removal',
+      'космет': 'cosmo',
+    };
+    setTimeout(function() {
+      fetch('https://46.30.43.23.sslip.io:9443/master-works')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data && typeof data === 'object') dynWorks = data;
+        })
+        .catch(function() {});
+    }, 700);
+
+    function getMasterPhotos(masterName, categoryFilter) {
+      // Собираем фото из MASTER_PHOTOS (статика) + dynWorks (динамика)
+      var result = [];
+      var staticData = MASTER_PHOTOS[masterName];
+      var dynData = dynWorks[masterName];
+
+      if (categoryFilter) {
+        // Показываем только нужную категорию
+        if (staticData) {
+          var ruKey = DYN_CAT_MAP[categoryFilter];
+          var arr = staticData[ruKey] || [];
+          result = result.concat(arr);
+        }
+        if (dynData && dynData[categoryFilter]) {
+          result = result.concat(dynData[categoryFilter]);
+        }
+        // Если по категории ничего — показываем всё
+        if (!result.length) return getMasterPhotos(masterName, null);
+      } else {
+        // Все фото
+        if (staticData) {
+          result = result.concat(staticData['all'] || []);
+        }
+        if (dynData) {
+          Object.keys(dynData).forEach(function(cat) {
+            result = result.concat(dynData[cat]);
+          });
+        }
+      }
+      return result;
+    }
+
+    function hasMasterWorks(masterName) {
+      return !!(MASTER_PHOTOS[masterName] || dynWorks[masterName]);
+    }
+
     function openMasterWorks(masterName) {
       haptic('impact', 'light');
-      var masterData = MASTER_PHOTOS[masterName];
-      if (!masterData) return;
       var service = currentService || '';
-      var photos;
-      if (service.indexOf('Бров') !== -1) photos = masterData['Брови'] || masterData['all'];
-      else if (service.indexOf('Губ') !== -1) photos = masterData['Губы'] || masterData['all'];
-      else if (service.indexOf('Век') !== -1) photos = masterData['Веки'] || masterData['all'];
-      else photos = masterData['all'];
+      var catFilter = null;
+      for (var key in SVC_CAT_MAP) {
+        if (service.indexOf(key) !== -1) { catFilter = SVC_CAT_MAP[key]; break; }
+      }
+      var photos = getMasterPhotos(masterName, catFilter);
       if (!photos || !photos.length) return;
       document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
       var grid = document.getElementById('works-grid');
@@ -1862,8 +1921,8 @@
           // Цвет уровня: из API или из карты
           var levelColor = DYN_LEVEL_COLORS[m.level] || m.levelColor || '#888';
 
-          // Кнопка примеров работ (используем MASTER_PHOTOS как для статических)
-          var worksBtn = MASTER_PHOTOS[m.name]
+          // Кнопка примеров работ
+          var worksBtn = hasMasterWorks(m.name)
             ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
             : '';
 
