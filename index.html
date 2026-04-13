@@ -972,11 +972,11 @@
         </div>
         <div class="contact-row">
           <span class="contact-icon">📞</span>
-          <span class="contact-text"><a href="tel:+79299910001">+7 (929) 991-00-01</a></span>
+          <span class="contact-text"><a id="settings-phone-link" href="tel:+79299910001">+7 (929) 991-00-01</a></span>
         </div>
         <div class="contact-row">
           <span class="contact-icon">✈️</span>
-          <span class="contact-text"><a href="#" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
+          <span class="contact-text"><a id="settings-tg-link" href="#" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
         </div>
       </div>
 
@@ -1030,7 +1030,7 @@
       </div>
 
       <!-- Telegram -->
-      <div onclick="Telegram.WebApp.openLink('https://t.me/+79299910001')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div id="settings-tg-btn" onclick="Telegram.WebApp.openLink('https://t.me/+79299910001')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#29B6F6"/>
@@ -1960,6 +1960,35 @@
         })
         .catch(function(e) { console.error('[prices] fetch error:', e); });
     }, 500);
+
+    // ── Settings (phone, telegram) ────────────────────────────────────────────
+    fetch('https://46.30.43.23.sslip.io:9443/settings')
+      .then(function(r) { return r.json(); })
+      .then(function(s) {
+        if (!s) return;
+        if (s.phone) {
+          var el = document.getElementById('settings-phone-link');
+          if (el) {
+            var digits = s.phone.replace(/\D/g,'');
+            el.href = 'tel:+' + digits;
+            el.textContent = s.phone;
+          }
+        }
+        if (s.telegram_url) {
+          var tgLink = document.getElementById('settings-tg-link');
+          if (tgLink) {
+            var handle = s.telegram_url.replace('https://t.me/','@');
+            tgLink.href = '#';
+            tgLink.onclick = function(){ openLink(s.telegram_url); return false; };
+            tgLink.textContent = handle;
+          }
+          var tgBtn = document.getElementById('settings-tg-btn');
+          if (tgBtn) {
+            tgBtn.onclick = function(){ Telegram.WebApp.openLink(s.telegram_url); };
+          }
+        }
+      })
+      .catch(function() {});
 
     // ── Static master prices ──────────────────────────────────────────────────
     setTimeout(function() {
