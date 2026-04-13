@@ -1323,7 +1323,7 @@
 
       var body = document.createElement('div');
       body.className = 'master-body';
-      var worksBtn = MASTER_PHOTOS[m.name]
+      var worksBtn = (MASTER_PHOTOS[m.name] || dynWorks[m.name])
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       body.innerHTML =
@@ -1720,14 +1720,7 @@
       'удал': 'removal',
       'космет': 'cosmo',
     };
-    setTimeout(function() {
-      fetch('https://46.30.43.23.sslip.io:9443/master-works')
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-          if (data && typeof data === 'object') dynWorks = data;
-        })
-        .catch(function() {});
-    }, 700);
+
 
     function getMasterPhotos(masterName, categoryFilter) {
       // Собираем фото из MASTER_PHOTOS (статика) + dynWorks (динамика)
@@ -1910,7 +1903,13 @@
       'Мастер':          'dyn-master',
     };
 
-    fetch('https://46.30.43.23.sslip.io:9443/masters')
+    fetch('https://46.30.43.23.sslip.io:9443/master-works')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && typeof data === 'object') dynWorks = data;
+      })
+      .catch(function() {})
+      .then(function() { return fetch('https://46.30.43.23.sslip.io:9443/masters'); })
       .then(function(r) { return r.json(); })
       .then(function(dynMasters) {
         if (!Array.isArray(dynMasters) || dynMasters.length === 0) return;
