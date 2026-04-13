@@ -1756,15 +1756,35 @@
       calShowStep(3);
     }
 
+    function formatPhone(raw) {
+      // Оставляем только цифры
+      var digits = raw.replace(/\D/g, '');
+      // Если начинается с 8 — заменяем на 7
+      if (digits.charAt(0) === '8') digits = '7' + digits.slice(1);
+      // Добавляем + если нет
+      return '+' + digits;
+    }
+
     function submitCalBooking() {
       var name  = document.getElementById('cal-input-name').value.trim();
       var phone = document.getElementById('cal-input-phone').value.trim();
       if (!name) { document.getElementById('cal-input-name').focus(); return; }
       if (!phone) { document.getElementById('cal-input-phone').focus(); return; }
+
+      var phoneFormatted = formatPhone(phone);
+      var digits = phoneFormatted.replace(/\D/g, '');
+      if (digits.length < 10) {
+        document.getElementById('cal-input-phone').focus();
+        document.getElementById('cal-input-phone').style.borderColor = '#e74c3c';
+        return;
+      }
+      document.getElementById('cal-input-phone').style.borderColor = '';
+
       var btn = document.getElementById('cal-submit-btn');
       btn.disabled = true; btn.textContent = 'Отправляем...';
+
       var body = {
-        phone: phone, fullname: name, email: '',
+        phone: phoneFormatted, fullname: name, email: '',
         appointments: [{
           id: 1,
           services: calState.services.length ? [calState.services[0]] : [],
@@ -1783,27 +1803,35 @@
       .then(function(r) { return r.json(); })
       .then(function(d) {
         console.log('[booking] response:', JSON.stringify(d));
-        if (d && d.success === false) throw new Error('api error');
+        if (d && d.success === false) {
+          var msg = (d.meta && d.meta.message) ? d.meta.message : 'Ошибка записи';
+          btn.disabled = false; btn.textContent = 'Записаться';
+          // Показываем ошибку под кнопкой
+          var errEl = document.getElementById('cal-error-msg');
+          if (!errEl) {
+            errEl = document.createElement('div');
+            errEl.id = 'cal-error-msg';
+            errEl.style.cssText = 'color:#e74c3c;font-size:13px;margin-top:10px;text-align:center;';
+            btn.parentNode.insertBefore(errEl, btn.nextSibling);
+          }
+          errEl.textContent = '❌ ' + msg;
+          return;
+        }
         haptic('notification', 'success');
         calShowStep(4);
         setTimeout(closeCalModal, 5000);
       })
-      .catch(function() {
-        // Fallback: send to telegram webhook so admin is notified
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: name, phone: phone,
-            telegram: tgUsername || '—',
-            service: currentService || 'PMU',
-            master: calState.master,
-            datetime: calState.selectedDatetime
-          })
-        }).catch(function() {});
-        haptic('notification', 'success');
-        calShowStep(4);
-        setTimeout(closeCalModal, 5000);
+      .catch(function(err) {
+        console.log('[booking] fetch error:', err);
+        btn.disabled = false; btn.textContent = 'Записаться';
+        var errEl = document.getElementById('cal-error-msg');
+        if (!errEl) {
+          errEl = document.createElement('div');
+          errEl.id = 'cal-error-msg';
+          errEl.style.cssText = 'color:#e74c3c;font-size:13px;margin-top:10px;text-align:center;';
+          btn.parentNode.insertBefore(errEl, btn.nextSibling);
+        }
+        errEl.textContent = '❌ Не удалось связаться с сервером. Попробуйте ещё раз.';
       });
     }
 
