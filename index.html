@@ -1643,6 +1643,7 @@
       calState.master = masterName;
       calState.staffId = staffId;
       calState.services = [];
+      calState.servicesLoaded = false;
       var now = new Date();
       calState.year = now.getFullYear();
       calState.month = now.getMonth();
@@ -1650,15 +1651,16 @@
       calShowStep(1);
       calRenderCalendar();
       openCalModal();
-      // Fetch services in background for booking POST
+      // Загружаем услуги — от них зависит корректность слотов
       fetch(VPS_URL + '/yclients/staff_services/' + YCLIENTS_COMPANY + '/' + staffId)
         .then(function(r) { return r.json(); })
         .then(function(d) {
           var arr = (d && d.data && d.data.services) ? d.data.services : [];
           calState.services = arr.map(function(s) { return s.id; });
+          calState.servicesLoaded = true;
           console.log('[booking] services fetched:', calState.services.length, calState.services[0]);
         })
-        .catch(function() {});
+        .catch(function() { calState.servicesLoaded = true; }); // разблокируем даже при ошибке
     }
 
     function calRenderCalendar() {
@@ -1697,6 +1699,18 @@
 
     function calSelectDate(dateStr, btn) {
       haptic('impact', 'light');
+      // Если услуги ещё грузятся — ждём максимум 3 сек
+      if (!calState.servicesLoaded) {
+        var waited = 0;
+        var poll = setInterval(function() {
+          waited += 200;
+          if (calState.servicesLoaded || waited >= 3000) {
+            clearInterval(poll);
+            calSelectDate(dateStr, btn);
+          }
+        }, 200);
+        return;
+      }
       calState.selectedDate = dateStr;
       document.querySelectorAll('#cal-days-grid .cal-day').forEach(function(b) {
         b.classList.remove('selected');
@@ -1844,9 +1858,9 @@
         setTimeout(closeCalModal, 5000);
       })
       .catch(function(err) {
-        console.log('[booking] fetch error:', err);
+        console.log('[booking] network error:', err.message, err);
         btn.disabled = false; btn.textContent = 'Записаться';
-        calShowError('❌ Не удалось связаться с сервером. Попробуйте ещё раз.');
+        calShowError('❌ Ошибка сети: ' + (err.message || 'нет соединения') + '. Попробуйте ещё раз.');
       });
     }
 
