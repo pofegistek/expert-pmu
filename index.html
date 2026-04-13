@@ -387,6 +387,40 @@
     .success-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .success-text { font-size: 14px; color: var(--muted); line-height: 1.5; }
     .success-phone { font-size: 15px; font-weight: 600; color: var(--gold); margin-top: 12px; }
+    /* ── YClients iframe modal ── */
+    #yclients-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.85);
+      flex-direction: column;
+    }
+    #yclients-modal.open { display: flex; }
+    #yclients-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 20px;
+      line-height: 36px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 10000;
+    }
+    #yclients-iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      margin-top: 56px;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
@@ -1168,6 +1202,11 @@
     </div>
   </div>
 
+  <div id="yclients-modal">
+    <button id="yclients-close" onclick="closeYclientsModal()">✕</button>
+    <iframe id="yclients-iframe" src="" allow="payment"></iframe>
+  </div>
+
   <script>
     const WEBHOOK_URL = 'https://46.30.43.23.sslip.io:9443/webhook';
 
@@ -1348,7 +1387,7 @@
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
             haptic('impact', 'light');
-            openBookingModal(m.name, currentService);
+            if (YCLIENTS_URLS[m.name]) { openYclientsWidget(m.name); } else { openBookingModal(m.name, currentService); }
           });
         }
         var wBtn = body.querySelector('.js-works-btn');
@@ -1381,6 +1420,36 @@
                    window.Telegram.WebApp.initDataUnsafe.user;
       if (tgUser && tgUser.username) tgUsername = '@' + tgUser.username;
     } catch(e) {}
+
+    var YCLIENTS_URLS = {
+      'Натали':   'https://n62546.yclients.com/company/40048/personal/menu?o=m72393',
+      'Видана':   'https://n521920.yclients.com/company/40048/personal/menu?o=m1181036',
+      'Катрин':   'https://n501106.yclients.com/company/40048/personal/menu?o=m388559',
+      'Лиана':    'https://n795398.yclients.com/company/40048/personal/menu?o=m2040881',
+      'Кристина': 'https://n618275.yclients.com/company/40048/personal/menu?o=m1654173',
+      'Камила':   'https://n963781.yclients.com/company/40048/personal/menu?o=m2516402',
+      'Пётр':     'https://n1449154.yclients.com/company/40048/personal/menu?o=m431466',
+      'Светлана': 'https://n1447051.yclients.com/company/40048/personal/menu?o=m3887151',
+      'Варвара':  'https://n984861.yclients.com/company/40048/personal/menu?o=m2746528',
+      'Крис':     'https://n1109020.yclients.com/company/40048/personal/menu?o=m3152366',
+      'Валерия':  'https://n1449154.yclients.com/company/40048/personal/menu?o=m3878647',
+    };
+
+    function openYclientsWidget(masterName) {
+      var url = YCLIENTS_URLS[masterName];
+      if (!url) { openBookingModal(masterName, ''); return; }
+      document.getElementById('yclients-iframe').src = url;
+      document.getElementById('yclients-modal').classList.add('open');
+    }
+
+    function closeYclientsModal() {
+      document.getElementById('yclients-modal').classList.remove('open');
+      document.getElementById('yclients-iframe').src = '';
+    }
+
+    document.getElementById('yclients-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeYclientsModal();
+    });
 
     function openBookingModal(masterName, serviceName) {
       haptic('impact', 'medium');
@@ -1420,7 +1489,11 @@
     }
 
     function openBookingModalForMaster(masterName) {
-      openBookingModal(masterName, '');
+      if (YCLIENTS_URLS[masterName]) {
+        openYclientsWidget(masterName);
+      } else {
+        openBookingModal(masterName, '');
+      }
     }
     var openBookingForm = openBookingModalForMaster;
 
