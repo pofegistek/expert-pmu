@@ -1302,12 +1302,7 @@
         <input class="form-input" id="cal-input-name" type="text" placeholder="Имя" autocomplete="name">
         <label class="form-label" style="margin-top:12px">Телефон</label>
         <input class="form-input" id="cal-input-phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel">
-        <div id="cal-code-row" style="display:none">
-          <label class="form-label" style="margin-top:12px">Код из SMS</label>
-          <input class="form-input" id="cal-input-code" type="text" inputmode="numeric" maxlength="6" placeholder="• • • • • •">
-          <div style="font-size:12px;color:var(--muted);margin-top:6px;">Код отправлен на указанный номер</div>
-        </div>
-        <button class="btn-submit" id="cal-submit-btn" onclick="calRequestCode()" style="margin-top:16px">Получить код</button>
+        <button class="btn-submit" id="cal-submit-btn" onclick="submitCalBooking()" style="margin-top:16px">Записаться</button>
       </div>
 
       <!-- Step 4: Success -->
@@ -1759,10 +1754,8 @@
         }
       } catch(e) {}
       var btn = document.getElementById('cal-submit-btn');
-      btn.disabled = false; btn.textContent = 'Получить код';
-      btn.onclick = calRequestCode;
-      document.getElementById('cal-code-row').style.display = 'none';
-      document.getElementById('cal-input-code').value = '';
+      btn.disabled = false; btn.textContent = 'Записаться';
+      btn.onclick = submitCalBooking;
       var errEl = document.getElementById('cal-error-msg');
       if (errEl) errEl.textContent = '';
       calShowStep(3);
@@ -1781,43 +1774,6 @@
       errEl.textContent = msg;
     }
 
-    function calRequestCode() {
-      var name  = document.getElementById('cal-input-name').value.trim();
-      var phone = document.getElementById('cal-input-phone').value.trim();
-      if (!name) { document.getElementById('cal-input-name').focus(); return; }
-      if (!phone) { document.getElementById('cal-input-phone').focus(); return; }
-      var phoneFormatted = formatPhone(phone);
-      if (phoneFormatted.replace(/\D/g,'').length < 10) {
-        document.getElementById('cal-input-phone').style.borderColor = '#e74c3c';
-        return;
-      }
-      document.getElementById('cal-input-phone').style.borderColor = '';
-      var btn = document.getElementById('cal-submit-btn');
-      btn.disabled = true; btn.textContent = 'Отправка кода...';
-      fetch(VPS_URL + '/yclients/book_code/' + YCLIENTS_COMPANY, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: phoneFormatted, fullname: name })
-      })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        console.log('[booking] book_code response:', JSON.stringify(d));
-        if (d && d.success === false) throw new Error((d.meta && d.meta.message) || 'Ошибка');
-        // Показываем поле для кода
-        document.getElementById('cal-code-row').style.display = '';
-        document.getElementById('cal-input-code').focus();
-        btn.disabled = false;
-        btn.textContent = 'Записаться';
-        btn.onclick = submitCalBooking;
-        var errEl = document.getElementById('cal-error-msg');
-        if (errEl) errEl.textContent = '';
-      })
-      .catch(function(err) {
-        calShowError('❌ ' + (err.message || 'Не удалось отправить код'));
-        btn.textContent = 'Получить код';
-      });
-    }
-
     function formatPhone(raw) {
       // Оставляем только цифры
       var digits = raw.replace(/\D/g, '');
@@ -1830,16 +1786,26 @@
     function submitCalBooking() {
       var name  = document.getElementById('cal-input-name').value.trim();
       var phone = document.getElementById('cal-input-phone').value.trim();
-      var code  = document.getElementById('cal-input-code').value.trim();
-      if (!code) { document.getElementById('cal-input-code').focus(); return; }
+      if (!name) { document.getElementById('cal-input-name').focus(); return; }
+      if (!phone) { document.getElementById('cal-input-phone').focus(); return; }
 
       var phoneFormatted = formatPhone(phone);
+      if (phoneFormatted.replace(/\D/g,'').length < 10) {
+        document.getElementById('cal-input-phone').style.borderColor = '#e74c3c';
+        return;
+      }
+      document.getElementById('cal-input-phone').style.borderColor = '';
+
+      var tgUser = '';
+      try { tgUser = Telegram.WebApp.initDataUnsafe.user.username || ''; } catch(e) {}
+      var comment = 'Telegram: ' + (tgUser ? '@' + tgUser : 'не указан');
+
       var btn = document.getElementById('cal-submit-btn');
       btn.disabled = true; btn.textContent = 'Записываем...';
 
       var body = {
-        phone: phoneFormatted, fullname: name, email: '', code: code,
-        type: '1', notify_by_sms: 0, notify_by_email: 0,
+        phone: phoneFormatted, fullname: name, email: '',
+        comment: comment, type: '1', notify_by_sms: 0, notify_by_email: 0,
         appointments: [{
           id: 1,
           services: calState.services.length ? [calState.services[0]] : [],
@@ -1860,17 +1826,26 @@
         console.log('[booking] response:', JSON.stringify(d));
         if (d && d.success === false) {
           var msg = (d.meta && d.meta.message) || 'Ошибка записи';
-          btn.textContent = 'Записаться';
+          btn.disabled = false; btn.textContent = 'Записаться';
           calShowError('❌ ' + msg);
           return;
         }
         haptic('notification', 'success');
         calShowStep(4);
+        // Перезагружаем слоты для этой даты чтобы занятое время исчезло
+        var savedDate = calState.selectedDate;
+        var savedStaff = calState.staffId;
+        var savedSvc = calState.services[0];
+        setTimeout(function() {
+          var url = VPS_URL + '/yclients/book_times/' + YCLIENTS_COMPANY + '/' + savedStaff + '/' + savedDate;
+          if (savedSvc) url += '?service_ids[]=' + savedSvc;
+          fetch(url).catch(function() {}); // прогреваем кэш, ответ не нужен
+        }, 3000);
         setTimeout(closeCalModal, 5000);
       })
       .catch(function(err) {
         console.log('[booking] fetch error:', err);
-        btn.textContent = 'Записаться';
+        btn.disabled = false; btn.textContent = 'Записаться';
         calShowError('❌ Не удалось связаться с сервером. Попробуйте ещё раз.');
       });
     }
