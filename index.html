@@ -1425,17 +1425,17 @@
     } catch(e) {}
 
     var YCLIENTS_URLS = {
-      'Натали':   'https://n62546.yclients.com/company/40048/personal/menu?o=m72393',
-      'Видана':   'https://n521920.yclients.com/company/40048/personal/menu?o=m1181036',
-      'Катрин':   'https://n501106.yclients.com/company/40048/personal/menu?o=m388559',
-      'Лиана':    'https://n795398.yclients.com/company/40048/personal/menu?o=m2040881',
-      'Кристина': 'https://n618275.yclients.com/company/40048/personal/menu?o=m1654173',
-      'Камила':   'https://n963781.yclients.com/company/40048/personal/menu?o=m2516402',
-      'Пётр':     'https://n1449154.yclients.com/company/40048/personal/menu?o=m431466',
-      'Светлана': 'https://n1447051.yclients.com/company/40048/personal/menu?o=m3887151',
-      'Варвара':  'https://n984861.yclients.com/company/40048/personal/menu?o=m2746528',
-      'Крис':     'https://n1109020.yclients.com/company/40048/personal/menu?o=m3152366',
-      'Валерия':  'https://n1449154.yclients.com/company/40048/personal/menu?o=m3878647',
+      'Натали':   'https://n62546.yclients.com',
+      'Видана':   'https://n521920.yclients.com',
+      'Катрин':   'https://n501106.yclients.com',
+      'Лиана':    'https://n795398.yclients.com',
+      'Кристина': 'https://n618275.yclients.com',
+      'Камила':   'https://n963781.yclients.com',
+      'Пётр':     'https://n1449154.yclients.com',
+      'Светлана': 'https://n1447051.yclients.com',
+      'Варвара':  'https://n984861.yclients.com',
+      'Крис':     'https://n1109020.yclients.com',
+      'Валерия':  'https://n1449154.yclients.com',
     };
 
     function openYclientsWidgetUrl(url) {
@@ -1498,13 +1498,8 @@
     // ── Booking ──────────────────────────────────────────────────────────────
 
     function openBookingModalForMaster(masterName) {
-      var url = YCLIENTS_URLS[masterName];
-      if (url) {
-        haptic('impact', 'medium');
-        openLink(url);
-      } else {
-        openBookingModal(masterName, '');
-      }
+      haptic('impact', 'medium');
+      openYclientsWidget(masterName);
     }
     var openBookingForm = openBookingModalForMaster;
 
