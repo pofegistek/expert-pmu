@@ -1258,11 +1258,20 @@
 
     var currentService = '';
 
+    var LEVEL_ORDER = ['VIP мастер','Ведущий мастер','Топ-мастер','Мастер','Врач-косметолог'];
+    function sortByLevel(masters) {
+      return masters.slice().sort(function(a, b) {
+        var ai = LEVEL_ORDER.indexOf(a.level), bi = LEVEL_ORDER.indexOf(b.level);
+        if (ai === -1) ai = 99; if (bi === -1) bi = 99;
+        return ai - bi;
+      });
+    }
+
     function bookService(serviceName) {
       currentService = serviceName;
       document.getElementById('pick-title').textContent = serviceName;
       var names = SERVICE_MASTERS[serviceName] || [];
-      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; });
+      var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
       masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
@@ -1277,7 +1286,7 @@
       document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
       document.getElementById('pick-title').textContent = service;
       var names = SERVICE_MASTERS[service] || [];
-      var masters = MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; });
+      var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
       masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
