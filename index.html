@@ -1438,11 +1438,15 @@
       'Валерия':  'https://n1449154.yclients.com/company/40048/personal/menu?o=m3878647',
     };
 
+    function openYclientsWidgetUrl(url) {
+      document.getElementById('yclients-iframe').src = url;
+      document.getElementById('yclients-modal').classList.add('open');
+    }
+
     function openYclientsWidget(masterName) {
       var url = YCLIENTS_URLS[masterName];
       if (!url) { openBookingModal(masterName, ''); return; }
-      document.getElementById('yclients-iframe').src = url;
-      document.getElementById('yclients-modal').classList.add('open');
+      openYclientsWidgetUrl(url);
     }
 
     function closeYclientsModal() {
@@ -2042,7 +2046,12 @@
                 '<div class="master-price">' + m.price + '</div>' +
                 '<div style="display:flex;gap:6px;">' +
                   worksBtn +
-                  '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>' +
+                  (function(){
+                    var bookOnclick = m.yclients_url
+                      ? 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openYclientsWidgetUrl(\'' + m.yclients_url + '\')'
+                      : 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')';
+                    return '<button class="btn-book" onclick="' + bookOnclick + '">Выбрать</button>';
+                  })() +
                 '</div>' +
               '</div>' +
             '</div>';
