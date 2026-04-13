@@ -1443,9 +1443,22 @@
       document.getElementById('yclients-modal').classList.add('open');
     }
 
+    function trackEvent(event) {
+      try {
+        var uid = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user)
+          ? Telegram.WebApp.initDataUnsafe.user.id : 0;
+        fetch('https://46.30.43.23.sslip.io:9443/track', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({event: event, user_id: uid})
+        }).catch(function(){});
+      } catch(e) {}
+    }
+
     function openYclientsWidget(masterName) {
       var url = YCLIENTS_URLS[masterName];
       if (!url) { openBookingModal(masterName, ''); return; }
+      trackEvent('booking_click');
       openYclientsWidgetUrl(url);
     }
 
@@ -1460,6 +1473,7 @@
 
     function openBookingModal(masterName, serviceName) {
       haptic('impact', 'medium');
+      trackEvent('booking_click');
       bookingMaster = masterName;
       bookingService = serviceName;
       document.getElementById('modal-master-name').textContent = masterName;
