@@ -1654,8 +1654,9 @@
       fetch(VPS_URL + '/yclients/staff_services/' + YCLIENTS_COMPANY + '/' + staffId)
         .then(function(r) { return r.json(); })
         .then(function(d) {
-          var arr = (d && d.data) ? d.data : [];
+          var arr = (d && d.data && d.data.services) ? d.data.services : [];
           calState.services = arr.map(function(s) { return s.id; });
+          console.log('[booking] services fetched:', calState.services.length, calState.services[0]);
         })
         .catch(function() {});
     }
@@ -1710,16 +1711,20 @@
       fetch(VPS_URL + '/yclients/book_times/' + YCLIENTS_COMPANY + '/' + calState.staffId + '/' + dateStr)
         .then(function(r) { return r.json(); })
         .then(function(d) {
+          // book_times returns {success, data: [...], meta}
           var slots = Array.isArray(d) ? d : (d && Array.isArray(d.data) ? d.data : []);
+          console.log('[booking] slots:', slots.length, slots[0]);
           if (!slots.length) {
             cont.innerHTML = '<div class="cal-loading">На эту дату нет свободного времени</div>';
             return;
           }
           var html = '<div class="cal-slots-grid">';
           slots.forEach(function(slot) {
-            var t = slot.time || (slot.datetime ? slot.datetime.split(' ')[1].slice(0, 5) : '?');
+            var t = slot.time || '?';
             var slen = slot.seance_length || 3600;
-            var dt = slot.datetime || (dateStr + ' ' + t + ':00');
+            // datetime может быть ISO: "2026-04-14T10:00:00+03:00" — конвертируем в "YYYY-MM-DD HH:MM:SS"
+            var rawDt = slot.datetime || (dateStr + 'T' + t + ':00');
+            var dt = rawDt.replace('T', ' ').replace(/\+.*$/, '').slice(0, 19);
             html += '<button class="cal-slot-btn" onclick="calSelectSlot(\'' + t + '\',' + slen + ',\'' + dt + '\')">' + t + '</button>';
           });
           html += '</div>';
