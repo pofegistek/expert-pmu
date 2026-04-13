@@ -421,6 +421,58 @@
       border-radius: 16px 16px 0 0;
       background: #fff;
     }
+    /* ── Calendar booking modal ── */
+    #cal-modal {
+      display: none; position: fixed; inset: 0; z-index: 9997;
+      background: rgba(0,0,0,0.7); align-items: flex-end; justify-content: center;
+    }
+    #cal-modal.open { display: flex; }
+    #cal-sheet {
+      background: var(--card); border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 92vh; overflow-y: auto;
+      padding: 20px 16px 40px; position: relative;
+    }
+    .cal-close-btn {
+      position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
+      background: rgba(255,255,255,0.1); border: none; border-radius: 50%;
+      color: #fff; font-size: 18px; cursor: pointer; line-height: 32px; text-align: center;
+    }
+    .cal-back-btn {
+      background: none; border: none; color: var(--gold); font-size: 14px;
+      cursor: pointer; padding: 0 0 16px; display: block;
+    }
+    .cal-step-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .cal-step-sub { font-size: 14px; color: var(--gold); margin-bottom: 20px; min-height: 20px; }
+    .cal-month-nav {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;
+    }
+    .cal-month-nav button {
+      background: none; border: none; color: var(--gold); font-size: 24px; cursor: pointer; padding: 4px 10px;
+    }
+    .cal-month-label { font-size: 16px; font-weight: 600; color: var(--text); }
+    .cal-weekdays, .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+    .cal-weekdays { margin-bottom: 6px; }
+    .cal-weekday { text-align: center; font-size: 12px; color: var(--muted); padding: 4px 0; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; font-size: 14px; cursor: pointer; border: none;
+      background: none; color: var(--text); transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cal-day:disabled { color: #444; cursor: default; }
+    .cal-day.today { border: 1px solid var(--gold); }
+    .cal-day.selected { background: var(--gold) !important; color: #111; font-weight: 700; }
+    .cal-slots-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px;
+    }
+    .cal-slot-btn {
+      padding: 13px 4px; background: rgba(212,175,55,0.1);
+      border: 1px solid rgba(212,175,55,0.3); border-radius: 10px;
+      color: var(--gold); font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; text-align: center; -webkit-tap-highlight-color: transparent;
+    }
+    .cal-slot-btn:active { background: var(--gold); color: #111; }
+    .cal-loading { text-align: center; padding: 32px; color: var(--muted); font-size: 14px; }
   </style>
 </head>
 <body>
@@ -1210,6 +1262,63 @@
     <iframe id="yclients-iframe" src="" allow="payment"></iframe>
   </div>
 
+  <!-- CALENDAR BOOKING MODAL -->
+  <div id="cal-modal">
+    <div id="cal-sheet">
+      <button class="cal-close-btn" onclick="closeCalModal()">✕</button>
+
+      <!-- Step 1: Calendar -->
+      <div id="cal-s1">
+        <div class="cal-step-title">Выберите дату</div>
+        <div class="cal-step-sub" id="cal-master-label"></div>
+        <div class="cal-month-nav">
+          <button onclick="calPrevMonth()">‹</button>
+          <span class="cal-month-label" id="cal-month-label"></span>
+          <button onclick="calNextMonth()">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <div class="cal-weekday">Пн</div><div class="cal-weekday">Вт</div>
+          <div class="cal-weekday">Ср</div><div class="cal-weekday">Чт</div>
+          <div class="cal-weekday">Пт</div><div class="cal-weekday">Сб</div>
+          <div class="cal-weekday">Вс</div>
+        </div>
+        <div class="cal-days" id="cal-days-grid"></div>
+      </div>
+
+      <!-- Step 2: Time slots -->
+      <div id="cal-s2" style="display:none">
+        <button class="cal-back-btn" onclick="calShowStep(1)">‹ Назад к дате</button>
+        <div class="cal-step-title">Выберите время</div>
+        <div class="cal-step-sub" id="cal-date-label"></div>
+        <div id="cal-slots-container"></div>
+      </div>
+
+      <!-- Step 3: Form -->
+      <div id="cal-s3" style="display:none">
+        <button class="cal-back-btn" onclick="calShowStep(2)">‹ Назад к времени</button>
+        <div class="cal-step-title">Ваши данные</div>
+        <div class="cal-step-sub" id="cal-booking-summary"></div>
+        <label class="form-label">Ваше имя</label>
+        <input class="form-input" id="cal-input-name" type="text" placeholder="Имя" autocomplete="name">
+        <label class="form-label" style="margin-top:12px">Телефон</label>
+        <input class="form-input" id="cal-input-phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel">
+        <button class="btn-submit" id="cal-submit-btn" onclick="submitCalBooking()" style="margin-top:16px">Записаться</button>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div id="cal-s4" style="display:none">
+        <div class="success-box">
+          <div class="success-icon">✅</div>
+          <div class="success-title">Запись создана!</div>
+          <div class="success-text">Ждём вас в студии. Мы пришлём подтверждение.</div>
+          <div class="success-phone">
+            <a id="cal-success-phone" href="tel:+79299910001" style="color:var(--gold);text-decoration:none;">+7 (929) 991-00-01</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const WEBHOOK_URL = 'https://46.30.43.23.sslip.io:9443/webhook';
 
@@ -1390,7 +1499,7 @@
           btn.addEventListener('click', function(e) {
             e.stopPropagation();
             haptic('impact', 'light');
-            if (YCLIENTS_URLS[m.name]) { openYclientsWidget(m.name); } else { openBookingModal(m.name, currentService); }
+            openBookingModalForMaster(m.name);
           });
         }
         var wBtn = body.querySelector('.js-works-btn');
@@ -1495,8 +1604,210 @@
       document.getElementById('booking-modal').classList.add('open');
     }
 
+    // ── Calendar booking ─────────────────────────────────────────────────────
+    var STAFF_IDS = {
+      'Натали':   72393,   'Видана':   1181036, 'Катрин':   388559,
+      'Лиана':    2040881, 'Кристина': 1654173, 'Камила':   2516402,
+      'Пётр':     431466,  'Светлана': 3887151, 'Варвара':  2746528,
+      'Крис':     3152366, 'Валерия':  3878647,
+    };
+    var VPS_URL = 'https://46.30.43.23.sslip.io:9443';
+    var YCLIENTS_COMPANY = 40048;
+    var MONTH_NAMES_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                          'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+    var MONTH_NAMES_GEN = ['января','февраля','марта','апреля','мая','июня',
+                           'июля','августа','сентября','октября','ноября','декабря'];
+
+    var calState = {
+      master: '', staffId: 0, year: 0, month: 0,
+      selectedDate: '', selectedTime: '', selectedDatetime: '', seanceLen: 3600,
+      services: [],
+    };
+
+    function openCalModal() { document.getElementById('cal-modal').classList.add('open'); }
+    function closeCalModal() {
+      document.getElementById('cal-modal').classList.remove('open');
+      calShowStep(1);
+    }
+    function calShowStep(n) {
+      [1,2,3,4].forEach(function(i) {
+        document.getElementById('cal-s' + i).style.display = i === n ? '' : 'none';
+      });
+    }
+
+    function p2(n) { return n < 10 ? '0' + n : '' + n; }
+
+    function openCalendarBooking(masterName) {
+      var staffId = STAFF_IDS[masterName];
+      if (!staffId) { openBookingModal(masterName, ''); return; }
+      calState.master = masterName;
+      calState.staffId = staffId;
+      calState.services = [];
+      var now = new Date();
+      calState.year = now.getFullYear();
+      calState.month = now.getMonth();
+      document.getElementById('cal-master-label').textContent = masterName;
+      calShowStep(1);
+      calRenderCalendar();
+      openCalModal();
+      // Fetch services in background for booking POST
+      fetch(VPS_URL + '/yclients/staff_services/' + YCLIENTS_COMPANY + '/' + staffId)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var arr = (d && d.data) ? d.data : [];
+          calState.services = arr.map(function(s) { return s.id; });
+        })
+        .catch(function() {});
+    }
+
+    function calRenderCalendar() {
+      var y = calState.year, m = calState.month;
+      document.getElementById('cal-month-label').textContent = MONTH_NAMES_RU[m] + ' ' + y;
+      var firstDow = new Date(y, m, 1).getDay(); // 0=Sun
+      firstDow = (firstDow + 6) % 7; // Mon=0
+      var dim = new Date(y, m + 1, 0).getDate();
+      var today = new Date(); today.setHours(0,0,0,0);
+      var html = '';
+      for (var i = 0; i < firstDow; i++) html += '<div></div>';
+      for (var d = 1; d <= dim; d++) {
+        var dt = new Date(y, m, d);
+        var ds = y + '-' + p2(m + 1) + '-' + p2(d);
+        var cls = 'cal-day';
+        if (dt.getTime() === today.getTime()) cls += ' today';
+        if (dt < today) {
+          html += '<button class="' + cls + '" disabled>' + d + '</button>';
+        } else {
+          html += '<button class="' + cls + '" onclick="calSelectDate(\'' + ds + '\',this)">' + d + '</button>';
+        }
+      }
+      document.getElementById('cal-days-grid').innerHTML = html;
+    }
+
+    function calPrevMonth() {
+      if (calState.month === 0) { calState.month = 11; calState.year--; }
+      else calState.month--;
+      calRenderCalendar();
+    }
+    function calNextMonth() {
+      if (calState.month === 11) { calState.month = 0; calState.year++; }
+      else calState.month++;
+      calRenderCalendar();
+    }
+
+    function calSelectDate(dateStr, btn) {
+      haptic('impact', 'light');
+      calState.selectedDate = dateStr;
+      document.querySelectorAll('#cal-days-grid .cal-day').forEach(function(b) {
+        b.classList.remove('selected');
+      });
+      if (btn) btn.classList.add('selected');
+      var parts = dateStr.split('-');
+      var label = parseInt(parts[2]) + ' ' + MONTH_NAMES_GEN[parseInt(parts[1]) - 1];
+      document.getElementById('cal-date-label').textContent = label + ' — ' + calState.master;
+      calShowStep(2);
+      var cont = document.getElementById('cal-slots-container');
+      cont.innerHTML = '<div class="cal-loading">Загрузка слотов...</div>';
+      fetch(VPS_URL + '/yclients/book_times/' + YCLIENTS_COMPANY + '/' + calState.staffId + '/' + dateStr)
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var slots = Array.isArray(d) ? d : (d && Array.isArray(d.data) ? d.data : []);
+          if (!slots.length) {
+            cont.innerHTML = '<div class="cal-loading">На эту дату нет свободного времени</div>';
+            return;
+          }
+          var html = '<div class="cal-slots-grid">';
+          slots.forEach(function(slot) {
+            var t = slot.time || (slot.datetime ? slot.datetime.split(' ')[1].slice(0, 5) : '?');
+            var slen = slot.seance_length || 3600;
+            var dt = slot.datetime || (dateStr + ' ' + t + ':00');
+            html += '<button class="cal-slot-btn" onclick="calSelectSlot(\'' + t + '\',' + slen + ',\'' + dt + '\')">' + t + '</button>';
+          });
+          html += '</div>';
+          cont.innerHTML = html;
+        })
+        .catch(function() {
+          cont.innerHTML = '<div class="cal-loading">Ошибка загрузки. Попробуйте другую дату.</div>';
+        });
+    }
+
+    function calSelectSlot(timeStr, seanceLen, datetime) {
+      haptic('impact', 'medium');
+      calState.selectedTime = timeStr;
+      calState.seanceLen = seanceLen;
+      calState.selectedDatetime = datetime;
+      var parts = calState.selectedDate.split('-');
+      var summary = calState.master + ' · ' + parseInt(parts[2]) + ' ' + MONTH_NAMES_GEN[parseInt(parts[1]) - 1] + ' · ' + timeStr;
+      document.getElementById('cal-booking-summary').textContent = summary;
+      // Pre-fill name from Telegram
+      try {
+        var u = Telegram.WebApp.initDataUnsafe.user;
+        if (u) {
+          var fn = [u.first_name, u.last_name].filter(Boolean).join(' ');
+          if (fn) document.getElementById('cal-input-name').value = fn;
+        }
+      } catch(e) {}
+      var btn = document.getElementById('cal-submit-btn');
+      btn.disabled = false; btn.textContent = 'Записаться';
+      calShowStep(3);
+    }
+
+    function submitCalBooking() {
+      var name  = document.getElementById('cal-input-name').value.trim();
+      var phone = document.getElementById('cal-input-phone').value.trim();
+      if (!name) { document.getElementById('cal-input-name').focus(); return; }
+      if (!phone) { document.getElementById('cal-input-phone').focus(); return; }
+      var btn = document.getElementById('cal-submit-btn');
+      btn.disabled = true; btn.textContent = 'Отправляем...';
+      var body = {
+        phone: phone, fullname: name, email: '',
+        appointments: [{
+          id: 1,
+          services: calState.services.length ? [calState.services[0]] : [],
+          staff_id: calState.staffId,
+          datetime: calState.selectedDatetime,
+          seance_length: calState.seanceLen
+        }]
+      };
+      fetch(VPS_URL + '/yclients/book_record/' + YCLIENTS_COMPANY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.success === false) throw new Error('api error');
+        haptic('notification', 'success');
+        calShowStep(4);
+        setTimeout(closeCalModal, 5000);
+      })
+      .catch(function() {
+        // Fallback: send to telegram webhook so admin is notified
+        fetch(WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: name, phone: phone,
+            telegram: tgUsername || '—',
+            service: currentService || 'PMU',
+            master: calState.master,
+            datetime: calState.selectedDatetime
+          })
+        }).catch(function() {});
+        haptic('notification', 'success');
+        calShowStep(4);
+        setTimeout(closeCalModal, 5000);
+      });
+    }
+
+    document.getElementById('cal-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeCalModal();
+    });
+    // ─────────────────────────────────────────────────────────────────────────
+
     function openBookingModalForMaster(masterName) {
-      if (YCLIENTS_URLS[masterName]) {
+      if (STAFF_IDS[masterName]) {
+        openCalendarBooking(masterName);
+      } else if (YCLIENTS_URLS[masterName]) {
         openYclientsWidget(masterName);
       } else {
         openBookingModal(masterName, '');
@@ -2098,9 +2409,7 @@
                 '<div style="display:flex;gap:6px;">' +
                   worksBtn +
                   (function(){
-                    var bookOnclick = m.yclients_url
-                      ? 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openYclientsWidgetUrl(\'' + m.yclients_url + '\')'
-                      : 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')';
+                    var bookOnclick = 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')';
                     return '<button class="btn-book" onclick="' + bookOnclick + '">Выбрать</button>';
                   })() +
                 '</div>' +
