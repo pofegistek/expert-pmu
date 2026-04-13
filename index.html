@@ -1847,8 +1847,7 @@
         if (dynData && dynData[categoryFilter]) {
           result = result.concat(dynData[categoryFilter]);
         }
-        // Если по категории ничего — показываем всё
-        if (!result.length) return getMasterPhotos(masterName, null);
+        // Если нет фото по категории — возвращаем пустой массив (не fallback)
       } else {
         // Все фото
         if (staticData) {
@@ -1875,9 +1874,18 @@
         if (service.indexOf(key) !== -1) { catFilter = SVC_CAT_MAP[key]; break; }
       }
       var photos = getMasterPhotos(masterName, catFilter);
-      if (!photos || !photos.length) return;
-      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
       var grid = document.getElementById('works-grid');
+      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
+      if (!photos || !photos.length) {
+        if (catFilter) {
+          // Есть фильтр по категории, но фото нет — показываем пустое состояние
+          var catName = DYN_CAT_MAP[catFilter] || catFilter;
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ по категории «' + catName + '» пока нет</div>';
+          document.getElementById('works-modal').classList.add('open');
+        }
+        // Если нет фильтра и нет фото — не открываем
+        return;
+      }
       grid.innerHTML = photos.map(function(src) {
         return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
       }).join('');
