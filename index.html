@@ -1611,6 +1611,31 @@
       'Пётр':     431466,  'Светлана': 3887151, 'Варвара':  2746528,
       'Крис':     3152366, 'Валерия':  3878647,
     };
+    // service_id по категории (из YClients book_services)
+    // ключи: 'брови' | 'губы' | 'веки' | 'удаление'
+    var SERVICE_MAP = {
+      72393:   { брови: 12000834, губы: 12000865, веки: 12000849, удаление: 12209349 }, // Натали
+      1181036: { брови: 13365183, губы: 12000862, веки: 12000848, удаление: 12209349 }, // Видана
+      388559:  { брови: 12000837, губы: 12000866, веки: 12000851, удаление: 12209349 }, // Катрин
+      2040881: { брови: 12000837, губы: 12000866, веки: 12000851, удаление: 12209349 }, // Лиана
+      1654173: { брови: 12000580, губы: 12000584, веки: 12000582, удаление: 12209349 }, // Кристина (коррекция)
+      2516402: { брови: 12000837, губы: 12000866, веки: 12000851, удаление: 12209349 }, // Камила
+      431466:  { брови: 12000659, губы: 12000666, веки: 12000663, удаление: 12000659 }, // Пётр (лазер PicoSure)
+      3887151: { брови: 12000838, губы: 12000869, веки: 12000852, удаление: 12209349 }, // Светлана
+      2746528: { брови: 12000838, губы: 12000869, веки: 12000852, удаление: 12209349 }, // Варвара
+      3152366: { брови: 12000838, губы: 12000869, веки: 12000852, удаление: 12209349 }, // Крис
+      3878647: { брови: 13382974, губы: 12000867, веки: 12000856, удаление: 12209349 }, // Валерия
+    };
+    function getServiceId(staffId, serviceName) {
+      var map = SERVICE_MAP[staffId];
+      if (!map) return null;
+      var s = (serviceName || '').toLowerCase();
+      if (s.indexOf('бров') !== -1) return map.брови;
+      if (s.indexOf('губ')  !== -1) return map.губы;
+      if (s.indexOf('век')  !== -1) return map.веки;
+      if (s.indexOf('удален') !== -1 || s.indexOf('лазер') !== -1) return map.удаление;
+      return null;
+    }
     var VPS_URL = 'https://46.30.43.23.sslip.io:9443';
     var YCLIENTS_COMPANY = 40048;
     var MONTH_NAMES_RU = ['Январь','Февраль','Март','Апрель','Май','Июнь',
@@ -1723,7 +1748,8 @@
       var cont = document.getElementById('cal-slots-container');
       cont.innerHTML = '<div class="cal-loading">Загрузка слотов...</div>';
       var timesUrl = VPS_URL + '/yclients/book_times/' + YCLIENTS_COMPANY + '/' + calState.staffId + '/' + dateStr;
-      if (calState.services.length) timesUrl += '?service_ids[]=' + calState.services[0];
+      var timeSvcId = getServiceId(calState.staffId, currentService) || (calState.services.length ? calState.services[0] : null);
+      if (timeSvcId) timesUrl += '?service_ids[]=' + timeSvcId;
       fetch(timesUrl)
         .then(function(r) { return r.json(); })
         .then(function(d) {
@@ -1822,7 +1848,7 @@
         comment: comment, type: '1', notify_by_sms: 0, notify_by_email: 0,
         appointments: [{
           id: 1,
-          services: calState.services.length ? [calState.services[0]] : [],
+          services: (function(){ var sid = getServiceId(calState.staffId, currentService) || (calState.services.length ? calState.services[0] : null); return sid ? [sid] : []; })(),
           staff_id: calState.staffId,
           datetime: calState.selectedDatetime,
           seance_length: calState.seanceLen
@@ -1849,7 +1875,7 @@
         // Перезагружаем слоты для этой даты чтобы занятое время исчезло
         var savedDate = calState.selectedDate;
         var savedStaff = calState.staffId;
-        var savedSvc = calState.services[0];
+        var savedSvc = getServiceId(calState.staffId, currentService) || (calState.services.length ? calState.services[0] : null);
         setTimeout(function() {
           var url = VPS_URL + '/yclients/book_times/' + YCLIENTS_COMPANY + '/' + savedStaff + '/' + savedDate;
           if (savedSvc) url += '?service_ids[]=' + savedSvc;
