@@ -1768,13 +1768,16 @@
           seance_length: calState.seanceLen
         }]
       };
-      fetch(VPS_URL + '/yclients/book_record/' + YCLIENTS_COMPANY, {
+      var bookUrl = VPS_URL + '/yclients/book_record/' + YCLIENTS_COMPANY;
+      console.log('[booking] POST', bookUrl, JSON.stringify(body));
+      fetch(bookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
       .then(function(r) { return r.json(); })
       .then(function(d) {
+        console.log('[booking] response:', JSON.stringify(d));
         if (d && d.success === false) throw new Error('api error');
         haptic('notification', 'success');
         calShowStep(4);
