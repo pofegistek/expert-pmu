@@ -1281,14 +1281,15 @@
       } catch(e) {}
     }
 
+    var YCLIENTS_URLS = {};
+    MASTERS.forEach(function(m) { if (m.yclients) YCLIENTS_URLS[m.name] = m.yclients; });
+
     function openYclientsWidget(masterName) {
-      var m = MASTERS.find(function(x) { return x.name === masterName; });
-      var url = m && m.yclients;
-      if (!url) { openBookingModal(masterName, ''); return; }
-      trackEvent('booking_click');
-      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
-        Telegram.WebApp.openLink(url, {try_instant_view: true});
-      } else {
+      var url = YCLIENTS_URLS[masterName];
+      if (!url) return;
+      try {
+        window.Telegram.WebApp.openLink(url);
+      } catch(e) {
         window.open(url, '_blank');
       }
     }
