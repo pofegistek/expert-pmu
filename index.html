@@ -1094,7 +1094,7 @@
 
       var body = document.createElement('div');
       body.className = 'master-body';
-      var worksBtn = (MASTER_PHOTOS[m.name] || dynWorks[m.name])
+      var worksBtn = (MASTER_PHOTOS[m.name] || (dynWorks && dynWorks[m.name]))
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       body.innerHTML =
@@ -1241,7 +1241,7 @@
     });
 
     function hasMasterWorks(masterName) {
-      return !!(MASTER_PHOTOS[masterName] || dynWorks[masterName]);
+      return !!(MASTER_PHOTOS[masterName] || (dynWorks && dynWorks[masterName]));
     }
 
     function renderMasterCard(m) {
@@ -1538,14 +1538,14 @@
       },
     };
 
+    // Динамические фото работ (загружаются с VPS /master-works)
+    var dynWorks = {};
+
     // Render static masters into their level containers
     MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
       var el = document.getElementById(LEVEL_CONTAINER[m.level]);
       if (el) el.appendChild(renderMasterCard(m));
     });
-
-    // Динамические фото работ (загружаются с VPS /master-works)
-    var dynWorks = {};
     var DYN_CAT_MAP = {
       'brows':   'Брови',
       'lips':    'Губы',
