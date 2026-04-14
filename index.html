@@ -28,7 +28,6 @@
       overflow-x: hidden;
     }
 
-    /* ── HEADER ── */
     .header {
       position: sticky;
       top: 0;
@@ -72,7 +71,6 @@
       margin-bottom: 12px;
     }
 
-    /* ── TOP TABS ── */
     .top-tabs { display: flex; }
     .top-tab {
       flex: 1;
@@ -90,12 +88,10 @@
     }
     .top-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-    /* ── CONTENT ── */
     .content { padding: 16px 12px 90px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
 
-    /* ── SECTION TITLE ── */
     .section-title {
       font-size: 12px;
       font-weight: 600;
@@ -106,7 +102,6 @@
     }
     .section-title:first-child { margin-top: 0; }
 
-    /* ── PROMO CARDS ── */
     .promo-card {
       background: var(--card);
       border: 1px solid var(--gold);
@@ -152,22 +147,25 @@
       color: var(--gold);
       line-height: 1;
     }
-    .btn-promo {
-      width: 100%;
+
+    .btn-promo, .btn-service, .btn-book {
       background: var(--gold);
       color: #000;
       border: none;
-      border-radius: 10px;
-      padding: 10px;
-      font-size: 13px;
-      font-weight: 700;
       cursor: pointer;
+      font-weight: 700;
       -webkit-tap-highlight-color: transparent;
       transition: opacity 0.15s;
     }
-    .btn-promo:active { opacity: 0.75; }
+    .btn-promo:active, .btn-service:active, .btn-book:active { opacity: 0.75; }
 
-    /* ── SERVICE CARD ── */
+    .btn-promo {
+      width: 100%;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
     .service-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -202,20 +200,14 @@
     }
     .service-desc { font-size: 12px; color: var(--dark-muted); margin-top: 2px; line-height: 1.4; }
     .service-price { font-size: 13px; font-weight: 600; color: var(--gold); white-space: nowrap; }
+
     .btn-service {
-      background: var(--gold);
-      color: #000;
-      border: none;
       border-radius: 8px;
       padding: 5px 14px;
       font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
       flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
-      transition: opacity 0.15s;
     }
-    .btn-service:active { opacity: 0.75; }
+
     .btn-works {
       width: 100%; background: transparent; color: var(--gold);
       border: 1px solid rgba(201,169,110,0.4); border-radius: 8px;
@@ -223,7 +215,7 @@
       -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
     }
     .btn-works:active { opacity: 0.7; }
-    /* Works modal */
+
     .works-modal-overlay {
       display: none; position: fixed; inset: 0; z-index: 200;
       background: rgba(0,0,0,0.85); align-items: flex-end; justify-content: center;
@@ -246,7 +238,6 @@
     .works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .works-grid img { width: 100%; border-radius: 10px; display: block; aspect-ratio: 3/4; object-fit: cover; }
 
-    /* ── MASTER PICK LIST ── */
     .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .back-btn {
       background: none; border: 1px solid var(--border); border-radius: 8px;
@@ -259,7 +250,6 @@
       flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* ── MASTER CARD ── */
     .master-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -288,14 +278,14 @@
     .master-name { font-size: 14px; font-weight: 700; color: var(--text); }
     .master-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
     .master-price { font-size: 12px; font-weight: 600; color: var(--gold); white-space: nowrap; }
-    .btn-book {
-      background: var(--gold); color: #000; border: none; border-radius: 8px;
-      padding: 6px 14px; font-size: 12px; font-weight: 600; cursor: pointer;
-      flex-shrink: 0; -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
-    }
-    .btn-book:active { opacity: 0.75; }
 
-    /* ── GALLERY ── */
+    .btn-book {
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
     .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     .gallery-card {
       background: var(--card);
@@ -310,7 +300,6 @@
     .gallery-label { font-size: 15px; font-weight: 700; color: var(--gold); text-align: center; }
     .gallery-sub { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; }
 
-    /* ── REVIEWS ── */
     .review-card {
       background: var(--card);
       border: 1px solid var(--border);
@@ -323,7 +312,6 @@
     .review-stars { font-size: 13px; color: var(--gold); letter-spacing: 1px; }
     .review-text { font-size: 12px; color: var(--muted); line-height: 1.55; }
 
-    /* ── ABOUT ── */
     .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
     .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; text-align: center; }
     .stat-value { font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1; }
@@ -337,7 +325,19 @@
     .contact-text a { color: var(--gold); text-decoration: none; }
     .why-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ── BOTTOM NAV ── */
+    .social-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #161616;
+      border: 0.5px solid #222;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
       background: var(--bg); border-top: 1px solid var(--border);
@@ -353,7 +353,6 @@
     .nav-btn .nav-icon { font-size: 18px; }
     .nav-btn.active { color: var(--gold); }
 
-    /* ── MODAL ── */
     .modal-overlay {
       display: none; position: fixed; inset: 0; z-index: 200;
       background: rgba(0,0,0,0.7); align-items: flex-end; justify-content: center;
@@ -387,7 +386,7 @@
     .success-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
     .success-text { font-size: 14px; color: var(--muted); line-height: 1.5; }
     .success-phone { font-size: 15px; font-weight: 600; color: var(--gold); margin-top: 12px; }
-    /* ── YClients iframe modal ── */
+
     #yclients-modal {
       display: none;
       position: fixed;
@@ -425,7 +424,6 @@
 </head>
 <body>
 
-  <!-- HEADER -->
   <div class="header">
     <div class="header-top">
       <span class="header-location">Expert PMU · Москва</span>
@@ -441,17 +439,12 @@
     </div>
   </div>
 
-  <!-- CONTENT -->
   <div class="content">
 
-    <!-- УСЛУГИ -->
     <div class="tab-pane active" id="tab-services">
 
-      <!-- Список услуг -->
       <div id="services-list">
 
-
-        <!-- КОНТАКТ БЛОК -->
         <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
           <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;">Остались вопросы? Напишите нам</div>
           <div style="display:flex;gap:10px;">
@@ -459,7 +452,6 @@
           </div>
         </div>
 
-        <!-- УСЛУГИ -->
         <div class="section-title">Перманентный макияж</div>
         <div class="service-card" data-service="Брови">
           <div class="service-card-top">
@@ -639,7 +631,6 @@
         </div>
       </div>
 
-      <!-- Выбор мастера (скрыт) -->
       <div id="masters-pick" style="display:none;">
         <div class="master-pick-header">
           <button class="back-btn" onclick="backToServices()">← Назад</button>
@@ -650,261 +641,18 @@
 
     </div><!-- /tab-services -->
 
-    <!-- МАСТЕРА -->
     <div class="tab-pane" id="tab-masters">
-
       <div class="section-title">VIP мастера</div>
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/natali.jpg" alt="Натали" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#3a2e1a;">Н</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
-            <div class="master-name">Натали</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 48 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Натали')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Натали')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/vidana.jpg" alt="Видана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#3a2e1a;">В</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#c9a96e;">VIP мастер</div>
-            <div class="master-name">Видана</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 36 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Видана')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Видана')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div id="dyn-vip"></div>
-
       <div class="section-title">Ведущие мастера</div>
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/katrin.jpg" alt="Катрин" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-            <div class="master-name">Катрин</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 30 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Катрин')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Катрин')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/liana.jpg" alt="Лиана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a2e1a;">Л</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-            <div class="master-name">Лиана</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 30 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Лиана')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Лиана')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/kamila.jpg" alt="Камила" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a2e1a;">К</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7abf7a;">Ведущий мастер</div>
-            <div class="master-name">Камила</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 30 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Камила')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Камила')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div id="dyn-vedushchie"></div>
-
       <div class="section-title">Топ-мастера</div>
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/svetlana.jpg" alt="Светлана" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a1f2e;">С</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-            <div class="master-name">Светлана</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 15 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Светлана')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Светлана')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/kris.jpg" alt="Крис" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a1f2e;">К</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-            <div class="master-name">Крис</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 15 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Крис')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Крис')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/varvara.jpg" alt="Варвара" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-            <div class="master-name">Варвара</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 15 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Варвара')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Варвара')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/valeriya.jpg" alt="Валерия" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a1f2e;">В</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-            <div class="master-name">Валерия</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">от 12 000 ₽</div>
-            <div style="display:flex;gap:6px;">
-              <button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('light')}catch(e){}; openMasterWorks('Валерия')">Примеры работ</button>
-              <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Валерия')">Выбрать</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/petr.jpg" alt="Пётр" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#1a1f2e;">П</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#7a9fd4;">Топ-мастер</div>
-            <div class="master-name">Пётр</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">Удаление лазером</div>
-            <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Пётр')">Выбрать</button>
-          </div>
-        </div>
-      </div>
-
       <div id="dyn-top"></div>
-
       <div class="section-title">Врач-косметолог</div>
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/olga.jpg" alt="Ольга Владимировна" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#22183a;">О</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
-            <div class="master-name">Ольга Владимировна</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">По записи</div>
-            <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Ольга Владимировна')">Выбрать</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="master-card">
-        <div class="master-photo">
-          <img src="images/milana.jpg" alt="Милана Аслановна" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-          <div class="master-avatar" style="display:none;background:#10001a;color:#b07ad4;">М</div>
-        </div>
-        <div class="master-body">
-          <div>
-            <div class="master-level" style="color:#b07ad4;">Врач-косметолог</div>
-            <div class="master-name">Милана Аслановна</div>
-            <div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">Инъекции · нити · RF-лифтинг</div>
-          </div>
-          <div class="master-footer">
-            <div class="master-price">По записи</div>
-            <button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred('medium')}catch(e){}; openBookingModalForMaster('Милана Аслановна')">Выбрать</button>
-          </div>
-        </div>
-      </div>
-
       <div id="dyn-vrach"></div>
-
-      <div id="section-master" style="display:none;">
-        <div class="section-title">Мастера</div>
-        <div id="dyn-master"></div>
-      </div>
-
+      <div id="section-master" style="display:none;"><div class="section-title">Мастера</div><div id="dyn-master"></div></div>
     </div><!-- /tab-masters -->
 
-    <!-- О НАС -->
     <div class="tab-pane" id="tab-about">
       <div class="stats-grid">
         <div class="stat-card">
@@ -925,7 +673,6 @@
         </div>
       </div>
 
-      <!-- ОТЗЫВЫ -->
       <div class="section-title">Отзывы клиентов</div>
 
       <div class="review-card">
@@ -999,12 +746,10 @@
       </div>
     </div><!-- /tab-about -->
 
-    <!-- СВЯЗЬ -->
     <div class="tab-pane" id="tab-contact">
       <div class="section-title">МЫ В СОЦИАЛЬНЫХ СЕТЯХ</div>
 
-      <!-- Instagram -->
-      <div onclick="Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -1029,8 +774,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- Telegram -->
-      <div id="settings-tg-btn" onclick="Telegram.WebApp.openLink('https://t.me/+79299910001')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" id="settings-tg-btn" onclick="Telegram.WebApp.openLink('https://t.me/+79299910001')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#29B6F6"/>
@@ -1044,8 +788,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- TikTok -->
-      <div onclick="Telegram.WebApp.openLink('https://www.tiktok.com/@expert_pmu_udalenie?lang=en')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.tiktok.com/@expert_pmu_udalenie?lang=en')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#010101"/>
@@ -1060,8 +803,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- YouTube -->
-      <div onclick="Telegram.WebApp.openLink('https://www.youtube.com/channel/UCXfH_cb_HNV8F8vgUJckmtw')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.youtube.com/channel/UCXfH_cb_HNV8F8vgUJckmtw')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#FF0000"/>
@@ -1076,8 +818,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- ВКонтакте -->
-      <div onclick="Telegram.WebApp.openLink('https://vk.com/id707325454')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="Telegram.WebApp.openLink('https://vk.com/id707325454')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#0077FF"/>
@@ -1091,8 +832,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- Яндекс Карты -->
-      <div onclick="Telegram.WebApp.openLink('https://yandex.ru/maps/org/112477280854/reviews?utm_source=badge&utm_medium=rating&utm_campaign=v1')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="Telegram.WebApp.openLink('https://yandex.ru/maps/org/112477280854/reviews?utm_source=badge&utm_medium=rating&utm_campaign=v1')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
           <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="40" height="40" rx="10" fill="#FC3F1D"/>
@@ -1106,8 +846,7 @@
         <div style="font-size:20px;color:#c9a96e;">›</div>
       </div>
 
-      <!-- Сайт -->
-      <div onclick="window.Telegram.WebApp.openLink('https://expert-pmu.ru')" style="display:flex;align-items:center;gap:14px;background:#161616;border:0.5px solid #222;border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;-webkit-tap-highlight-color:transparent;">
+      <div class="social-row" onclick="window.Telegram.WebApp.openLink('https://expert-pmu.ru')">
         <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:#1a2a3a;display:flex;align-items:center;justify-content:center;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.8" fill="none"/>
@@ -1128,7 +867,6 @@
 
   </div><!-- /content -->
 
-  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <div class="nav-btn active" data-tab="services">
       <span class="nav-icon">✂️</span>
@@ -1211,9 +949,12 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://46.30.43.23.sslip.io:9443/webhook';
+    var VPS_URL = 'https://46.30.43.23.sslip.io:9443';
+    function apiFetch(path) {
+      return fetch(VPS_URL + path).then(function(r) { return r.json(); });
+    }
+    var WEBHOOK_URL = VPS_URL + '/webhook';
 
-    // ── Telegram Web App ──
     if (window.Telegram && window.Telegram.WebApp) {
       Telegram.WebApp.ready();
       Telegram.WebApp.expand();
@@ -1227,7 +968,6 @@
       }
     }
 
-    // ── Tab switching ──
     function haptic(type, value) {
       var hf = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback;
       if (!hf) return;
@@ -1265,21 +1005,20 @@
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
 
-    // ── Masters data ──
     var MASTERS = [
-      { name: 'Натали',            photo: 'images/natali.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 48 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'Н' },
-      { name: 'Видана',            photo: 'images/vidana.jpg',   level: 'VIP мастер',      levelColor: '#c9a96e', price: 'от 36 000 ₽', avatarBg: '#3a2e1a', avatarLetter: 'В' },
-      { name: 'Катрин',            photo: 'images/katrin.jpg',   level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
-      { name: 'Лиана',             photo: 'images/liana.jpg',    level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'Л' },
-      { name: 'Светлана',          photo: 'images/svetlana.jpg', level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'С' },
-      { name: 'Камила',            photo: 'images/kamila.jpg',   level: 'Ведущий мастер',  levelColor: '#7abf7a', price: 'от 30 000 ₽', avatarBg: '#1a2e1a', avatarLetter: 'К' },
-      { name: 'Крис',              photo: 'images/kris.jpg',     level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'К' },
-      { name: 'Варвара',           photo: 'images/varvara.jpg',  level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 15 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
-      { name: 'Валерия',           photo: 'images/valeriya.jpg', level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'от 12 000 ₽', avatarBg: '#1a1f2e', avatarLetter: 'В' },
-      { name: 'Пётр',              photo: 'images/petr.jpg',     level: 'Топ-мастер',      levelColor: '#7a9fd4', price: 'Лазерное удаление', avatarBg: '#1a1f2e', avatarLetter: 'П' },
-      { name: 'Ольга Владимировна',photo: 'images/olga.jpg',     level: 'Врач-косметолог', levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'О' },
-      { name: 'Милана',            photo: '',                    level: 'Косметолог',       levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'М' },
-      { name: 'Ксения',            photo: '',                    level: 'Косметолог',       levelColor: '#b07ad4', price: 'По записи',    avatarBg: '#22183a', avatarLetter: 'К' },
+      { name:'Натали',            photo:'images/natali.jpg',   level:'VIP мастер',      levelColor:'#c9a96e', price:'от 48 000 ₽',      avatarBg:'#3a2e1a', avatarLetter:'Н', yclients:'https://n62546.yclients.com',  tab:true },
+      { name:'Видана',            photo:'images/vidana.jpg',   level:'VIP мастер',      levelColor:'#c9a96e', price:'от 36 000 ₽',      avatarBg:'#3a2e1a', avatarLetter:'В', yclients:'https://n521920.yclients.com', tab:true },
+      { name:'Катрин',            photo:'images/katrin.jpg',   level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'К', yclients:'https://n501106.yclients.com', tab:true },
+      { name:'Лиана',             photo:'images/liana.jpg',    level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'Л', yclients:'https://n795398.yclients.com', tab:true },
+      { name:'Камила',            photo:'images/kamila.jpg',   level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'К', yclients:'https://n963781.yclients.com', tab:true },
+      { name:'Светлана',          photo:'images/svetlana.jpg', level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'С', yclients:'https://n1447051.yclients.com', tab:true },
+      { name:'Крис',              photo:'images/kris.jpg',     level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'К', yclients:'https://n1109020.yclients.com', tab:true },
+      { name:'Варвара',           photo:'images/varvara.jpg',  level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'В', yclients:'https://n984861.yclients.com',  tab:true },
+      { name:'Валерия',           photo:'images/valeriya.jpg', level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 12 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'В', yclients:'https://n1449154.yclients.com', tab:true },
+      { name:'Пётр',              photo:'images/petr.jpg',     level:'Топ-мастер',      levelColor:'#7a9fd4', price:'Удаление лазером', avatarBg:'#1a1f2e', avatarLetter:'П', yclients:'https://n1449154.yclients.com', tab:true },
+      { name:'Ольга Владимировна',photo:'images/olga.jpg',     level:'Врач-косметолог', levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'О', yclients:'', tab:true },
+      { name:'Милана Аслановна',  photo:'images/milana.jpg',   level:'Врач-косметолог', levelColor:'#b07ad4', price:'По записи',        avatarBg:'#10001a', avatarLetter:'М', avatarColor:'#b07ad4', spec:'Инъекции · нити · RF-лифтинг', yclients:'', tab:true },
+      { name:'Ксения',            photo:'',                    level:'Косметолог',       levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'К', yclients:'', tab:false },
     ];
 
     var SERVICE_MASTERS = {
@@ -1293,9 +1032,9 @@
       'RF-лифтинг Morpheus8':                   ['Ольга Владимировна'],
       'Фотоомоложение Lumecca':                 ['Ольга Владимировна'],
       'SMAS-лифтинг Ultraformer':               ['Ольга Владимировна'],
-      'Ботулинотерапия':                        ['Ольга Владимировна','Милана','Ксения'],
-      'Биоревитализация':                       ['Ольга Владимировна','Милана','Ксения'],
-      'Увеличение губ':                         ['Ольга Владимировна','Милана','Ксения'],
+      'Ботулинотерапия':                        ['Ольга Владимировна','Милана Аслановна','Ксения'],
+      'Биоревитализация':                       ['Ольга Владимировна','Милана Аслановна','Ксения'],
+      'Увеличение губ':                         ['Ольга Владимировна','Милана Аслановна','Ксения'],
     };
 
     var currentService = '';
@@ -1313,21 +1052,6 @@
       currentService = serviceName;
       document.getElementById('pick-title').textContent = serviceName;
       var names = SERVICE_MASTERS[serviceName] || [];
-      var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
-      var list = document.getElementById('pick-list');
-      list.innerHTML = '';
-      masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
-      document.getElementById('services-list').style.display = 'none';
-      document.getElementById('masters-pick').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function selectService(card) {
-      var service = card.dataset.service;
-      currentService = service;
-      document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
-      document.getElementById('pick-title').textContent = service;
-      var names = SERVICE_MASTERS[service] || [];
       var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
       var list = document.getElementById('pick-list');
       list.innerHTML = '';
@@ -1412,7 +1136,6 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // ── Booking modal ──
     var bookingMaster = '';
     var bookingService = '';
 
@@ -1424,20 +1147,6 @@
       if (tgUser && tgUser.username) tgUsername = '@' + tgUser.username;
     } catch(e) {}
 
-    var YCLIENTS_URLS = {
-      'Натали':   'https://n62546.yclients.com',
-      'Видана':   'https://n521920.yclients.com',
-      'Катрин':   'https://n501106.yclients.com',
-      'Лиана':    'https://n795398.yclients.com',
-      'Кристина': 'https://n618275.yclients.com',
-      'Камила':   'https://n963781.yclients.com',
-      'Пётр':     'https://n1449154.yclients.com',
-      'Светлана': 'https://n1447051.yclients.com',
-      'Варвара':  'https://n984861.yclients.com',
-      'Крис':     'https://n1109020.yclients.com',
-      'Валерия':  'https://n1449154.yclients.com',
-    };
-
     function openYclientsWidgetUrl(url) {
       document.getElementById('yclients-iframe').src = url;
       document.getElementById('yclients-modal').classList.add('open');
@@ -1447,7 +1156,7 @@
       try {
         var uid = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user)
           ? Telegram.WebApp.initDataUnsafe.user.id : 0;
-        fetch('https://46.30.43.23.sslip.io:9443/track', {
+        fetch(VPS_URL + '/track', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({event: event, user_id: uid})
@@ -1456,7 +1165,8 @@
     }
 
     function openYclientsWidget(masterName) {
-      var url = YCLIENTS_URLS[masterName];
+      var m = MASTERS.find(function(x) { return x.name === masterName; });
+      var url = m && m.yclients;
       if (!url) { openBookingModal(masterName, ''); return; }
       trackEvent('booking_click');
       openYclientsWidgetUrl(url);
@@ -1509,63 +1219,58 @@
       document.getElementById('booking-modal').classList.add('open');
     }
 
-    // ── Booking ──────────────────────────────────────────────────────────────
-
     function openBookingModalForMaster(masterName) {
       haptic('impact', 'medium');
       openYclientsWidget(masterName);
     }
-    var openBookingForm = openBookingModalForMaster;
 
     function closeModal() {
       document.getElementById('booking-modal').classList.remove('open');
     }
 
-    // ── Works modal ──
-    var WORKS_PHOTOS = {
-      'Брови': [
-        {src:'images/works/brows_1.jpg', master:'Валерия'},
-        {src:'images/works/brows_2.jpg', master:'Варвара'},
-        {src:'images/works/brows_3.jpg', master:'Кристина'},
-        {src:'images/works/brows_4.jpg', master:'Камила'},
-        {src:'images/works/brows_5.jpg', master:'Светлана'},
-      ],
-      'Губы': [
-        {src:'images/works/lips_1.jpg', master:'Натали'},
-        {src:'images/works/lips_2.jpg', master:'Видана'},
-        {src:'images/works/lips_3.jpg', master:'Катрин'},
-        {src:'images/works/lips_4.jpg', master:'Лиана'},
-        {src:'images/works/lips_5.jpg', master:'Варвара'},
-      ],
-      'Веки': [
-        {src:'images/works/eyelid_1.jpg', master:'Кристина'},
-        {src:'images/works/eyelid_2.jpg', master:'Катрин'},
-        {src:'images/works/eyelid_3.jpg', master:'Лиана'},
-        {src:'images/works/eyelid_4.jpg', master:'Видана'},
-        {src:'images/works/eyelid_5.jpg', master:'Натали'},
-      ],
-      'Лазер': [],
-    };
-    function openWorksModal(category, masterName) {
-      var entries = WORKS_PHOTOS[category] || [];
-      var title = 'Работы — ' + (masterName || category);
-      document.getElementById('works-modal-title').textContent = title;
-      var grid = document.getElementById('works-grid');
-      grid.innerHTML = entries.map(function(e) {
-        var caption = e.caption || (e.master ? 'Работа мастера ' + e.master : '');
-        return '<div style="display:flex;flex-direction:column;">'
-          + '<img src="' + e.src + '" alt="' + category + '" onerror="this.parentNode.innerHTML=\'<div style=&quot;background:#1a1a1a;border-radius:10px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;&quot;><span style=&quot;font-size:32px;&quot;>📷</span><span style=&quot;font-size:11px;color:#c9a96e;&quot;>' + caption + '</span></div>\'">'
-          + (caption ? '<div style="font-size:11px;color:#c9a96e;text-align:center;margin-top:4px;">' + caption + '</div>' : '')
-          + '</div>';
-      }).join('');
-      document.getElementById('works-modal').classList.add('open');
-    }
     function closeWorksModal() {
       document.getElementById('works-modal').classList.remove('open');
     }
     document.getElementById('works-modal').addEventListener('click', function(e) {
       if (e.target === this) closeWorksModal();
     });
+
+    function hasMasterWorks(masterName) {
+      return !!(MASTER_PHOTOS[masterName] || dynWorks[masterName]);
+    }
+
+    function renderMasterCard(m) {
+      var card = document.createElement('div');
+      card.className = 'master-card';
+      var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
+      var photoHtml = m.photo
+        ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+          '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
+        : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
+      var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
+      var worksBtn = hasMasterWorks(m.name)
+        ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
+        : '';
+      var bookBtn = '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>';
+      var footerRight = worksBtn ? '<div style="display:flex;gap:6px;">' + worksBtn + bookBtn + '</div>' : bookBtn;
+      card.innerHTML =
+        '<div class="master-photo">' + photoHtml + '</div>' +
+        '<div class="master-body">' +
+          '<div><div class="master-level" style="color:' + (m.levelColor || '#888') + ';">' + m.level + '</div>' +
+          '<div class="master-name">' + m.name + '</div>' + specHtml + '</div>' +
+          '<div class="master-footer"><div class="master-price">' + m.price + '</div>' + footerRight + '</div>' +
+        '</div>';
+      return card;
+    }
+
+    var LEVEL_CONTAINER = {
+      'VIP мастер':      'dyn-vip',
+      'Ведущий мастер':  'dyn-vedushchie',
+      'Топ-мастер':      'dyn-top',
+      'Врач-косметолог': 'dyn-vrach',
+      'Косметолог':      'dyn-vrach',
+      'Мастер':          'dyn-master',
+    };
 
     var MASTER_PHOTOS = {
       'Крис': {
@@ -1826,7 +1531,14 @@
         ],
       },
     };
-    // Динамические фото работ (загружают��я с VPS /master-works)
+
+    // Render static masters into their level containers
+    MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
+      var el = document.getElementById(LEVEL_CONTAINER[m.level]);
+      if (el) el.appendChild(renderMasterCard(m));
+    });
+
+    // Динамические фото работ (загружаются с VPS /master-works)
     var dynWorks = {};
     var DYN_CAT_MAP = {
       'brows':   'Брови',
@@ -1842,7 +1554,6 @@
       'удал': 'removal',
       'космет': 'cosmo',
     };
-
 
     function getMasterPhotos(masterName, categoryFilter) {
       // Собираем фото из MASTER_PHOTOS (статика) + dynWorks (динамика)
@@ -1873,10 +1584,6 @@
         }
       }
       return result;
-    }
-
-    function hasMasterWorks(masterName) {
-      return !!(MASTER_PHOTOS[masterName] || dynWorks[masterName]);
     }
 
     function openMasterWorks(masterName) {
@@ -1946,7 +1653,6 @@
       });
     }
 
-    // ── Prices ───────────────────────────────────────────────────────────────
     var PRICE_SERVICE_MAP = {
       'брови':            'Брови',
       'губы':             'Губы',
@@ -1958,8 +1664,7 @@
       'Биоревитализация': 'Биоревитализация',
     };
     setTimeout(function() {
-      fetch('https://46.30.43.23.sslip.io:9443/prices')
-        .then(function(r) { return r.json(); })
+      apiFetch('/prices')
         .then(function(prices) {
           console.log('[prices] received:', prices);
           Object.keys(prices).forEach(function(key) {
@@ -1974,9 +1679,7 @@
         .catch(function(e) { console.error('[prices] fetch error:', e); });
     }, 500);
 
-    // ── Settings (phone, telegram) ────────────────────────────────────────────
-    fetch('https://46.30.43.23.sslip.io:9443/settings')
-      .then(function(r) { return r.json(); })
+    apiFetch('/settings')
       .then(function(s) {
         if (!s) return;
         if (s.phone) {
@@ -2003,10 +1706,8 @@
       })
       .catch(function() {});
 
-    // ── Static master prices ──────────────────────────────────────────────────
     setTimeout(function() {
-      fetch('https://46.30.43.23.sslip.io:9443/static-master-prices')
-        .then(function(r) { return r.json(); })
+      apiFetch('/static-master-prices')
         .then(function(prices) {
           if (!prices || typeof prices !== 'object') return;
           document.querySelectorAll('.master-card').forEach(function(card) {
@@ -2025,10 +1726,8 @@
         .catch(function() {});
     }, 600);
 
-    // ── Hidden masters ────────────────────────────────────────────────────────
     setTimeout(function() {
-      fetch('https://46.30.43.23.sslip.io:9443/hidden-masters')
-        .then(function(r) { return r.json(); })
+      apiFetch('/hidden-masters')
         .then(function(hidden) {
           if (!Array.isArray(hidden) || hidden.length === 0) return;
           // Скрываем статические карточки мастеров на вкладке Мастера
@@ -2046,36 +1745,18 @@
 
     var hiddenMasters = [];
 
-    // ── Dynamic masters from VPS ──────────────────────────────────────────────
-    var DYN_LEVEL_COLORS = {
-      'VIP мастер':      '#c9a96e',
-      'Ведущий мастер':  '#7abf7a',
-      'Топ-мастер':      '#7a9fd4',
-      'Мастер':          '#888',
-      'Врач-косметолог': '#b07ad4',
-    };
-    var DYN_LEVEL_CONTAINER = {
-      'VIP мастер':      'dyn-vip',
-      'Ведущий мастер':  'dyn-vedushchie',
-      'Топ-мастер':      'dyn-top',
-      'Врач-косметолог': 'dyn-vrach',
-      'Мастер':          'dyn-master',
-    };
-
-    fetch('https://46.30.43.23.sslip.io:9443/master-works')
-      .then(function(r) { return r.json(); })
+    apiFetch('/master-works')
       .then(function(data) {
         if (data && typeof data === 'object') dynWorks = data;
       })
       .catch(function() {})
-      .then(function() { return fetch('https://46.30.43.23.sslip.io:9443/masters'); })
-      .then(function(r) { return r.json(); })
+      .then(function() { return apiFetch('/masters'); })
       .then(function(dynMasters) {
         if (!Array.isArray(dynMasters) || dynMasters.length === 0) return;
         dynMasters.forEach(function(m) {
           // Добавляем в массив MASTERS для букинга
           if (!MASTERS.find(function(x) { return x.name === m.name; })) {
-            MASTERS.push(m);
+            MASTERS.push({ name:m.name, photo:m.photo, level:m.level, levelColor:m.levelColor||'#888', price:m.price, avatarBg:m.avatarBg||'#1e1e2e', avatarLetter:m.avatarLetter||m.name[0], yclients:m.yclients_url||'' });
           }
           // Добавляем в SERVICE_MASTERS
           (m.services || []).forEach(function(svc) {
@@ -2085,41 +1766,9 @@
             }
           });
 
-          // Цвет уровня: из API или из карты
-          var levelColor = DYN_LEVEL_COLORS[m.level] || m.levelColor || '#888';
+          var card = renderMasterCard({ name:m.name, photo:m.photo, level:m.level, levelColor:m.levelColor||'#888', price:m.price, avatarBg:m.avatarBg||'#1e1e2e', avatarLetter:m.avatarLetter||m.name[0] });
 
-          // Кнопка примеров работ
-          var worksBtn = hasMasterWorks(m.name)
-            ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
-            : '';
-
-          // Карточка
-          var card = document.createElement('div');
-          card.className = 'master-card';
-          card.innerHTML =
-            '<div class="master-photo">' +
-              '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
-              '<div class="master-avatar" style="display:none;background:' + (m.avatarBg || '#1e1e2e') + ';">' + (m.avatarLetter || m.name[0]) + '</div>' +
-            '</div>' +
-            '<div class="master-body">' +
-              '<div>' +
-                '<div class="master-level" style="color:' + levelColor + ';">' + m.level + '</div>' +
-                '<div class="master-name">' + m.name + '</div>' +
-              '</div>' +
-              '<div class="master-footer">' +
-                '<div class="master-price">' + m.price + '</div>' +
-                '<div style="display:flex;gap:6px;">' +
-                  worksBtn +
-                  (function(){
-                    var bookOnclick = 'try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')';
-                    return '<button class="btn-book" onclick="' + bookOnclick + '">Выбрать</button>';
-                  })() +
-                '</div>' +
-              '</div>' +
-            '</div>';
-
-          // Вставляем в нужную секцию по уровню
-          var containerId = DYN_LEVEL_CONTAINER[m.level] || 'dyn-vrach';
+          var containerId = LEVEL_CONTAINER[m.level] || 'dyn-vrach';
           var container = document.getElementById(containerId);
           if (containerId === 'dyn-master') {
             var sec = document.getElementById('section-master');
