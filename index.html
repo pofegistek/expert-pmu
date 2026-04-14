@@ -1271,7 +1271,7 @@
       var url = m && m.yclients;
       if (!url) { openBookingModal(masterName, ''); return; }
       trackEvent('booking_click');
-      openYclientsWidgetUrl(url);
+      openLink(url);
     }
 
     function closeYclientsModal() {
