@@ -1897,6 +1897,7 @@
 
     apiFetch('/master-services')
       .then(function(data) {
+        console.log('[master-services] received:', JSON.stringify(data));
         if (data && typeof data === 'object') {
           Object.keys(data).forEach(function(masterName) {
             (data[masterName] || []).forEach(function(svc) {
@@ -1906,9 +1907,10 @@
               }
             });
           });
+          console.log('[master-services] SERVICE_MASTERS updated:', JSON.stringify(SERVICE_MASTERS));
         }
       })
-      .catch(function() {});
+      .catch(function(e) { console.log('[master-services] error:', e); });
 
     apiFetch('/master-works')
       .then(function(data) {
