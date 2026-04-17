@@ -1895,12 +1895,35 @@
 
     var hiddenMasters = [];
 
+    // Translate short service keys (from /addservice command) to full SERVICE_MASTERS keys
+    var SHORT_TO_SERVICE = {
+      'брови':           'Брови',
+      'губы':            'Губы',
+      'веки':            'Веки и стрелки',
+      'камуфляж':        'Камуфляж шрамов, рубцов, трихопигментация',
+      'лазер':           'Лазерное удаление (неодим)',
+      'пикосекундный':   'Пикосекундные лазеры PicoSure / PicoPlus',
+      'ремувер':         'Удаление ремувером',
+      'rf-лифтинг':      'RF-лифтинг Morpheus8',
+      'lumecca':         'Фотоомоложение Lumecca',
+      'smas':            'SMAS-лифтинг Ultraformer',
+      'эндосфера':       'Эндосферотерапия тела/лица',
+      'эндолифт':        'Эндолифтинг лица/тела',
+      'co2':             'Лазерная шлифовка CO2',
+      'ботулинотерапия': 'Ботулинотерапия',
+      'биоревитализация':'Биоревитализация',
+      'контурная':       'Контурная пластика',
+      'плазмотерапия':   'Плазмотерапия PRP CORTEXIL',
+      'коллаген':        'Коллаген и белок лосося (Plinest)',
+    };
+
     apiFetch('/master-services')
       .then(function(data) {
         console.log('[master-services] received:', JSON.stringify(data));
         if (data && typeof data === 'object') {
           Object.keys(data).forEach(function(masterName) {
-            (data[masterName] || []).forEach(function(svc) {
+            (data[masterName] || []).forEach(function(shortSvc) {
+              var svc = SHORT_TO_SERVICE[shortSvc] || shortSvc;
               if (!SERVICE_MASTERS[svc]) SERVICE_MASTERS[svc] = [];
               if (SERVICE_MASTERS[svc].indexOf(masterName) === -1) {
                 SERVICE_MASTERS[svc].push(masterName);
