@@ -1056,12 +1056,65 @@
     <iframe id="yclients-iframe" src="" allow="payment"></iframe>
   </div>
 
+  <div id="global-loader" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#fff;font-size:14px;">Загрузка…</div>
+  <div id="toast-msg" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:10000;display:none;"></div>
+
   <script>
     var VPS_URL = 'https://46.30.43.23.sslip.io:9443';
     function apiFetch(path) {
       return fetch(VPS_URL + path).then(function(r) { return r.json(); });
     }
     var WEBHOOK_URL = VPS_URL + '/webhook';
+
+    function showGlobalLoader() { var el=document.getElementById('global-loader'); if(el) el.style.display='flex'; }
+    function hideGlobalLoader() { var el=document.getElementById('global-loader'); if(el) el.style.display='none'; }
+    function showToast(msg) {
+      var el=document.getElementById('toast-msg');
+      if(!el) return;
+      el.textContent=msg; el.style.display='block';
+      setTimeout(function(){ el.style.display='none'; }, 3500);
+    }
+
+    function loadAllData() {
+      showGlobalLoader();
+      return Promise.all([
+        apiFetch('/masters-full'),
+        apiFetch('/services-full')
+      ]).then(function(results) {
+        var mastersData = results[0] || [];
+        var servicesData = results[1] || [];
+
+        MASTERS.length = 0;
+        mastersData.forEach(function(m) { MASTERS.push(m); });
+
+        Object.keys(SERVICE_MASTERS).forEach(function(k) { delete SERVICE_MASTERS[k]; });
+        servicesData.forEach(function(s) {
+          SERVICE_MASTERS[s.name] = s.masters || [];
+        });
+
+        try {
+          localStorage.setItem('cache_masters', JSON.stringify(mastersData));
+          localStorage.setItem('cache_services', JSON.stringify(servicesData));
+        } catch(e) {}
+
+        hideGlobalLoader();
+      }).catch(function(err) {
+        console.error('[loadAllData] failed:', err);
+        try {
+          var cachedM = JSON.parse(localStorage.getItem('cache_masters') || '[]');
+          var cachedS = JSON.parse(localStorage.getItem('cache_services') || '[]');
+          if (cachedM.length) {
+            MASTERS.length = 0;
+            cachedM.forEach(function(m) { MASTERS.push(m); });
+            cachedS.forEach(function(s) { SERVICE_MASTERS[s.name] = s.masters || []; });
+            showToast('Используются кэшированные данные (нет связи с сервером)');
+          } else {
+            showToast('Не удалось загрузить данные. Попробуйте позже.');
+          }
+        } catch(e) {}
+        hideGlobalLoader();
+      });
+    }
 
     if (window.Telegram && window.Telegram.WebApp) {
       Telegram.WebApp.ready();
@@ -1113,46 +1166,9 @@
       btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
     });
 
-    var YCL = 'https://n1007529.yclients.com/company/40048/personal/menu?o=m';
-    var MASTERS = [
-      { name:'Натали',            photo:'images/natali.jpg',   level:'VIP мастер',      levelColor:'#c9a96e', price:'от 48 000 ₽',      avatarBg:'#3a2e1a', avatarLetter:'Н', yclients:YCL+'72393',   tab:true },
-      { name:'Видана',            photo:'images/vidana.jpg',   level:'VIP мастер',      levelColor:'#c9a96e', price:'от 36 000 ₽',      avatarBg:'#3a2e1a', avatarLetter:'В', yclients:YCL+'1181036', tab:true },
-      { name:'Катрин',            photo:'images/katrin.jpg',   level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'К', yclients:YCL+'388559',  tab:true },
-      { name:'Лиана',             photo:'images/liana.jpg',    level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'Л', yclients:YCL+'2040881', tab:true },
-      { name:'Камила',            photo:'images/kamila.jpg',   level:'Ведущий мастер',  levelColor:'#7abf7a', price:'от 30 000 ₽',      avatarBg:'#1a2e1a', avatarLetter:'К', yclients:YCL+'2516402', tab:true },
-      { name:'Светлана',          photo:'images/svetlana.jpg', level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'С', yclients:YCL+'3887151', tab:true },
-      { name:'Крис',              photo:'images/kris.jpg',     level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'К', yclients:YCL+'3152366', tab:true },
-      { name:'Варвара',           photo:'images/varvara.jpg',  level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 15 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'В', yclients:YCL+'2746528', tab:true },
-      { name:'Валерия',           photo:'images/valeriya.jpg', level:'Топ-мастер',      levelColor:'#7a9fd4', price:'от 12 000 ₽',      avatarBg:'#1a1f2e', avatarLetter:'В', yclients:YCL+'3878647', tab:true },
-      { name:'Пётр',              photo:'images/petr.jpg',     level:'Лазерный мастер', levelColor:'#7a9fd4', price:'Удаление лазером', avatarBg:'#1a1f2e', avatarLetter:'П', yclients:YCL+'431466',  tab:true },
-      { name:'Ольга Владимировна',photo:'images/olga.jpg',     level:'Врач-косметолог', levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'О', yclients:YCL+'1921150', tab:true },
-      { name:'Милана Аслановна',  photo:'images/milana.jpg',   level:'Врач-косметолог', levelColor:'#b07ad4', price:'По записи',        avatarBg:'#10001a', avatarLetter:'М', avatarColor:'#b07ad4', spec:'Инъекции · нити · RF-лифтинг', yclients:YCL+'3507146', tab:true },
-      { name:'Алёна',             photo:'images/alena.jpg',    level:'Врач-косметолог', levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'А', yclients:YCL+'3516195', tab:true },
-      { name:'Екатерина',         photo:'images/ekaterina.jpg',level:'Косметолог',      levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'Е', yclients:YCL+'4215187', tab:true },
-      { name:'Елена',             photo:'images/elena.jpg',    level:'Косметолог',      levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'Е', yclients:YCL+'3504867', tab:true },
-      { name:'Ксения',            photo:'',                    level:'Косметолог',      levelColor:'#b07ad4', price:'По записи',        avatarBg:'#22183a', avatarLetter:'К', yclients:'', tab:false },
-    ];
+    var MASTERS = [];  // загрузится из /masters-full при старте
 
-    var SERVICE_MASTERS = {
-      'Брови':                                  ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Губы':                                   ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Веки и стрелки':                         ['Натали','Видана','Катрин','Лиана','Светлана','Камила','Крис','Варвара','Валерия'],
-      'Камуфляж шрамов, рубцов, трихопигментация': ['Натали'],
-      'Лазерное удаление (неодим)':              ['Пётр'],
-      'Пикосекундные лазеры PicoSure / PicoPlus': ['Пётр'],
-      'Удаление ремувером':                     ['Пётр'],
-      'RF-лифтинг Morpheus8':                   ['Ольга Владимировна','Алёна','Милана Аслановна','Елена'],
-      'Фотоомоложение Lumecca':                 ['Милана Аслановна','Ольга Владимировна','Алёна','Елена'],
-      'SMAS-лифтинг Ultraformer':               ['Ольга Владимировна','Милана Аслановна','Алёна'],
-      'Эндосферотерапия тела/лица':             ['Алёна','Екатерина','Елена'],
-      'Эндолифтинг лица/тела':                  ['Ольга Владимировна','Милана Аслановна'],
-      'Лазерная шлифовка CO2':                  ['Ольга Владимировна','Милана Аслановна'],
-      'Ботулинотерапия':                        ['Ольга Владимировна','Милана Аслановна'],
-      'Биоревитализация':                       ['Ольга Владимировна','Милана Аслановна','Ксения'],
-      'Контурная пластика':                     ['Милана Аслановна','Ольга Владимировна'],
-      'Плазмотерапия PRP CORTEXIL':             ['Ольга Владимировна','Алёна'],
-      'Коллаген и белок лосося (Plinest)':      ['Алёна','Ольга Владимировна','Милана Аслановна'],
-    };
+    var SERVICE_MASTERS = {};  // загрузится из /services-full при старте
 
     var currentService = '';
 
@@ -1654,10 +1670,12 @@
     // Динамические фото работ (загружаются с VPS /master-works)
     var dynWorks = {};
 
-    // Render static masters into their level containers
-    MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
-      var el = document.getElementById(LEVEL_CONTAINER[m.level]);
-      if (el) el.appendChild(renderMasterCard(m));
+    // Загружаем мастеров и услуги из API, затем рендерим
+    loadAllData().then(function() {
+      MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
+        var el = document.getElementById(LEVEL_CONTAINER[m.level]);
+        if (el) el.appendChild(renderMasterCard(m));
+      });
     });
     var DYN_CAT_MAP = {
       'brows':   'Брови',
@@ -1893,34 +1911,6 @@
     apiFetch('/master-works')
       .then(function(data) {
         if (data && typeof data === 'object') dynWorks = data;
-      })
-      .catch(function() {})
-      .then(function() { return apiFetch('/masters'); })
-      .then(function(dynMasters) {
-        if (!Array.isArray(dynMasters) || dynMasters.length === 0) return;
-        dynMasters.forEach(function(m) {
-          // Добавляем в массив MASTERS для букинга
-          if (!MASTERS.find(function(x) { return x.name === m.name; })) {
-            MASTERS.push({ name:m.name, photo:m.photo, level:m.level, levelColor:m.levelColor||'#888', price:m.price, avatarBg:m.avatarBg||'#1e1e2e', avatarLetter:m.avatarLetter||m.name[0], yclients:m.yclients_url||'' });
-          }
-          // Добавляем в SERVICE_MASTERS
-          (m.services || []).forEach(function(svc) {
-            if (!SERVICE_MASTERS[svc]) SERVICE_MASTERS[svc] = [];
-            if (SERVICE_MASTERS[svc].indexOf(m.name) === -1) {
-              SERVICE_MASTERS[svc].push(m.name);
-            }
-          });
-
-          var card = renderMasterCard({ name:m.name, photo:m.photo, level:m.level, levelColor:m.levelColor||'#888', price:m.price, avatarBg:m.avatarBg||'#1e1e2e', avatarLetter:m.avatarLetter||m.name[0] });
-
-          var containerId = LEVEL_CONTAINER[m.level] || 'dyn-vrach';
-          var container = document.getElementById(containerId);
-          if (containerId === 'dyn-master') {
-            var sec = document.getElementById('section-master');
-            if (sec) sec.style.display = '';
-          }
-          if (container) container.appendChild(card);
-        });
       })
       .catch(function() {});
   </script>
