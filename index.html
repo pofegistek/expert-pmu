@@ -1369,7 +1369,8 @@
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
-      var worksBtn = hasMasterWorks(m.name)
+      var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
+      var worksBtn = (!isCamouflage && hasMasterWorks(m.name))
         ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
         : '';
       var bookBtn = '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>';
