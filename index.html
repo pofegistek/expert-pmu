@@ -1209,7 +1209,8 @@
 
       var body = document.createElement('div');
       body.className = 'master-body';
-      var worksBtn = (MASTER_PHOTOS[m.name] || (dynWorks && dynWorks[m.name]))
+      var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
+      var worksBtn = (!isCamouflage && (MASTER_PHOTOS[m.name] || (dynWorks && dynWorks[m.name])))
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       body.innerHTML =
