@@ -1786,7 +1786,7 @@
       fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: service, master: bookingMaster })
+        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: service, master: bookingMaster, initData: (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp.initData : '' })
       })
       .then(function(r) { return r.json(); })
       .then(function() {
