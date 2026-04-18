@@ -1103,12 +1103,13 @@
       } catch(e) {}
     }
 
-    var YCLIENTS_URLS = {};
-    MASTERS.forEach(function(m) { if (m.yclients) YCLIENTS_URLS[m.name] = m.yclients; });
-
     function openYclientsWidget(masterName) {
-      var url = YCLIENTS_URLS[masterName];
-      if (!url) return;
+      var m = MASTERS.find(function(x) { return x.name === masterName; });
+      var url = m && m.yclients;
+      if (!url) {
+        console.warn('[yclients] no URL for master:', masterName);
+        return;
+      }
       openYclientsWidgetUrl(url);
     }
 
