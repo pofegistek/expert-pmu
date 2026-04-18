@@ -846,11 +846,11 @@
           var btnWrap = document.createElement('div');
           btnWrap.style.cssText = 'display:flex;gap:6px;';
 
-          if (svc.works_key) {
+          if (svc.has_service_gallery || svc.gallery_photo_count > 0 || svc.works_key) {
             var btnWorks = document.createElement('button');
             btnWorks.className = 'btn-works';
             btnWorks.textContent = 'Примеры работ';
-            btnWorks.onclick = (function(k) { return function() { openServiceWorks(k); }; })(svc.works_key);
+            btnWorks.onclick = (function(sid, k) { return function() { openServiceWorks(k, sid); }; })(svc.id, svc.works_key || svc.gallery_folder || '');
             btnWrap.appendChild(btnWorks);
           }
 
@@ -1176,7 +1176,9 @@
     });
 
     function hasMasterWorks(masterName) {
-      return !!(MASTER_PHOTOS[masterName] || (dynWorks && dynWorks[masterName]));
+      if (MASTER_PHOTOS[masterName] || (dynWorks && dynWorks[masterName])) return true;
+      var m = MASTERS.find(function(x) { return x.name === masterName; });
+      return !!(m && m.has_any_gallery);
     }
 
     function renderMasterCard(m) {
@@ -1532,33 +1534,66 @@
       return result;
     }
 
-    function openMasterWorks(masterName) {
+    function openMasterWorks(masterName, serviceId) {
       haptic('impact', 'light');
-      var service = currentService || '';
-      var catFilter = null;
-      for (var key in SVC_CAT_MAP) {
-        if (service.indexOf(key) !== -1) { catFilter = SVC_CAT_MAP[key]; break; }
-      }
-      var photos = getMasterPhotos(masterName, catFilter);
       var grid = document.getElementById('works-grid');
       document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
-      if (!photos || !photos.length) {
-        if (catFilter) {
-          // Есть фильтр по категории, но фото нет — показываем пустое состояние
-          var catName = DYN_CAT_MAP[catFilter] || catFilter;
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ по категории «' + catName + '» пока нет</div>';
-          document.getElementById('works-modal').classList.add('open');
-        }
-        // Если нет фильтра и нет фото — не открываем
-        return;
-      }
-      grid.innerHTML = photos.map(function(src) {
-        return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
-      }).join('');
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
       document.getElementById('works-modal').classList.add('open');
+
+      // Find master object for ID
+      var mObj = MASTERS.find(function(x) { return x.name === masterName; });
+      var masterId = mObj ? mObj.id : null;
+
+      // Find service ID from currentService if not passed
+      var svcId = serviceId || null;
+      if (!svcId && currentService && mObj && mObj.gallery_services) {
+        var gs = mObj.gallery_services.find(function(g) {
+          return currentService.indexOf(g.service_name.substring(0, 4)) !== -1;
+        });
+        if (gs) svcId = gs.service_id;
+      }
+
+      function showStaticPhotos() {
+        var service = currentService || '';
+        var catFilter = null;
+        for (var key in SVC_CAT_MAP) {
+          if (service.indexOf(key) !== -1) { catFilter = SVC_CAT_MAP[key]; break; }
+        }
+        var photos = getMasterPhotos(masterName, catFilter);
+        if (!photos || !photos.length) {
+          if (catFilter) {
+            var catName = DYN_CAT_MAP[catFilter] || catFilter;
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ по категории «' + catName + '» пока нет</div>';
+          } else {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
+          }
+          return;
+        }
+        grid.innerHTML = photos.map(function(src) {
+          return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+        }).join('');
+      }
+
+      if (masterId && svcId) {
+        apiFetch('/master-service-gallery/' + masterId + '/' + svcId)
+          .then(function(data) {
+            if (data && data.photos && data.photos.length) {
+              var base = data.photo_base || ('images/works/' + (data.master_slug || '') + '/' + (data.cat_slug || '') + '/');
+              grid.innerHTML = data.photos.map(function(fname) {
+                return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+            } else {
+              showStaticPhotos();
+            }
+          })
+          .catch(function() { showStaticPhotos(); });
+      } else {
+        showStaticPhotos();
+      }
     }
 
-    function openServiceWorks(folder) {
+    function openServiceWorks(folder, serviceId) {
       haptic('impact', 'light');
       var titleEl = document.getElementById('works-modal-title');
       var grid    = document.getElementById('works-grid');
@@ -1566,20 +1601,51 @@
       titleEl.textContent = 'Примеры работ';
       grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
       modal.classList.add('open');
+
+      function renderPhotos(photos, base) {
+        if (!photos || !photos.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
+        } else {
+          grid.innerHTML = photos.map(function(fname) {
+            return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+          }).join('');
+        }
+      }
+
+      // Try new API first if serviceId provided
+      if (serviceId) {
+        apiFetch('/service-gallery/' + serviceId)
+          .then(function(data) {
+            if (data && data.photos && data.photos.length) {
+              var base = 'images/works/services/' + (data.folder || folder) + '/';
+              renderPhotos(data.photos, base);
+            } else if (folder) {
+              // fallback to photos.json
+              fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+                .catch(function() { renderPhotos([], ''); });
+            } else {
+              renderPhotos([], '');
+            }
+          })
+          .catch(function() {
+            if (folder) {
+              fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+                .catch(function() { renderPhotos([], ''); });
+            } else { renderPhotos([], ''); }
+          });
+        return;
+      }
+
+      // Old behavior: folder only
+      if (!folder) { renderPhotos([], ''); return; }
       fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
         .then(function(r) { return r.ok ? r.json() : []; })
-        .then(function(photos) {
-          if (!photos || !photos.length) {
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
-          } else {
-            grid.innerHTML = photos.map(function(fname) {
-              return '<img src="images/works/services/' + folder + '/' + fname + '" onerror="this.style.display=\'none\'">';
-            }).join('');
-          }
-        })
-        .catch(function() {
-          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
-        });
+        .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+        .catch(function() { renderPhotos([], ''); });
     }
 
     document.getElementById('booking-modal').addEventListener('click', function(e) {
