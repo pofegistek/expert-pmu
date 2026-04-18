@@ -1028,7 +1028,7 @@
       var body = document.createElement('div');
       body.className = 'master-body';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var worksBtn = (!isCamouflage && (MASTER_PHOTOS[m.name] || (dynWorks && dynWorks[m.name])))
+      var worksBtn = (!isCamouflage && hasMasterWorks(m.name))
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       body.innerHTML =
@@ -1485,6 +1485,12 @@
       MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
         var el = document.getElementById(LEVEL_CONTAINER[m.level]);
         if (el) el.appendChild(renderMasterCard(m));
+      });
+      ['section-master', 'section-laser'].forEach(function(secId) {
+        var sec = document.getElementById(secId);
+        if (!sec) return;
+        var container = sec.querySelector('[id^="dyn-"]');
+        sec.style.display = (container && container.children.length > 0) ? 'block' : 'none';
       });
     });
     var DYN_CAT_MAP = {
