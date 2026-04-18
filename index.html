@@ -466,17 +466,7 @@
     </div><!-- /tab-services -->
 
     <div class="tab-pane" id="tab-masters">
-      <div class="section-title">VIP мастера</div>
-      <div id="dyn-vip"></div>
-      <div class="section-title">Ведущие мастера</div>
-      <div id="dyn-vedushchie"></div>
-      <div class="section-title">Топ-мастера</div>
-      <div id="dyn-top"></div>
-      <div class="section-title">Лазерное удаление</div>
-      <div id="dyn-laser"></div>
-      <div class="section-title">Врачи-косметологи</div>
-      <div id="dyn-vrach"></div>
-      <div id="section-master" style="display:none;"><div class="section-title">Мастера</div><div id="dyn-master"></div></div>
+      <div id="masters-levels-container"></div>
     </div><!-- /tab-masters -->
 
     <div class="tab-pane" id="tab-about">
@@ -875,13 +865,20 @@
       showGlobalLoader();
       return Promise.all([
         apiFetch('/masters-full'),
-        apiFetch('/services-sections')
+        apiFetch('/services-sections'),
+        apiFetch('/master-levels')
       ]).then(function(results) {
         var mastersData = results[0] || [];
         var sectionsData = results[1] || [];
+        var levelsData = results[2] || [];
 
         MASTERS.length = 0;
         mastersData.forEach(function(m) { MASTERS.push(m); });
+
+        LEVELS_DATA.length = 0;
+        levelsData.forEach(function(l) { LEVELS_DATA.push(l); });
+        LEVEL_ORDER.length = 0;
+        levelsData.forEach(function(l) { LEVEL_ORDER.push(l.name); });
 
         Object.keys(SERVICE_MASTERS).forEach(function(k) { delete SERVICE_MASTERS[k]; });
         sectionsData.forEach(function(section) {
@@ -891,10 +888,12 @@
         });
 
         renderServiceSections(sectionsData);
+        renderMasterSections(levelsData);
 
         try {
           localStorage.setItem('cache_masters', JSON.stringify(mastersData));
           localStorage.setItem('cache_sections', JSON.stringify(sectionsData));
+          localStorage.setItem('cache_levels', JSON.stringify(levelsData));
         } catch(e) {}
 
         hideGlobalLoader();
@@ -903,15 +902,21 @@
         try {
           var cachedM = JSON.parse(localStorage.getItem('cache_masters') || '[]');
           var cachedSec = JSON.parse(localStorage.getItem('cache_sections') || '[]');
+          var cachedLvl = JSON.parse(localStorage.getItem('cache_levels') || '[]');
           if (cachedM.length) {
             MASTERS.length = 0;
             cachedM.forEach(function(m) { MASTERS.push(m); });
+            LEVELS_DATA.length = 0;
+            cachedLvl.forEach(function(l) { LEVELS_DATA.push(l); });
+            LEVEL_ORDER.length = 0;
+            cachedLvl.forEach(function(l) { LEVEL_ORDER.push(l.name); });
             cachedSec.forEach(function(section) {
               (section.services || []).forEach(function(svc) {
                 SERVICE_MASTERS[svc.name] = svc.masters || [];
               });
             });
             renderServiceSections(cachedSec);
+            renderMasterSections(cachedLvl);
             if (typeof showToast === 'function') showToast('Оффлайн-режим: показаны закэшированные данные');
           } else {
             if (typeof showToast === 'function') showToast('Не удалось загрузить данные. Попробуйте позже.');
@@ -977,12 +982,47 @@
 
     var currentService = '';
 
-    var LEVEL_ORDER = ['VIP мастер','Ведущий мастер','Топ-мастер','Мастер','Врач-косметолог'];
+    var LEVEL_ORDER = [];  // заполняется из /master-levels API
+    var LEVELS_DATA = []; // [{id, name, color, sort_order}]
     function sortByLevel(masters) {
       return masters.slice().sort(function(a, b) {
         var ai = LEVEL_ORDER.indexOf(a.level), bi = LEVEL_ORDER.indexOf(b.level);
         if (ai === -1) ai = 99; if (bi === -1) bi = 99;
         return ai - bi;
+      });
+    }
+
+    function renderMasterSections(levelsData) {
+      var container = document.getElementById('masters-levels-container');
+      if (!container) return;
+      container.innerHTML = '';
+      levelsData.forEach(function(level) {
+        var wrap = document.createElement('div');
+        wrap.className = 'level-section';
+        var title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = level.name;
+        title.style.color = level.color;
+        var inner = document.createElement('div');
+        inner.id = 'dyn-level-' + level.id;
+        inner.className = 'level-masters-container';
+        wrap.appendChild(title);
+        wrap.appendChild(inner);
+        container.appendChild(wrap);
+      });
+    }
+
+    function renderMastersIntoSections() {
+      MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
+        var level = LEVELS_DATA.find(function(l) { return l.name === m.level; });
+        if (!level) return;
+        var el = document.getElementById('dyn-level-' + level.id);
+        if (el) el.appendChild(renderMasterCard(m));
+      });
+      // Hide empty sections
+      document.querySelectorAll('.level-section').forEach(function(sec) {
+        var inner = sec.querySelector('[id^="dyn-level-"]');
+        sec.style.display = (inner && inner.children.length > 0) ? '' : 'none';
       });
     }
 
@@ -1206,16 +1246,6 @@
         '</div>';
       return card;
     }
-
-    var LEVEL_CONTAINER = {
-      'VIP мастер':      'dyn-vip',
-      'Ведущий мастер':  'dyn-vedushchie',
-      'Топ-мастер':      'dyn-top',
-      'Лазерный мастер': 'dyn-laser',
-      'Врач-косметолог': 'dyn-vrach',
-      'Косметолог':      'dyn-vrach',
-      'Мастер':          'dyn-master',
-    };
 
     var MASTER_PHOTOS = {
       'Крис': {
@@ -1480,18 +1510,9 @@
     // Динамические фото работ (загружаются с VPS /master-works)
     var dynWorks = {};
 
-    // Загружаем мастеров и услуги из API, затем рендерим
+    // Загружаем мастеров, услуги и уровни из API, затем рендерим
     loadAllData().then(function() {
-      MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
-        var el = document.getElementById(LEVEL_CONTAINER[m.level]);
-        if (el) el.appendChild(renderMasterCard(m));
-      });
-      ['section-master', 'section-laser'].forEach(function(secId) {
-        var sec = document.getElementById(secId);
-        if (!sec) return;
-        var container = sec.querySelector('[id^="dyn-"]');
-        sec.style.display = (container && container.children.length > 0) ? 'block' : 'none';
-      });
+      renderMastersIntoSections();
     });
     var DYN_CAT_MAP = {
       'brows':   'Брови',
