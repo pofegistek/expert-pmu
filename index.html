@@ -324,6 +324,14 @@
     .contact-text { font-size: 13px; color: var(--text); line-height: 1.4; }
     .contact-text a { color: var(--gold); text-decoration: none; }
     .why-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .branch-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; margin-top: 20px; }
+    .branch-card h3 { font-size: 15px; font-weight: 700; color: var(--gold); margin: 0 0 12px; }
+    .branch-row { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .branch-row:last-child { border-bottom: none; }
+    .branch-row-icon { font-size: 15px; flex-shrink: 0; }
+    .branch-row-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .branch-row-text a { color: var(--gold); text-decoration: none; }
+    .branch-open-map { width: 100%; background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; -webkit-tap-highlight-color: transparent; }
 
     .social-row {
       display: flex;
@@ -523,31 +531,10 @@
         <div class="review-text">RF-лифтинг Morpheus8 — потрясающий эффект! Овал лица подтянулся, текстура кожи заметно улучшилась. Рекомендую всем, кому за 35 — это работает!</div>
       </div>
 
-      <div class="about-block" style="margin-top:20px;">
-        <div class="about-block-title">Контакты</div>
-        <div class="contact-row">
-          <span class="contact-icon">📍</span>
-          <span class="contact-text">Москва, Басманный переулок, 5</span>
-        </div>
-        <div class="contact-row">
-          <span class="contact-icon">🕙</span>
-          <span class="contact-text">Ежедневно, 10:00–22:00</span>
-        </div>
-        <div class="contact-row">
-          <span class="contact-icon">📞</span>
-          <span class="contact-text"><a id="settings-phone-link" href="tel:+79299910001">+7 (929) 991-00-01</a></span>
-        </div>
-        <div class="contact-row">
-          <span class="contact-icon">✈️</span>
-          <span class="contact-text"><a id="settings-tg-link" href="#" onclick="openLink('https://t.me/fomenkoinnaa');return false;">@fomenkoinnaa</a></span>
-        </div>
-      </div>
+      <div id="branches-container"></div>
 
-      <div class="about-block" style="margin-top:20px;">
-        <div class="about-block-title">Мы на карте</div>
-        <iframe src="https://yandex.ru/map-widget/v1/?pt=37.660278,55.763611&z=16&l=map" width="100%" height="200" frameborder="0" style="border-radius:12px;display:block"></iframe>
-        <button onclick="window.Telegram.WebApp.openLink('https://yandex.ru/maps/?pt=37.660278,55.763611&z=16')" style="width:100%;background:#c9a96e;color:#000;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:10px;-webkit-tap-highlight-color:transparent;">Открыть в Яндекс Картах</button>
-      </div>
+      <a id="settings-phone-link" style="display:none" href="tel:+79299910001"></a>
+      <a id="settings-tg-link" style="display:none" href="#"></a>
 
       <div class="about-block">
         <div class="about-block-title">Почему Expert PMU</div>
@@ -564,120 +551,7 @@
 
     <div class="tab-pane" id="tab-contact">
       <div class="section-title">МЫ В СОЦИАЛЬНЫХ СЕТЯХ</div>
-
-      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <radialGradient id="ig1" cx="30%" cy="107%" r="150%">
-                <stop offset="0%" stop-color="#fdf497"/>
-                <stop offset="10%" stop-color="#fdf497"/>
-                <stop offset="50%" stop-color="#fd5949"/>
-                <stop offset="68%" stop-color="#d6249f"/>
-                <stop offset="100%" stop-color="#285AEB"/>
-              </radialGradient>
-            </defs>
-            <rect width="40" height="40" rx="10" fill="url(#ig1)"/>
-            <rect x="11" y="11" width="18" height="18" rx="5" stroke="white" stroke-width="2" fill="none"/>
-            <circle cx="20" cy="20" r="5" stroke="white" stroke-width="2" fill="none"/>
-            <circle cx="26.5" cy="13.5" r="1.2" fill="white"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">Instagram</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Наши работы и акции</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" id="settings-tg-btn" onclick="Telegram.WebApp.openLink('https://t.me/+79299910001')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#29B6F6"/>
-            <path d="M9 19.5L30 11L25 30L18 23L27 15L15 22.5L9 19.5Z" fill="white"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">Telegram</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Написать нам</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.tiktok.com/@expert_pmu_udalenie?lang=en')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#010101"/>
-            <path d="M26 13.5C26.8 14.9 28.1 15.9 29.5 16.2V19.5C28.1 19.5 26.8 19.1 25.7 18.4V24C25.7 27.3 23 30 19.7 30C16.4 30 13.7 27.3 13.7 24C13.7 20.7 16.4 18 19.7 18C19.9 18 20.1 18 20.3 18.1V21.5C20.1 21.4 19.9 21.4 19.7 21.4C18.3 21.4 17.1 22.6 17.1 24C17.1 25.4 18.3 26.6 19.7 26.6C21.1 26.6 22.3 25.4 22.3 24V11H25.6C25.7 11.8 25.8 12.7 26 13.5Z" fill="white"/>
-            <path d="M26 13.5C26.8 14.9 28.1 15.9 29.5 16.2V19.5C28.1 19.5 26.8 19.1 25.7 18.4V24C25.7 27.3 23 30 19.7 30C16.4 30 13.7 27.3 13.7 24C13.7 20.7 16.4 18 19.7 18C19.9 18 20.1 18 20.3 18.1V21.5C20.1 21.4 19.9 21.4 19.7 21.4C18.3 21.4 17.1 22.6 17.1 24C17.1 25.4 18.3 26.6 19.7 26.6C21.1 26.6 22.3 25.4 22.3 24V11H25.6C25.7 11.8 25.8 12.7 26 13.5Z" fill="#69C9D0" fill-opacity="0.5"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">TikTok</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Наши видео</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" onclick="Telegram.WebApp.openLink('https://www.youtube.com/channel/UCXfH_cb_HNV8F8vgUJckmtw')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#FF0000"/>
-            <path d="M31 15.6C31 15.6 30.7 13.6 29.9 12.8C28.9 11.7 27.7 11.7 27.2 11.6C24.2 11.4 20 11.4 20 11.4C20 11.4 15.8 11.4 12.8 11.6C12.3 11.7 11.1 11.7 10.1 12.8C9.3 13.6 9 15.6 9 15.6C9 15.6 8.7 17.9 8.7 20.2V22.4C8.7 24.7 9 27 9 27C9 27 9.3 29 10.1 29.8C11.1 30.9 12.5 30.9 13.1 31C15.3 31.2 20 31.2 20 31.2C20 31.2 24.2 31.2 27.2 31C27.7 30.9 28.9 30.9 29.9 29.8C30.7 29 31 27 31 27C31 27 31.3 24.7 31.3 22.4V20.2C31.3 17.9 31 15.6 31 15.6Z" fill="#FF0000"/>
-            <polygon points="17,15 17,25 26,20" fill="white"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">YouTube</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Наш канал</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" onclick="Telegram.WebApp.openLink('https://vk.com/id707325454')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#0077FF"/>
-            <path d="M21.3 27C14.3 27 10.3 22.3 10.2 14.5H13.7C13.8 20.3 16.4 22.7 18.4 23.2V14.5H21.7V19.4C23.7 19.2 25.7 16.9 26.4 14.5H29.7C29.2 17.5 26.9 19.8 25.3 20.7C26.9 21.4 29.5 23.5 30.5 27H26.9C26 24.5 23.9 22.5 21.7 22.3V27H21.3Z" fill="white"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">ВКонтакте</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Наша страница</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" onclick="Telegram.WebApp.openLink('https://yandex.ru/maps/org/112477280854/reviews?utm_source=badge&utm_medium=rating&utm_campaign=v1')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;overflow:hidden;">
-          <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#FC3F1D"/>
-            <path d="M20 8C15.03 8 11 12.03 11 17C11 22.25 17.5 31 20 31C22.5 31 29 22.25 29 17C29 12.03 24.97 8 20 8ZM20 20.5C18.07 20.5 16.5 18.93 16.5 17C16.5 15.07 18.07 13.5 20 13.5C21.93 13.5 23.5 15.07 23.5 17C23.5 18.93 21.93 20.5 20 20.5Z" fill="white"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">Яндекс Карты</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">Наши отзывы и адрес</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
-
-      <div class="social-row" onclick="window.Telegram.WebApp.openLink('https://expert-pmu.ru')">
-        <div style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:#1a2a3a;display:flex;align-items:center;justify-content:center;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.8" fill="none"/>
-            <ellipse cx="12" cy="12" rx="4" ry="10" stroke="white" stroke-width="1.8" fill="none"/>
-            <line x1="2" y1="12" x2="22" y2="12" stroke="white" stroke-width="1.8"/>
-            <line x1="4" y1="7" x2="20" y2="7" stroke="white" stroke-width="1.5"/>
-            <line x1="4" y1="17" x2="20" y2="17" stroke="white" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:15px;font-weight:600;color:#fff;">Наш сайт</div>
-          <div style="font-size:12px;color:#888;margin-top:2px;">expert-pmu.ru</div>
-        </div>
-        <div style="font-size:20px;color:#c9a96e;">›</div>
-      </div>
+      <div id="social-links-container"></div>
 
     </div><!-- /tab-contact -->
 
@@ -866,11 +740,15 @@
       return Promise.all([
         apiFetch('/masters-full'),
         apiFetch('/services-sections'),
-        apiFetch('/master-levels')
+        apiFetch('/master-levels'),
+        apiFetch('/branches'),
+        apiFetch('/social-links')
       ]).then(function(results) {
         var mastersData = results[0] || [];
         var sectionsData = results[1] || [];
         var levelsData = results[2] || [];
+        var branchesData = results[3] || [];
+        var socialLinksData = results[4] || [];
 
         MASTERS.length = 0;
         mastersData.forEach(function(m) { MASTERS.push(m); });
@@ -889,11 +767,15 @@
 
         renderServiceSections(sectionsData);
         renderMasterSections(levelsData);
+        renderBranches(branchesData);
+        renderSocialLinks(socialLinksData);
 
         try {
           localStorage.setItem('cache_masters', JSON.stringify(mastersData));
           localStorage.setItem('cache_sections', JSON.stringify(sectionsData));
           localStorage.setItem('cache_levels', JSON.stringify(levelsData));
+          localStorage.setItem('cache_branches', JSON.stringify(branchesData));
+          localStorage.setItem('cache_social_links', JSON.stringify(socialLinksData));
         } catch(e) {}
 
         hideGlobalLoader();
@@ -903,6 +785,8 @@
           var cachedM = JSON.parse(localStorage.getItem('cache_masters') || '[]');
           var cachedSec = JSON.parse(localStorage.getItem('cache_sections') || '[]');
           var cachedLvl = JSON.parse(localStorage.getItem('cache_levels') || '[]');
+          var cachedBr = JSON.parse(localStorage.getItem('cache_branches') || '[]');
+          var cachedSL = JSON.parse(localStorage.getItem('cache_social_links') || '[]');
           if (cachedM.length) {
             MASTERS.length = 0;
             cachedM.forEach(function(m) { MASTERS.push(m); });
@@ -917,6 +801,8 @@
             });
             renderServiceSections(cachedSec);
             renderMasterSections(cachedLvl);
+            renderBranches(cachedBr);
+            renderSocialLinks(cachedSL);
             if (typeof showToast === 'function') showToast('Оффлайн-режим: показаны закэшированные данные');
           } else {
             if (typeof showToast === 'function') showToast('Не удалось загрузить данные. Попробуйте позже.');
@@ -1023,6 +909,45 @@
       document.querySelectorAll('.level-section').forEach(function(sec) {
         var inner = sec.querySelector('[id^="dyn-level-"]');
         sec.style.display = (inner && inner.children.length > 0) ? '' : 'none';
+      });
+    }
+
+    function renderBranches(branches) {
+      var c = document.getElementById('branches-container');
+      if (!c) return;
+      c.innerHTML = '';
+      branches.forEach(function(b) {
+        var card = document.createElement('div');
+        card.className = 'branch-card';
+        var html = '<h3>' + b.name + '</h3>';
+        if (b.address) html += '<div class="branch-row"><span class="branch-row-icon">📍</span><span class="branch-row-text">' + b.address + '</span></div>';
+        if (b.working_hours) html += '<div class="branch-row"><span class="branch-row-icon">🕙</span><span class="branch-row-text">' + b.working_hours + '</span></div>';
+        if (b.phone) html += '<div class="branch-row"><span class="branch-row-icon">📞</span><span class="branch-row-text"><a href="tel:' + b.phone + '">' + b.phone + '</a></span></div>';
+        if (b.yandex_map_url) {
+          html += '<iframe src="' + b.yandex_map_url + '" width="100%" height="180" frameborder="0" style="border-radius:10px;display:block;margin-top:10px"></iframe>';
+          var openUrl = b.yandex_map_url.replace('map-widget/v1/', '').replace(/\?.*/, '');
+          html += '<button class="branch-open-map" onclick="(window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink:window.open)(\'' + b.yandex_map_url + '\')">Открыть в Яндекс Картах</button>';
+        }
+        card.innerHTML = html;
+        c.appendChild(card);
+      });
+    }
+
+    function renderSocialLinks(links) {
+      var c = document.getElementById('social-links-container');
+      if (!c) return;
+      c.innerHTML = '';
+      links.forEach(function(link) {
+        var row = document.createElement('div');
+        row.className = 'social-row';
+        row.innerHTML = '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>' +
+          '<span style="font-size:15px;font-weight:600;color:var(--text);flex:1">' + link.name + '</span>' +
+          '<span style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px">' + (link.url || '') + '</span>';
+        row.onclick = function() {
+          if (link.source_key) { try { trackEvent(link.source_key); } catch(e) {} }
+          openLink(link.url);
+        };
+        c.appendChild(row);
       });
     }
 
