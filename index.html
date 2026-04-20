@@ -237,6 +237,28 @@
     }
     .works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .works-grid img { width: 100%; border-radius: 10px; display: block; aspect-ratio: 3/4; object-fit: cover; }
+    .gallery-empty-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.88);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gallery-empty {
+      background: #1a1a2e; border-radius: 20px;
+      padding: 32px 24px; text-align: center; width: 100%; max-width: 360px;
+    }
+    .gallery-empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .gallery-empty-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .gallery-empty-subtitle { font-size: 14px; color: #aaa; margin-bottom: 24px; white-space: pre-line; line-height: 1.5; }
+    .gallery-empty-book {
+      display: block; width: 100%; background: var(--gold, #c9a96e); border: none;
+      color: #000; border-radius: 10px; padding: 12px; font-size: 15px;
+      font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    }
+    .gallery-empty-close {
+      display: block; width: 100%; background: transparent; border: 1px solid #444;
+      color: #aaa; border-radius: 10px; padding: 10px; font-size: 14px; cursor: pointer;
+    }
 
     .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
     .back-btn {
@@ -710,11 +732,11 @@
           var btnWrap = document.createElement('div');
           btnWrap.style.cssText = 'display:flex;gap:6px;';
 
-          if (svc.has_service_gallery || svc.gallery_photo_count > 0 || svc.works_key) {
+          if (svc.show_works_button === 1 || svc.show_works_button === undefined) {
             var btnWorks = document.createElement('button');
             btnWorks.className = 'btn-works';
             btnWorks.textContent = 'Примеры работ';
-            btnWorks.onclick = (function(sid, k) { return function() { openServiceWorks(k, sid); }; })(svc.id, svc.works_key || svc.gallery_folder || '');
+            btnWorks.onclick = (function(sid, sname) { return function(e) { e.stopPropagation(); openServiceGallery(sid, sname); }; })(svc.id, svc.name);
             btnWrap.appendChild(btnWorks);
           }
 
@@ -993,7 +1015,8 @@
       var body = document.createElement('div');
       body.className = 'master-body';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var worksBtn = (!isCamouflage && hasMasterWorks(m.name))
+      var showMasterWorksBtn = (m.show_works_button === 1 || m.show_works_button === undefined) && !isCamouflage;
+      var worksBtn = showMasterWorksBtn
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       body.innerHTML =
@@ -1023,10 +1046,10 @@
         }
         var wBtn = body.querySelector('.js-works-btn');
         if (wBtn) {
-          wBtn.addEventListener('click', function(e) {
+          wBtn.addEventListener('click', (function(mid, mname) { return function(e) {
             e.stopPropagation();
-            openMasterWorks(m.name);
-          });
+            openMasterWorksPicker(mid, mname);
+          }; })(m.id, m.name));
         }
       }, 0);
 
@@ -1157,8 +1180,9 @@
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var worksBtn = (!isCamouflage && hasMasterWorks(m.name))
-        ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorks(\'' + m.name + '\')">Примеры работ</button>'
+      var showMasterWorksBtnCard = (m.show_works_button === 1 || m.show_works_button === undefined) && !isCamouflage;
+      var worksBtn = showMasterWorksBtnCard
+        ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorksPicker(' + m.id + ',\'' + m.name.replace(/'/g, "\\'") + '\')">Примеры работ</button>'
         : '';
       var bookBtn = '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>';
       var footerRight = worksBtn ? '<div style="display:flex;gap:6px;">' + worksBtn + bookBtn + '</div>' : bookBtn;
@@ -1599,6 +1623,98 @@
         .then(function(r) { return r.ok ? r.json() : []; })
         .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
         .catch(function() { renderPhotos([], ''); });
+    }
+
+    function showEmptyGalleryScreen(title, subtitle, onBookClick) {
+      var existing = document.getElementById('gallery-empty-overlay');
+      if (existing) existing.remove();
+      var overlay = document.createElement('div');
+      overlay.id = 'gallery-empty-overlay';
+      overlay.className = 'gallery-empty-overlay';
+      overlay.innerHTML =
+        '<div class="gallery-empty">' +
+          '<div class="gallery-empty-icon">📷</div>' +
+          '<div class="gallery-empty-title">' + title + '</div>' +
+          '<div class="gallery-empty-subtitle">' + subtitle + '</div>' +
+          '<button class="gallery-empty-book">Записаться</button>' +
+          '<button class="gallery-empty-close">Назад</button>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      overlay.querySelector('.gallery-empty-book').onclick = function() {
+        overlay.remove();
+        if (onBookClick) onBookClick();
+      };
+      overlay.querySelector('.gallery-empty-close').onclick = function() {
+        overlay.remove();
+      };
+    }
+
+    function openServiceGallery(serviceId, serviceName) {
+      haptic('impact', 'light');
+      var titleEl = document.getElementById('works-modal-title');
+      var grid = document.getElementById('works-grid');
+      var modal = document.getElementById('works-modal');
+      titleEl.textContent = serviceName;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      modal.classList.add('open');
+
+      apiFetch('/service-gallery/' + serviceId)
+        .then(function(data) {
+          if (data && data.photos && data.photos.length) {
+            var base = 'images/works/services/' + (data.folder || '') + '/';
+            grid.innerHTML = data.photos.map(function(fname) {
+              return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+            }).join('');
+          } else {
+            modal.classList.remove('open');
+            showEmptyGalleryScreen(
+              'Примеры работ',
+              'Скоро добавим примеры работ по услуге «' + serviceName + '».\nА пока можно записаться:',
+              function() { bookService(serviceName); }
+            );
+          }
+        })
+        .catch(function() {
+          modal.classList.remove('open');
+          showEmptyGalleryScreen(
+            'Примеры работ',
+            'Скоро добавим примеры работ по услуге «' + serviceName + '».\nА пока можно записаться:',
+            function() { bookService(serviceName); }
+          );
+        });
+    }
+
+    function openMasterWorksPicker(masterId, masterName) {
+      haptic('impact', 'light');
+      apiFetch('/master-galleries/' + masterId)
+        .then(function(data) {
+          var galleries = (data && data.galleries ? data.galleries : []).filter(function(g) { return g.count > 0; });
+          if (!galleries.length) {
+            showEmptyGalleryScreen(
+              masterName,
+              'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
+              function() { openBookingModalForMaster(masterName); }
+            );
+            return;
+          }
+          if (galleries.length === 1) {
+            openMasterWorks(masterName, galleries[0].service_id);
+            return;
+          }
+          var titleEl = document.getElementById('works-modal-title');
+          var grid = document.getElementById('works-grid');
+          var modal = document.getElementById('works-modal');
+          titleEl.textContent = masterName + ' — выберите услугу';
+          grid.innerHTML = galleries.map(function(g) {
+            return '<button onclick="closeWorksModal();setTimeout(function(){openMasterWorks(\'' + masterName.replace(/'/g, "\\'") + '\',' + g.service_id + ')},80)" ' +
+              'style="grid-column:1/-1;background:#1a1a2e;border:1px solid #333;color:#fff;border-radius:10px;padding:14px;font-size:15px;cursor:pointer;text-align:left;">' +
+              g.service_name + '</button>';
+          }).join('');
+          modal.classList.add('open');
+        })
+        .catch(function() {
+          openMasterWorks(masterName, null);
+        });
     }
 
     document.getElementById('booking-modal').addEventListener('click', function(e) {
