@@ -1048,9 +1048,11 @@
       var worksBtn = showMasterWorksBtn
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
+      var effectiveColor = (m.service_colors && currentServiceId && m.service_colors[currentServiceId])
+        || m.levelColor;
       body.innerHTML =
         '<div>' +
-          '<div class="master-level" style="color:' + m.levelColor + ';">' + m.level + '</div>' +
+          '<div class="master-level" style="color:' + effectiveColor + ';">' + m.level + '</div>' +
           '<div class="master-name">' + m.name + '</div>' +
         '</div>' +
         '<div class="master-footer">' +
