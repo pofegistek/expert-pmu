@@ -956,6 +956,16 @@
       });
     }
 
+    var SOCIAL_SVG = {
+      'Instagram': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#feda75"/><stop offset="25%" stop-color="#fa7e1e"/><stop offset="50%" stop-color="#d62976"/><stop offset="75%" stop-color="#962fbf"/><stop offset="100%" stop-color="#4f5bd5"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#ig-g)"/><rect x="7" y="7" width="18" height="18" rx="5" fill="none" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="5" fill="none" stroke="white" stroke-width="2.2"/><circle cx="22" cy="10" r="1.6" fill="white"/></svg>`,
+      'Telegram': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="#229ED9"/><path d="M7.1 15.8L22 9.4l-2.9 13.7-4.7-3.4-2.2 2.1v-3.4l8.2-7.8-9.4 6.1-3.9-1z" fill="white"/></svg>`,
+      'TikTok': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#010101"/><path d="M20.75 8.5h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V12.8a7.5 7.5 0 004.5 1.5V11.1a4.6 4.6 0 01-4.5-2.6z" fill="#25F4EE" opacity="0.55"/><path d="M21.25 9h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V13.3a7.5 7.5 0 004.5 1.5V11.6a4.6 4.6 0 01-4.5-2.6z" fill="#FE2C55" opacity="0.55"/><path d="M21 8.75h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V13.05a7.5 7.5 0 004.5 1.5V11.35a4.6 4.6 0 01-4.5-2.6z" fill="white"/></svg>`,
+      'YouTube': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#FF0000"/><path d="M25.8 11.8c-.3-1.2-1.3-2.1-2.5-2.4C21.1 9 16 9 16 9s-5.1 0-7.3.4c-1.2.3-2.2 1.2-2.5 2.4C5.8 14 5.8 16 5.8 16s0 2 .4 4.2c.3 1.2 1.3 2.1 2.5 2.4C10.9 23 16 23 16 23s5.1 0 7.3-.4c1.2-.3 2.2-1.2 2.5-2.4.4-2.2.4-4.2.4-4.2s0-2-.4-4.2z" fill="white"/><path d="M13.5 19.5v-7l6.5 3.5z" fill="#FF0000"/></svg>`,
+      'ВКонтакте': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0077FF"/><path d="M17.2 21c-6.3 0-9.9-4.3-10-11.5H10c.1 5.3 2.4 7.5 4.3 8V9.5H17v4.4c1.8-.2 3.7-2.3 4.3-4.4H24c-.5 2.8-2.5 4.9-3.9 5.8 1.4.7 3.7 2.6 4.6 5.7h-3.2c-.7-2.1-2.4-3.8-4.8-4.1V21h-.5z" fill="white"/></svg>`,
+      'Яндекс Карты': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="white"/><path d="M16 4a9 9 0 00-9 9c0 6.5 9 15 9 15s9-8.5 9-15a9 9 0 00-9-9zm0 12.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" fill="#FC3F1D"/></svg>`,
+      'Наш сайт': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#7a9fd4"/><circle cx="16" cy="16" r="9" fill="none" stroke="white" stroke-width="2"/><path d="M16 7c-3 3-3 15 0 18M16 7c3 3 3 15 0 18" fill="none" stroke="white" stroke-width="1.5"/><line x1="7" y1="16" x2="25" y2="16" stroke="white" stroke-width="1.5"/><path d="M8.5 11.5q7.5 2.5 15 0M8.5 20.5q7.5-2.5 15 0" fill="none" stroke="white" stroke-width="1.5"/></svg>`
+    };
+
     function renderSocialLinks(links) {
       var c = document.getElementById('social-links-container');
       if (!c) return;
@@ -963,7 +973,10 @@
       links.forEach(function(link) {
         var row = document.createElement('div');
         row.className = 'social-row';
-        row.innerHTML = '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>' +
+        var icoHtml = SOCIAL_SVG[link.name]
+          ? '<span style="flex-shrink:0;line-height:0">' + SOCIAL_SVG[link.name] + '</span>'
+          : '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>';
+        row.innerHTML = icoHtml +
           '<span style="font-size:15px;font-weight:600;color:var(--text);flex:1">' + link.name + '</span>' +
           '<span style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px">' + (link.url || '') + '</span>';
         row.onclick = function() {
