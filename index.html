@@ -1717,20 +1717,68 @@
 
     function openMasterWorksPicker(masterId, masterName) {
       haptic('impact', 'light');
+      var grid = document.getElementById('works-grid');
+      var modal = document.getElementById('works-modal');
+      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      modal.classList.add('open');
+
       apiFetch('/master-galleries/' + masterId)
         .then(function(data) {
           var galleries = (data && data.galleries ? data.galleries : []).filter(function(g) { return g.count > 0; });
           if (!galleries.length) {
-            showEmptyGalleryScreen(
-              masterName,
-              'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
-              function() { openBookingModalForMaster(masterName); }
-            );
+            var staticPhotos = getMasterPhotos(masterName, null);
+            if (!staticPhotos.length) {
+              modal.classList.remove('open');
+              showEmptyGalleryScreen(
+                masterName,
+                'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
+                function() { openBookingModalForMaster(masterName); }
+              );
+              return;
+            }
+            grid.innerHTML = staticPhotos.map(function(src) {
+              return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+            }).join('');
             return;
           }
-          // Всегда показываем все работы мастера сразу, без выбора категории
-          openMasterWorks(masterName, null);
-          return;
+
+          var promises = galleries.map(function(g) {
+            return apiFetch('/master-service-gallery/' + masterId + '/' + g.service_id)
+              .then(function(r) { return { gallery: g, result: r }; })
+              .catch(function() { return { gallery: g, result: null }; });
+          });
+
+          return Promise.all(promises).then(function(results) {
+            var html = '';
+            results.forEach(function(item) {
+              var g = item.gallery;
+              var r = item.result;
+              if (!r || !r.photos || !r.photos.length) return;
+              var base = r.photo_base || ('images/works/' + (r.master_slug || '') + '/' + (r.cat_slug || '') + '/');
+              html += '<div style="grid-column:1/-1;font-weight:600;font-size:15px;color:#ffd700;padding:12px 0 4px;">' + g.service_name + '</div>';
+              html += r.photos.map(function(fname) {
+                return '<img src="' + base + fname + '" alt="' + g.service_name + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+            });
+            if (!html) {
+              var staticPhotos = getMasterPhotos(masterName, null);
+              if (!staticPhotos.length) {
+                modal.classList.remove('open');
+                showEmptyGalleryScreen(
+                  masterName,
+                  'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
+                  function() { openBookingModalForMaster(masterName); }
+                );
+                return;
+              }
+              grid.innerHTML = staticPhotos.map(function(src) {
+                return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+              return;
+            }
+            grid.innerHTML = html;
+          });
         })
         .catch(function() {
           openMasterWorks(masterName, null);
