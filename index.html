@@ -743,10 +743,10 @@
           var btnBook = document.createElement('button');
           btnBook.className = 'btn-service';
           btnBook.textContent = 'Записаться';
-          btnBook.onclick = (function(n) { return function() {
+          btnBook.onclick = (function(n, sid) { return function() {
             try { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e){}
-            bookService(n);
-          }; })(svc.name);
+            bookService(n, sid);
+          }; })(svc.name, svc.id);
           btnWrap.appendChild(btnBook);
 
           footer.appendChild(btnWrap);
@@ -889,6 +889,7 @@
     var SERVICE_MASTERS = {};  // загрузится из /services-full при старте
 
     var currentService = '';
+    var currentServiceId = null;
 
     var LEVEL_ORDER = [];  // заполняется из /master-levels API
     var LEVELS_DATA = []; // [{id, name, color, sort_order}]
@@ -998,8 +999,9 @@
       });
     }
 
-    function bookService(serviceName) {
+    function bookService(serviceName, serviceId) {
       currentService = serviceName;
+      currentServiceId = serviceId || null;
       document.getElementById('pick-title').textContent = serviceName;
       var names = SERVICE_MASTERS[serviceName] || [];
       var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
@@ -1040,7 +1042,9 @@
       var body = document.createElement('div');
       body.className = 'master-body';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var showMasterWorksBtn = (m.show_works_button === 1 || m.show_works_button === undefined);
+      var hiddenInCurrentSvc = currentServiceId && m.hidden_works_service_ids &&
+        m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
+      var showMasterWorksBtn = (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
       var worksBtn = showMasterWorksBtn
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
