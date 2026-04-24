@@ -732,7 +732,7 @@
           var btnWrap = document.createElement('div');
           btnWrap.style.cssText = 'display:flex;gap:6px;';
 
-          if (svc.show_works_button === 1 || svc.show_works_button === undefined) {
+          if (!hideWorksServices && (svc.show_works_button === 1 || svc.show_works_button === undefined)) {
             var btnWorks = document.createElement('button');
             btnWorks.className = 'btn-works';
             btnWorks.textContent = 'Примеры работ';
@@ -764,13 +764,17 @@
         apiFetch('/services-sections'),
         apiFetch('/master-levels'),
         apiFetch('/branches'),
-        apiFetch('/social-links')
+        apiFetch('/social-links'),
+        apiFetch('/settings')
       ]).then(function(results) {
         var mastersData = results[0] || [];
         var sectionsData = results[1] || [];
         var levelsData = results[2] || [];
         var branchesData = results[3] || [];
         var socialLinksData = results[4] || [];
+        var settingsData = results[5] || {};
+        hideWorksMasters = settingsData.hide_works_masters ? 1 : 0;
+        hideWorksServices = settingsData.hide_works_services ? 1 : 0;
 
         MASTERS.length = 0;
         mastersData.forEach(function(m) { MASTERS.push(m); });
@@ -897,6 +901,8 @@
     var LEVELS_DATA = []; // [{id, name, color, sort_order}]
     var studioTgUrl = 'https://t.me/+79299910001';
     var cachedBranchesData = null;
+    var hideWorksMasters = 0;
+    var hideWorksServices = 0;
     function sortByLevel(masters) {
       return masters.slice().sort(function(a, b) {
         var ai = LEVEL_ORDER.indexOf(a.level), bi = LEVEL_ORDER.indexOf(b.level);
@@ -1048,7 +1054,7 @@
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
       var hiddenInCurrentSvc = currentServiceId && m.hidden_works_service_ids &&
         m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
-      var showMasterWorksBtn = (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
+      var showMasterWorksBtn = !hideWorksServices && (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
       var worksBtn = showMasterWorksBtn
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
@@ -1215,7 +1221,7 @@
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var showMasterWorksBtnCard = (m.show_works_button === 1 || m.show_works_button === undefined);
+      var showMasterWorksBtnCard = !hideWorksMasters && (m.show_works_button === 1 || m.show_works_button === undefined);
       var worksBtn = showMasterWorksBtnCard
         ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorksPicker(' + m.id + ',\'' + m.name.replace(/'/g, "\\'") + '\')">Примеры работ</button>'
         : '';
