@@ -1077,10 +1077,10 @@
         }
         var wBtn = body.querySelector('.js-works-btn');
         if (wBtn) {
-          wBtn.addEventListener('click', (function(mid, mname) { return function(e) {
+          wBtn.addEventListener('click', (function(mid, mname, svcId) { return function(e) {
             e.stopPropagation();
-            openMasterWorksPicker(mid, mname);
-          }; })(m.id, m.name));
+            openMasterWorksPicker(mid, mname, svcId);
+          }; })(m.id, m.name, currentServiceId));
         }
       }, 0);
 
@@ -1715,7 +1715,11 @@
         });
     }
 
-    function openMasterWorksPicker(masterId, masterName) {
+    function openMasterWorksPicker(masterId, masterName, serviceId) {
+      if (serviceId) {
+        openMasterWorks(masterName, serviceId);
+        return;
+      }
       haptic('impact', 'light');
       var grid = document.getElementById('works-grid');
       var modal = document.getElementById('works-modal');
