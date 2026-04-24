@@ -478,7 +478,7 @@
         <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
           <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;">Остались вопросы? Напишите нам</div>
           <div style="display:flex;gap:10px;">
-            <button onclick="openLink('https://t.me/+79299910001')" style="flex:1;background:var(--gold);color:#000;border:none;border-radius:10px;padding:11px 8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Telegram</button>
+            <button id="services-tg-btn" onclick="openLink('https://t.me/+79299910001')" style="flex:1;background:var(--gold);color:#000;border:none;border-radius:10px;padding:11px 8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Telegram</button>
           </div>
         </div>
 
@@ -789,6 +789,7 @@
 
         renderServiceSections(sectionsData);
         renderMasterSections(levelsData);
+        cachedBranchesData = branchesData;
         renderBranches(branchesData);
         renderSocialLinks(socialLinksData);
 
@@ -823,6 +824,7 @@
             });
             renderServiceSections(cachedSec);
             renderMasterSections(cachedLvl);
+            cachedBranchesData = cachedBr;
             renderBranches(cachedBr);
             renderSocialLinks(cachedSL);
             if (typeof showToast === 'function') showToast('Оффлайн-режим: показаны закэшированные данные');
@@ -893,6 +895,8 @@
 
     var LEVEL_ORDER = [];  // заполняется из /master-levels API
     var LEVELS_DATA = []; // [{id, name, color, sort_order}]
+    var studioTgUrl = 'https://t.me/+79299910001';
+    var cachedBranchesData = null;
     function sortByLevel(masters) {
       return masters.slice().sort(function(a, b) {
         var ai = LEVEL_ORDER.indexOf(a.level), bi = LEVEL_ORDER.indexOf(b.level);
@@ -946,7 +950,7 @@
         if (b.address) html += '<div class="branch-row"><span class="branch-row-icon">📍</span><span class="branch-row-text">' + b.address + '</span></div>';
         if (b.working_hours) html += '<div class="branch-row"><span class="branch-row-icon">🕙</span><span class="branch-row-text">' + b.working_hours + '</span></div>';
         if (b.phone) html += '<div class="branch-row"><span class="branch-row-icon">📞</span><span class="branch-row-text"><a href="tel:' + b.phone + '">' + b.phone + '</a></span></div>';
-        html += '<div class="branch-row"><span class="branch-row-icon">✈️</span><span class="branch-row-text"><a href="https://t.me/+79299910001" onclick="event.preventDefault();openLink(this.href)">Telegram студии</a></span></div>';
+        html += '<div class="branch-row"><span class="branch-row-icon">✈️</span><span class="branch-row-text"><a href="#" onclick="event.preventDefault();openLink(studioTgUrl)">Telegram студии</a></span></div>';
         if (b.yandex_map_url) {
           html += '<iframe src="' + b.yandex_map_url + '" width="100%" height="180" frameborder="0" style="border-radius:10px;display:block;margin-top:10px"></iframe>';
           var openUrl = b.yandex_map_url.replace('map-widget/v1/', '').replace(/\?.*/, '');
@@ -1868,6 +1872,10 @@
           }
         }
         if (s.telegram_url) {
+          studioTgUrl = s.telegram_url;
+          if (cachedBranchesData) renderBranches(cachedBranchesData);
+          var svcTgBtn = document.getElementById('services-tg-btn');
+          if (svcTgBtn) { svcTgBtn.onclick = function(){ openLink(s.telegram_url); }; }
           var tgLink = document.getElementById('settings-tg-link');
           if (tgLink) {
             var handle = s.telegram_url.replace('https://t.me/','@');
