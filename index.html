@@ -1054,7 +1054,12 @@
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
       var hiddenInCurrentSvc = currentServiceId && m.hidden_works_service_ids &&
         m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
-      var showMasterWorksBtn = !hideWorksServices && !m.hide_works && (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
+      var hwScopes = m.hide_works_scopes || [];
+      var svcIdStr = currentServiceId ? String(currentServiceId) : '';
+      var showMasterWorksBtn = !hideWorksServices &&
+        hwScopes.indexOf('all') === -1 && hwScopes.indexOf('services_tab') === -1 &&
+        (!svcIdStr || hwScopes.indexOf(svcIdStr) === -1) &&
+        (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
       var worksBtn = showMasterWorksBtn
         ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
@@ -1221,7 +1226,10 @@
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
-      var showMasterWorksBtnCard = !hideWorksMasters && !m.hide_works && (m.show_works_button === 1 || m.show_works_button === undefined);
+      var hwScopes = m.hide_works_scopes || [];
+      var showMasterWorksBtnCard = !hideWorksMasters &&
+        hwScopes.indexOf('all') === -1 && hwScopes.indexOf('masters_tab') === -1 &&
+        (m.show_works_button === 1 || m.show_works_button === undefined);
       var worksBtn = showMasterWorksBtnCard
         ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorksPicker(' + m.id + ',\'' + m.name.replace(/'/g, "\\'") + '\')">Примеры работ</button>'
         : '';
