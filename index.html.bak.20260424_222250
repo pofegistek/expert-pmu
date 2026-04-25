@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Expert PMU</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a96e;
+      --gold-dim: rgba(201,169,110,0.15);
+      --bg: #0e0e0e;
+      --card: #161616;
+      --border: #222;
+      --text: #ffffff;
+      --muted: #888;
+      --dark-muted: #555;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      min-height: var(--tg-viewport-stable-height, 100vh);
+      overflow-x: hidden;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px 0;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .header-location {
+      font-size: 11px;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      font-weight: 500;
+    }
+    .header-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gold);
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,169,110,0.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+      letter-spacing: 0.02em;
+    }
+    .header-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .header-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+      margin-bottom: 12px;
+    }
+
+    .top-tabs { display: flex; }
+    .top-tab {
+      flex: 1;
+      text-align: center;
+      padding: 8px 2px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
+    }
+    .top-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .content { padding: 16px 12px 90px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold);
+      margin: 20px 0 10px;
+    }
+    .section-title:first-child { margin-top: 0; }
+
+    .promo-card {
+      background: var(--card);
+      border: 1px solid var(--gold);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+    .promo-badge {
+      position: absolute;
+      top: 0; right: 0;
+      background: var(--gold);
+      color: #000;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      padding: 4px 10px;
+      border-radius: 0 14px 0 10px;
+    }
+    .promo-icon { font-size: 24px; margin-bottom: 6px; }
+    .promo-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      padding-right: 56px;
+    }
+    .promo-prices {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .promo-old {
+      font-size: 13px;
+      color: var(--dark-muted);
+      text-decoration: line-through;
+    }
+    .promo-new {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .btn-promo, .btn-service, .btn-book {
+      background: var(--gold);
+      color: #000;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      -webkit-tap-highlight-color: transparent;
+      transition: opacity 0.15s;
+    }
+    .btn-promo:active, .btn-service:active, .btn-book:active { opacity: 0.75; }
+
+    .btn-promo {
+      width: 100%;
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 13px;
+    }
+
+    .service-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 8px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .service-card-top { display: flex; align-items: center; gap: 12px; }
+    .service-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .service-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .service-info { flex: 1; min-width: 0; }
+    .service-name {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .service-desc { font-size: 12px; color: var(--dark-muted); margin-top: 2px; line-height: 1.4; }
+    .service-price { font-size: 13px; font-weight: 600; color: var(--gold); white-space: nowrap; }
+
+    .btn-service {
+      border-radius: 8px;
+      padding: 5px 14px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .btn-works {
+      width: 100%; background: transparent; color: var(--gold);
+      border: 1px solid rgba(201,169,110,0.4); border-radius: 8px;
+      padding: 7px; font-size: 12px; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s;
+    }
+    .btn-works:active { opacity: 0.7; }
+
+    .works-modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.85); align-items: flex-end; justify-content: center;
+    }
+    .works-modal-overlay.open { display: flex; }
+    .works-modal-sheet {
+      background: #0e0e0e; border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 85vh; overflow-y: auto;
+      padding: 16px; padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+    .works-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .works-modal-title { font-size: 17px; font-weight: 700; color: #fff; }
+    .works-modal-close {
+      background: #2a2a2a; border: none; color: #fff; border-radius: 50%;
+      width: 30px; height: 30px; font-size: 18px; cursor: pointer; line-height: 30px; text-align: center;
+    }
+    .works-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .works-grid img { width: 100%; border-radius: 10px; display: block; aspect-ratio: 3/4; object-fit: cover; }
+    .gallery-empty-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(0,0,0,0.88);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .gallery-empty {
+      background: #1a1a2e; border-radius: 20px;
+      padding: 32px 24px; text-align: center; width: 100%; max-width: 360px;
+    }
+    .gallery-empty-icon { font-size: 48px; margin-bottom: 16px; }
+    .gallery-empty-title { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .gallery-empty-subtitle { font-size: 14px; color: #aaa; margin-bottom: 24px; white-space: pre-line; line-height: 1.5; }
+    .gallery-empty-book {
+      display: block; width: 100%; background: var(--gold, #c9a96e); border: none;
+      color: #000; border-radius: 10px; padding: 12px; font-size: 15px;
+      font-weight: 700; cursor: pointer; margin-bottom: 10px;
+    }
+    .gallery-empty-close {
+      display: block; width: 100%; background: transparent; border: 1px solid #444;
+      color: #aaa; border-radius: 10px; padding: 10px; font-size: 14px; cursor: pointer;
+    }
+
+    .master-pick-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .back-btn {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--gold); padding: 6px 12px; font-size: 13px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .back-btn:active { opacity: 0.7; }
+    .master-pick-title {
+      font-size: 15px; font-weight: 700; color: var(--text);
+      flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .master-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      margin-bottom: 10px;
+      min-height: 80px;
+    }
+    .master-card.clickable { cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s; }
+    .master-card.clickable:active { background: #1e1e1e; }
+    .master-photo { width: 80px; flex-shrink: 0; overflow: hidden; }
+    .master-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+    .master-avatar {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 700; color: #fff;
+    }
+    .master-body {
+      flex: 1; padding: 10px 12px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-width: 0;
+    }
+    .master-level { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .master-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .master-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
+    .master-price { font-size: 12px; font-weight: 600; color: var(--gold); white-space: nowrap; }
+
+    .btn-book {
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .gallery-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      aspect-ratio: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; padding: 16px;
+    }
+    .gallery-icon { font-size: 36px; }
+    .gallery-label { font-size: 15px; font-weight: 700; color: var(--gold); text-align: center; }
+    .gallery-sub { font-size: 11px; color: var(--muted); text-align: center; line-height: 1.4; }
+
+    .review-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .review-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .review-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .review-stars { font-size: 13px; color: var(--gold); letter-spacing: 1px; }
+    .review-text { font-size: 12px; color: var(--muted); line-height: 1.55; }
+
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 14px; text-align: center; }
+    .stat-value { font-size: 22px; font-weight: 800; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.3; }
+    .about-block { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+    .about-block-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+    .contact-row { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .contact-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .contact-text a { color: var(--gold); text-decoration: none; }
+    .why-text { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .branch-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 12px; margin-top: 20px; }
+    .branch-card h3 { font-size: 15px; font-weight: 700; color: var(--gold); margin: 0 0 12px; }
+    .branch-row { display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+    .branch-row:last-child { border-bottom: none; }
+    .branch-row-icon { font-size: 15px; flex-shrink: 0; }
+    .branch-row-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .branch-row-text a { color: var(--gold); text-decoration: none; }
+    .branch-open-map { width: 100%; background: var(--gold); color: #000; border: none; border-radius: 10px; padding: 11px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 10px; -webkit-tap-highlight-color: transparent; }
+
+    .social-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #161616;
+      border: 0.5px solid #222;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: var(--bg); border-top: 1px solid var(--border);
+      display: flex; height: 64px;
+      padding-bottom: env(safe-area-inset-bottom, 0);
+    }
+    .nav-btn {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 2px;
+      cursor: pointer; color: var(--muted); font-size: 9px; font-weight: 500;
+      -webkit-tap-highlight-color: transparent; transition: color 0.2s; user-select: none;
+    }
+    .nav-btn .nav-icon { font-size: 18px; }
+    .nav-btn.active { color: var(--gold); }
+
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.7); align-items: flex-end; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-sheet {
+      background: #1a1a1a; border-radius: 20px 20px 0 0; width: 100%; max-width: 480px;
+      padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0)); animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .modal-drag { width: 40px; height: 4px; background: #444; border-radius: 2px; margin: 0 auto 18px; }
+    .modal-title { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .modal-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 18px; }
+    .form-label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+    .form-input {
+      width: 100%; background: #111; border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 14px; color: var(--text); font-size: 15px; font-family: inherit;
+      outline: none; margin-bottom: 14px; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--gold); }
+    .form-input::placeholder { color: #444; }
+    .btn-submit {
+      width: 100%; background: var(--gold); color: #000; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 700; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: opacity 0.15s; margin-top: 4px;
+    }
+    .btn-submit:disabled { opacity: 0.5; cursor: default; }
+    .btn-submit:active:not(:disabled) { opacity: 0.8; }
+    .success-box { text-align: center; padding: 20px 0 10px; }
+    .success-icon { font-size: 48px; margin-bottom: 12px; }
+    .success-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .success-text { font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .success-phone { font-size: 15px; font-weight: 600; color: var(--gold); margin-top: 12px; }
+
+    #yclients-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,0.85);
+      flex-direction: column;
+    }
+    #yclients-modal.open { display: flex; }
+    #yclients-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.12);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 20px;
+      line-height: 36px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 10000;
+    }
+    #yclients-iframe {
+      width: 100%;
+      flex: 1;
+      border: none;
+      margin-top: 56px;
+      border-radius: 16px 16px 0 0;
+      background: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-top">
+      <span class="header-location">Expert PMU · Москва</span>
+      <span class="header-badge">★ TOP-100 Beauty</span>
+    </div>
+    <div class="header-title">Центр косметологии и перманентного макияжа</div>
+    <div class="header-subtitle">Инны Фоменко</div>
+    <div class="top-tabs">
+      <div class="top-tab active" data-tab="services">Услуги</div>
+      <div class="top-tab" data-tab="masters">Мастера</div>
+      <div class="top-tab" data-tab="about">О нас</div>
+      <div class="top-tab" data-tab="contact">Связь</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="tab-pane active" id="tab-services">
+
+      <div id="services-list">
+
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px;">Остались вопросы? Напишите нам</div>
+          <div style="display:flex;gap:10px;">
+            <button onclick="openLink('https://t.me/+79299910001')" style="flex:1;background:var(--gold);color:#000;border:none;border-radius:10px;padding:11px 8px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Telegram</button>
+          </div>
+        </div>
+
+        <div id="services-container"></div>
+      </div>
+
+      <div id="masters-pick" style="display:none;">
+        <div class="master-pick-header">
+          <button class="back-btn" onclick="backToServices()">← Назад</button>
+          <div class="master-pick-title" id="pick-title"></div>
+        </div>
+        <div id="pick-list"></div>
+      </div>
+
+    </div><!-- /tab-services -->
+
+    <div class="tab-pane" id="tab-masters">
+      <div id="masters-levels-container"></div>
+    </div><!-- /tab-masters -->
+
+    <div class="tab-pane" id="tab-about">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">50 000+</div>
+          <div class="stat-label">клиентов</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">98%</div>
+          <div class="stat-label">возвращаются</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">100+</div>
+          <div class="stat-label">млн в оборудование</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">25+</div>
+          <div class="stat-label">протоколов</div>
+        </div>
+      </div>
+
+      <div class="section-title">Отзывы клиентов</div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Анна К.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Делала пудровые брови у Натали — результат превзошёл все ожидания! Форма идеальная, цвет натуральный. Уже три подруги записались по моей рекомендации.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Мария Л.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Проходила курс Lumecca у Ольги Владимировны. После первой процедуры пигментные пятна посветлели, кожа стала ровнее. Очень внимательный и профессиональный врач.</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Екатерина В.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">Делала акварельные губы у Видaны. Болезненно почти не было, восстановление прошло быстро. Результат — нежный и естественный, именно то, что хотела!</div>
+      </div>
+
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-name">Светлана Д.</div>
+          <div class="review-stars">★★★★★</div>
+        </div>
+        <div class="review-text">RF-лифтинг Morpheus8 — потрясающий эффект! Овал лица подтянулся, текстура кожи заметно улучшилась. Рекомендую всем, кому за 35 — это работает!</div>
+      </div>
+
+      <div id="branches-container"></div>
+
+      <a id="settings-phone-link" style="display:none" href="tel:+79299910001"></a>
+      <a id="settings-tg-link" style="display:none" href="#"></a>
+
+      <div class="about-block">
+        <div class="about-block-title">Почему Expert PMU</div>
+        <div class="why-text">
+          Лауреат TOP-100 Beauty Москвы. Медицинская лицензия, регулярные проверки Роспотребнадзора. Только сертифицированные препараты и аппараты премиум-класса. Центр основан Инной Фоменко — одним из ведущих специалистов России в области перманентного макияжа и косметологии.
+        </div>
+      </div>
+      <div class="about-block" style="margin-top:20px;">
+        <div class="about-block-title">Наши работы</div>
+        <div class="why-text" style="margin-bottom:16px;">Смотрите примеры работ наших мастеров в Instagram</div>
+        <button onclick="window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/'):window.open('https://www.instagram.com/expert_pmu/','_blank')" style="width:100%;background:#c9a96e;color:#000;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Наш Instagram</button>
+      </div>
+    </div><!-- /tab-about -->
+
+    <div class="tab-pane" id="tab-contact">
+      <div class="section-title">МЫ В СОЦИАЛЬНЫХ СЕТЯХ</div>
+      <div id="social-links-container"></div>
+
+    </div><!-- /tab-contact -->
+
+  </div><!-- /content -->
+
+  <nav class="bottom-nav">
+    <div class="nav-btn active" data-tab="services">
+      <span class="nav-icon">✂️</span>
+      <span>Услуги</span>
+    </div>
+    <div class="nav-btn" data-tab="masters">
+      <span class="nav-icon">👤</span>
+      <span>Мастера</span>
+    </div>
+    <div class="nav-btn" data-tab="about">
+      <span class="nav-icon">ℹ️</span>
+      <span>О нас</span>
+    </div>
+    <div class="nav-btn" data-tab="contact">
+      <span class="nav-icon">💬</span>
+      <span>Связь</span>
+    </div>
+  </nav>
+
+  <!-- WORKS MODAL -->
+  <div class="works-modal-overlay" id="works-modal">
+    <div class="works-modal-sheet">
+      <div class="works-modal-header">
+        <div class="works-modal-title" id="works-modal-title">Наши работы</div>
+        <button class="works-modal-close" onclick="closeWorksModal()">×</button>
+      </div>
+      <div class="works-grid" id="works-grid"></div>
+    </div>
+  </div>
+
+  <!-- BOOKING MODAL -->
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-sheet">
+      <div class="modal-drag"></div>
+      <div id="modal-form-content">
+        <div class="modal-title" id="modal-master-name"></div>
+        <div class="modal-subtitle" id="modal-service-name"></div>
+        <div id="service-select-row" style="display:none;margin-bottom:12px;">
+          <label class="form-label">Услуга</label>
+          <select id="modal-service-select" class="form-input" style="background:#1a1a1a;color:#fff;border:1px solid #333;border-radius:10px;padding:11px 14px;font-size:14px;width:100%;appearance:none;-webkit-appearance:none;">
+            <option value="">— выберите услугу —</option>
+            <option>Брови</option>
+            <option>Губы</option>
+            <option>Веки и стрелки</option>
+            <option>Удаление лазером</option>
+            <option>RF-лифтинг Morpheus8</option>
+            <option>Фотоомоложение Lumecca</option>
+            <option>SMAS-лифтинг</option>
+            <option>Ботулинотерапия</option>
+            <option>Биоревитализация</option>
+            <option>Увеличение губ</option>
+          </select>
+        </div>
+        <label class="form-label">Ваше имя</label>
+        <input class="form-input" id="input-name" type="text" placeholder="Имя" autocomplete="name">
+        <label class="form-label">Телефон</label>
+        <input class="form-input" id="input-phone" type="tel" placeholder="+7 (___) ___-__-__" autocomplete="tel">
+        <div id="tg-username-row">
+          <label class="form-label">Telegram (необязательно)</label>
+          <input class="form-input" id="input-tg" type="text" placeholder="@username">
+        </div>
+        <button class="btn-submit" id="btn-submit" onclick="submitBooking()">Записаться</button>
+      </div>
+      <div id="modal-success-content" style="display:none;">
+        <div class="success-box">
+          <div class="success-icon">✅</div>
+          <div class="success-title">Спасибо!</div>
+          <div class="success-text">Мы свяжемся с вами в ближайшее время для подтверждения записи.</div>
+          <div class="success-phone">
+            <a href="tel:+79299910001" style="color:var(--gold);text-decoration:none;">+7 (929) 991-00-01</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="yclients-modal">
+    <button id="yclients-close" onclick="closeYclientsModal()">✕</button>
+    <iframe id="yclients-iframe" src="" allow="payment"></iframe>
+  </div>
+
+  <div id="global-loader" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#0a0a0a;display:flex;align-items:center;justify-content:center;z-index:9999;color:#fff;font-size:14px;">Загрузка…</div>
+  <div id="toast-msg" style="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;z-index:10000;display:none;"></div>
+
+  <script>
+    var VPS_URL = 'https://46.30.43.23.sslip.io:9443';
+    function apiFetch(path) {
+      return fetch(VPS_URL + path).then(function(r) { return r.json(); });
+    }
+    var WEBHOOK_URL = VPS_URL + '/webhook';
+
+    function showGlobalLoader() { var el=document.getElementById('global-loader'); if(el) el.style.display='flex'; }
+    function hideGlobalLoader() { var el=document.getElementById('global-loader'); if(el) el.style.display='none'; }
+    function showToast(msg) {
+      var el=document.getElementById('toast-msg');
+      if(!el) return;
+      el.textContent=msg; el.style.display='block';
+      setTimeout(function(){ el.style.display='none'; }, 3500);
+    }
+
+    function renderServiceSections(sections) {
+      var container = document.getElementById('services-container');
+      if (!container) { console.warn('[renderServiceSections] no container'); return; }
+      container.innerHTML = '';
+
+      sections.forEach(function(section) {
+        var titleEl = document.createElement('div');
+        titleEl.className = 'section-title';
+        titleEl.textContent = section.name;
+        container.appendChild(titleEl);
+
+        (section.services || []).forEach(function(svc) {
+          var card = document.createElement('div');
+          card.className = 'service-card';
+          card.setAttribute('data-service', svc.name);
+
+          var top = document.createElement('div');
+          top.className = 'service-card-top';
+
+          var iconEl = document.createElement('div');
+          iconEl.className = 'service-icon';
+          iconEl.textContent = svc.icon || '📌';
+          top.appendChild(iconEl);
+
+          var info = document.createElement('div');
+          info.className = 'service-info';
+
+          var nameEl = document.createElement('div');
+          nameEl.className = 'service-name';
+          nameEl.textContent = svc.name;
+          info.appendChild(nameEl);
+
+          if (svc.description) {
+            var descEl = document.createElement('div');
+            descEl.className = 'service-desc';
+            descEl.textContent = svc.description;
+            info.appendChild(descEl);
+          }
+
+          top.appendChild(info);
+          card.appendChild(top);
+
+          var footer = document.createElement('div');
+          footer.className = 'service-card-footer';
+
+          var priceEl = document.createElement('div');
+          priceEl.className = 'service-price';
+          priceEl.textContent = svc.price_text || 'По записи';
+          footer.appendChild(priceEl);
+
+          var btnWrap = document.createElement('div');
+          btnWrap.style.cssText = 'display:flex;gap:6px;';
+
+          if (svc.show_works_button === 1 || svc.show_works_button === undefined) {
+            var btnWorks = document.createElement('button');
+            btnWorks.className = 'btn-works';
+            btnWorks.textContent = 'Примеры работ';
+            btnWorks.onclick = (function(sid, sname) { return function(e) { e.stopPropagation(); openServiceGallery(sid, sname); }; })(svc.id, svc.name);
+            btnWrap.appendChild(btnWorks);
+          }
+
+          var btnBook = document.createElement('button');
+          btnBook.className = 'btn-service';
+          btnBook.textContent = 'Записаться';
+          btnBook.onclick = (function(n, sid) { return function() {
+            try { window.Telegram.WebApp.HapticFeedback.impactOccurred('medium'); } catch(e){}
+            bookService(n, sid);
+          }; })(svc.name, svc.id);
+          btnWrap.appendChild(btnBook);
+
+          footer.appendChild(btnWrap);
+          card.appendChild(footer);
+
+          container.appendChild(card);
+        });
+      });
+    }
+
+    function loadAllData() {
+      showGlobalLoader();
+      return Promise.all([
+        apiFetch('/masters-full'),
+        apiFetch('/services-sections'),
+        apiFetch('/master-levels'),
+        apiFetch('/branches'),
+        apiFetch('/social-links')
+      ]).then(function(results) {
+        var mastersData = results[0] || [];
+        var sectionsData = results[1] || [];
+        var levelsData = results[2] || [];
+        var branchesData = results[3] || [];
+        var socialLinksData = results[4] || [];
+
+        MASTERS.length = 0;
+        mastersData.forEach(function(m) { MASTERS.push(m); });
+
+        LEVELS_DATA.length = 0;
+        levelsData.forEach(function(l) { LEVELS_DATA.push(l); });
+        LEVEL_ORDER.length = 0;
+        levelsData.forEach(function(l) { LEVEL_ORDER.push(l.name); });
+
+        Object.keys(SERVICE_MASTERS).forEach(function(k) { delete SERVICE_MASTERS[k]; });
+        sectionsData.forEach(function(section) {
+          (section.services || []).forEach(function(svc) {
+            SERVICE_MASTERS[svc.name] = svc.masters || [];
+          });
+        });
+
+        renderServiceSections(sectionsData);
+        renderMasterSections(levelsData);
+        renderBranches(branchesData);
+        renderSocialLinks(socialLinksData);
+
+        try {
+          localStorage.setItem('cache_masters', JSON.stringify(mastersData));
+          localStorage.setItem('cache_sections', JSON.stringify(sectionsData));
+          localStorage.setItem('cache_levels', JSON.stringify(levelsData));
+          localStorage.setItem('cache_branches', JSON.stringify(branchesData));
+          localStorage.setItem('cache_social_links', JSON.stringify(socialLinksData));
+        } catch(e) {}
+
+        hideGlobalLoader();
+      }).catch(function(err) {
+        console.error('[loadAllData] failed:', err);
+        try {
+          var cachedM = JSON.parse(localStorage.getItem('cache_masters') || '[]');
+          var cachedSec = JSON.parse(localStorage.getItem('cache_sections') || '[]');
+          var cachedLvl = JSON.parse(localStorage.getItem('cache_levels') || '[]');
+          var cachedBr = JSON.parse(localStorage.getItem('cache_branches') || '[]');
+          var cachedSL = JSON.parse(localStorage.getItem('cache_social_links') || '[]');
+          if (cachedM.length) {
+            MASTERS.length = 0;
+            cachedM.forEach(function(m) { MASTERS.push(m); });
+            LEVELS_DATA.length = 0;
+            cachedLvl.forEach(function(l) { LEVELS_DATA.push(l); });
+            LEVEL_ORDER.length = 0;
+            cachedLvl.forEach(function(l) { LEVEL_ORDER.push(l.name); });
+            cachedSec.forEach(function(section) {
+              (section.services || []).forEach(function(svc) {
+                SERVICE_MASTERS[svc.name] = svc.masters || [];
+              });
+            });
+            renderServiceSections(cachedSec);
+            renderMasterSections(cachedLvl);
+            renderBranches(cachedBr);
+            renderSocialLinks(cachedSL);
+            if (typeof showToast === 'function') showToast('Оффлайн-режим: показаны закэшированные данные');
+          } else {
+            if (typeof showToast === 'function') showToast('Не удалось загрузить данные. Попробуйте позже.');
+          }
+        } catch(e) {}
+        hideGlobalLoader();
+      });
+    }
+
+    if (window.Telegram && window.Telegram.WebApp) {
+      Telegram.WebApp.ready();
+      Telegram.WebApp.expand();
+    }
+
+    function openLink(url) {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink) {
+        Telegram.WebApp.openLink(url, {try_instant_view: false});
+      } else {
+        window.open(url, '_blank');
+      }
+    }
+
+    function haptic(type, value) {
+      var hf = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback;
+      if (!hf) return;
+      if (type === 'impact') hf.impactOccurred(value || 'light');
+      else if (type === 'notification') hf.notificationOccurred(value || 'success');
+      else if (type === 'selection') hf.selectionChanged();
+    }
+
+    function switchTab(name) {
+      haptic('selection');
+      // Reset services view when leaving
+      if (name !== 'services') {
+        document.getElementById('masters-pick').style.display = 'none';
+        document.getElementById('services-list').style.display = 'block';
+      }
+      // Сбрасываем текущую услугу при прямом переходе на вкладку Мастера
+      if (name === 'masters') {
+        currentService = '';
+      }
+      document.querySelectorAll('.tab-pane').forEach(function(p) { p.classList.remove('active'); });
+      var pane = document.getElementById('tab-' + name);
+      if (pane) pane.classList.add('active');
+      document.querySelectorAll('.top-tab').forEach(function(t) {
+        t.classList.toggle('active', t.dataset.tab === name);
+      });
+      document.querySelectorAll('.nav-btn').forEach(function(b) {
+        b.classList.toggle('active', b.dataset.tab === name);
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    document.querySelectorAll('.top-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() { switchTab(this.dataset.tab); });
+    });
+    document.querySelectorAll('.nav-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() { switchTab(this.dataset.tab); });
+    });
+
+    var MASTERS = [];  // загрузится из /masters-full при старте
+
+    var SERVICE_MASTERS = {};  // загрузится из /services-full при старте
+
+    var currentService = '';
+    var currentServiceId = null;
+
+    var LEVEL_ORDER = [];  // заполняется из /master-levels API
+    var LEVELS_DATA = []; // [{id, name, color, sort_order}]
+    function sortByLevel(masters) {
+      return masters.slice().sort(function(a, b) {
+        var ai = LEVEL_ORDER.indexOf(a.level), bi = LEVEL_ORDER.indexOf(b.level);
+        if (ai === -1) ai = 99; if (bi === -1) bi = 99;
+        return ai - bi;
+      });
+    }
+
+    function renderMasterSections(levelsData) {
+      var container = document.getElementById('masters-levels-container');
+      if (!container) return;
+      container.innerHTML = '';
+      levelsData.forEach(function(level) {
+        var wrap = document.createElement('div');
+        wrap.className = 'level-section';
+        var title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = level.name;
+        title.style.color = level.color;
+        var inner = document.createElement('div');
+        inner.id = 'dyn-level-' + level.id;
+        inner.className = 'level-masters-container';
+        wrap.appendChild(title);
+        wrap.appendChild(inner);
+        container.appendChild(wrap);
+      });
+    }
+
+    function renderMastersIntoSections() {
+      MASTERS.filter(function(m) { return m.tab; }).forEach(function(m) {
+        var level = LEVELS_DATA.find(function(l) { return l.name === m.level; });
+        if (!level) return;
+        var el = document.getElementById('dyn-level-' + level.id);
+        if (el) el.appendChild(renderMasterCard(m));
+      });
+      // Hide empty sections
+      document.querySelectorAll('.level-section').forEach(function(sec) {
+        var inner = sec.querySelector('[id^="dyn-level-"]');
+        sec.style.display = (inner && inner.children.length > 0) ? '' : 'none';
+      });
+    }
+
+    function renderBranches(branches) {
+      var c = document.getElementById('branches-container');
+      if (!c) return;
+      c.innerHTML = '';
+      branches.forEach(function(b) {
+        var card = document.createElement('div');
+        card.className = 'branch-card';
+        var html = '<h3>' + b.name + '</h3>';
+        if (b.address) html += '<div class="branch-row"><span class="branch-row-icon">📍</span><span class="branch-row-text">' + b.address + '</span></div>';
+        if (b.working_hours) html += '<div class="branch-row"><span class="branch-row-icon">🕙</span><span class="branch-row-text">' + b.working_hours + '</span></div>';
+        if (b.phone) html += '<div class="branch-row"><span class="branch-row-icon">📞</span><span class="branch-row-text"><a href="tel:' + b.phone + '">' + b.phone + '</a></span></div>';
+        html += '<div class="branch-row"><span class="branch-row-icon">✈️</span><span class="branch-row-text"><a href="https://t.me/+79299910001" onclick="event.preventDefault();openLink(this.href)">Telegram студии</a></span></div>';
+        if (b.yandex_map_url) {
+          html += '<iframe src="' + b.yandex_map_url + '" width="100%" height="180" frameborder="0" style="border-radius:10px;display:block;margin-top:10px"></iframe>';
+          var openUrl = b.yandex_map_url.replace('map-widget/v1/', '').replace(/\?.*/, '');
+          html += '<button class="branch-open-map" onclick="(window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink:window.open)(\'' + b.yandex_map_url + '\')">Открыть в Яндекс Картах</button>';
+        }
+        card.innerHTML = html;
+        c.appendChild(card);
+      });
+    }
+
+    var SOCIAL_SVG = {
+      'Instagram': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ig-g" x1="0%" y1="100%" x2="100%" y2="0%"><stop offset="0%" stop-color="#feda75"/><stop offset="25%" stop-color="#fa7e1e"/><stop offset="50%" stop-color="#d62976"/><stop offset="75%" stop-color="#962fbf"/><stop offset="100%" stop-color="#4f5bd5"/></linearGradient></defs><rect width="32" height="32" rx="8" fill="url(#ig-g)"/><rect x="7" y="7" width="18" height="18" rx="5" fill="none" stroke="white" stroke-width="2.2"/><circle cx="16" cy="16" r="5" fill="none" stroke="white" stroke-width="2.2"/><circle cx="22" cy="10" r="1.6" fill="white"/></svg>`,
+      'Telegram': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="16" fill="#229ED9"/><path d="M7.1 15.8L22 9.4l-2.9 13.7-4.7-3.4-2.2 2.1v-3.4l8.2-7.8-9.4 6.1-3.9-1z" fill="white"/></svg>`,
+      'TikTok': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#010101"/><path d="M20.75 8.5h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V12.8a7.5 7.5 0 004.5 1.5V11.1a4.6 4.6 0 01-4.5-2.6z" fill="#25F4EE" opacity="0.55"/><path d="M21.25 9h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V13.3a7.5 7.5 0 004.5 1.5V11.6a4.6 4.6 0 01-4.5-2.6z" fill="#FE2C55" opacity="0.55"/><path d="M21 8.75h-3v12.3a2.75 2.75 0 01-5.5 0 2.75 2.75 0 012.75-2.75v-3a5.75 5.75 0 00-5.75 5.75 5.75 5.75 0 005.75 5.75 5.75 5.75 0 005.75-5.75V13.05a7.5 7.5 0 004.5 1.5V11.35a4.6 4.6 0 01-4.5-2.6z" fill="white"/></svg>`,
+      'YouTube': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#FF0000"/><path d="M25.8 11.8c-.3-1.2-1.3-2.1-2.5-2.4C21.1 9 16 9 16 9s-5.1 0-7.3.4c-1.2.3-2.2 1.2-2.5 2.4C5.8 14 5.8 16 5.8 16s0 2 .4 4.2c.3 1.2 1.3 2.1 2.5 2.4C10.9 23 16 23 16 23s5.1 0 7.3-.4c1.2-.3 2.2-1.2 2.5-2.4.4-2.2.4-4.2.4-4.2s0-2-.4-4.2z" fill="white"/><path d="M13.5 19.5v-7l6.5 3.5z" fill="#FF0000"/></svg>`,
+      'ВКонтакте': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0077FF"/><path d="M17.2 21c-6.3 0-9.9-4.3-10-11.5H10c.1 5.3 2.4 7.5 4.3 8V9.5H17v4.4c1.8-.2 3.7-2.3 4.3-4.4H24c-.5 2.8-2.5 4.9-3.9 5.8 1.4.7 3.7 2.6 4.6 5.7h-3.2c-.7-2.1-2.4-3.8-4.8-4.1V21h-.5z" fill="white"/></svg>`,
+      'Яндекс Карты': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="white"/><path d="M16 4a9 9 0 00-9 9c0 6.5 9 15 9 15s9-8.5 9-15a9 9 0 00-9-9zm0 12.5a3.5 3.5 0 110-7 3.5 3.5 0 010 7z" fill="#FC3F1D"/></svg>`,
+      'Наш сайт': `<svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#7a9fd4"/><circle cx="16" cy="16" r="9" fill="none" stroke="white" stroke-width="2"/><path d="M16 7c-3 3-3 15 0 18M16 7c3 3 3 15 0 18" fill="none" stroke="white" stroke-width="1.5"/><line x1="7" y1="16" x2="25" y2="16" stroke="white" stroke-width="1.5"/><path d="M8.5 11.5q7.5 2.5 15 0M8.5 20.5q7.5-2.5 15 0" fill="none" stroke="white" stroke-width="1.5"/></svg>`
+    };
+
+    var SOCIAL_BTN_LABEL = {
+      'Instagram':    'Наш Instagram',
+      'Telegram':     'Наш Telegram',
+      'TikTok':       'Наш TikTok',
+      'YouTube':      'Наш YouTube',
+      'ВКонтакте':    'Наш ВКонтакте',
+      'Яндекс Карты': 'Яндекс Карты',
+      'Наш сайт':     'Наш сайт',
+    };
+
+    function renderSocialLinks(links) {
+      var c = document.getElementById('social-links-container');
+      if (!c) return;
+      c.innerHTML = '';
+      links.forEach(function(link) {
+        var row = document.createElement('div');
+        row.className = 'social-row';
+        var icoHtml = SOCIAL_SVG[link.name]
+          ? '<span style="flex-shrink:0;line-height:0">' + SOCIAL_SVG[link.name] + '</span>'
+          : '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>';
+        var btnLabel = SOCIAL_BTN_LABEL[link.name] || link.name;
+        row.innerHTML = icoHtml +
+          '<span style="font-size:15px;font-weight:600;color:var(--text);flex:1">' + link.name + '</span>' +
+          '<button style="background:#c9a96e;color:#000;border:none;border-radius:10px;padding:9px 14px;font-size:13px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap;flex-shrink:0;">' + btnLabel + '</button>';
+        row.onclick = function() {
+          if (link.source_key) { try { trackEvent(link.source_key); } catch(e) {} }
+          openLink(link.url);
+        };
+        c.appendChild(row);
+      });
+    }
+
+    function bookService(serviceName, serviceId) {
+      currentService = serviceName;
+      currentServiceId = serviceId || null;
+      document.getElementById('pick-title').textContent = serviceName;
+      var names = SERVICE_MASTERS[serviceName] || [];
+      var masters = sortByLevel(MASTERS.filter(function(m) { return names.indexOf(m.name) !== -1 && hiddenMasters.indexOf(m.name) === -1; }));
+      var list = document.getElementById('pick-list');
+      list.innerHTML = '';
+      masters.forEach(function(m) { list.appendChild(buildPickCard(m)); });
+      document.getElementById('services-list').style.display = 'none';
+      document.getElementById('masters-pick').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function buildPickCard(m) {
+      var card = document.createElement('div');
+      card.className = 'master-card clickable';
+
+      var photoDiv = document.createElement('div');
+      photoDiv.className = 'master-photo';
+
+      if (m.photo) {
+        var img = document.createElement('img');
+        img.src = m.photo;
+        img.alt = m.name;
+        var av = document.createElement('div');
+        av.className = 'master-avatar';
+        av.style.cssText = 'display:none;background:' + m.avatarBg + ';';
+        av.textContent = m.avatarLetter;
+        img.onerror = function() { img.style.display = 'none'; av.style.display = 'flex'; };
+        photoDiv.appendChild(img);
+        photoDiv.appendChild(av);
+      } else {
+        var av2 = document.createElement('div');
+        av2.className = 'master-avatar';
+        av2.style.cssText = 'background:' + m.avatarBg + ';';
+        av2.textContent = m.avatarLetter;
+        photoDiv.appendChild(av2);
+      }
+
+      var body = document.createElement('div');
+      body.className = 'master-body';
+      var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
+      var hiddenInCurrentSvc = currentServiceId && m.hidden_works_service_ids &&
+        m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
+      var showMasterWorksBtn = (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
+      var worksBtn = showMasterWorksBtn
+        ? '<button class="btn-works js-works-btn">Примеры работ</button>'
+        : '';
+      var effectiveColor = (m.service_colors && currentServiceId && m.service_colors[currentServiceId])
+        || m.levelColor;
+      body.innerHTML =
+        '<div>' +
+          '<div class="master-level" style="color:' + effectiveColor + ';">' + m.level + '</div>' +
+          '<div class="master-name">' + m.name + '</div>' +
+        '</div>' +
+        '<div class="master-footer">' +
+          '<div class="master-price">' + m.price + '</div>' +
+          '<div style="display:flex;gap:6px;">' +
+            worksBtn +
+            '<button class="btn-book">Выбрать</button>' +
+          '</div>' +
+        '</div>';
+
+      card.appendChild(photoDiv);
+      card.appendChild(body);
+
+      setTimeout(function() {
+        var btn = body.querySelector('.btn-book');
+        if (btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            haptic('impact', 'light');
+            openBookingModalForMaster(m.name);
+          });
+        }
+        var wBtn = body.querySelector('.js-works-btn');
+        if (wBtn) {
+          wBtn.addEventListener('click', (function(mid, mname, svcId) { return function(e) {
+            e.stopPropagation();
+            openMasterWorksPicker(mid, mname, svcId);
+          }; })(m.id, m.name, currentServiceId));
+        }
+      }, 0);
+
+      return card;
+    }
+
+    function backToServices() {
+      document.getElementById('masters-pick').style.display = 'none';
+      document.getElementById('services-list').style.display = 'block';
+      document.querySelectorAll('.service-card').forEach(function(c) { c.classList.remove('selected'); });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    var bookingMaster = '';
+    var bookingService = '';
+
+    var tgUsername = '';
+    try {
+      var tgUser = window.Telegram && window.Telegram.WebApp &&
+                   window.Telegram.WebApp.initDataUnsafe &&
+                   window.Telegram.WebApp.initDataUnsafe.user;
+      if (tgUser && tgUser.username) tgUsername = '@' + tgUser.username;
+    } catch(e) {}
+
+    function openYclientsWidgetUrl(url) {
+      document.getElementById('yclients-iframe').src = url;
+      document.getElementById('yclients-modal').classList.add('open');
+    }
+
+    function trackEvent(event) {
+      try {
+        var uid = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user)
+          ? Telegram.WebApp.initDataUnsafe.user.id : 0;
+        fetch(VPS_URL + '/track', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({event: event, user_id: uid})
+        }).catch(function(){});
+      } catch(e) {}
+    }
+
+    function openYclientsWidget(masterName) {
+      var m = MASTERS.find(function(x) { return x.name === masterName; });
+      var url = m && m.yclients;
+      if (!url) {
+        console.warn('[yclients] no URL for master:', masterName);
+        return;
+      }
+      openYclientsWidgetUrl(url);
+    }
+
+    function closeYclientsModal() {
+      document.getElementById('yclients-modal').classList.remove('open');
+      document.getElementById('yclients-iframe').src = '';
+    }
+
+    document.getElementById('yclients-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeYclientsModal();
+    });
+
+    function openBookingModal(masterName, serviceName) {
+      haptic('impact', 'medium');
+      trackEvent('booking_click');
+      bookingMaster = masterName;
+      bookingService = serviceName;
+      document.getElementById('modal-master-name').textContent = masterName;
+      var serviceNameEl = document.getElementById('modal-service-name');
+      var serviceSelectRow = document.getElementById('service-select-row');
+      var serviceSelect = document.getElementById('modal-service-select');
+      if (serviceName) {
+        serviceNameEl.textContent = serviceName;
+        serviceNameEl.style.display = 'block';
+        serviceSelectRow.style.display = 'none';
+        serviceSelect.value = '';
+      } else {
+        serviceNameEl.textContent = '';
+        serviceNameEl.style.display = 'none';
+        serviceSelectRow.style.display = 'block';
+        serviceSelect.value = '';
+      }
+      document.getElementById('input-name').value = '';
+      document.getElementById('input-phone').value = '';
+      document.getElementById('btn-submit').disabled = false;
+      document.getElementById('btn-submit').textContent = 'Записаться';
+      var tgRow = document.getElementById('tg-username-row');
+      var tgInput = document.getElementById('input-tg');
+      if (tgUsername) {
+        tgInput.value = tgUsername;
+        tgRow.style.display = 'none';
+      } else {
+        tgInput.value = '';
+        tgRow.style.display = 'block';
+      }
+      document.getElementById('modal-form-content').style.display = 'block';
+      document.getElementById('modal-success-content').style.display = 'none';
+      document.getElementById('booking-modal').classList.add('open');
+    }
+
+    function openBookingModalForMaster(masterName) {
+      haptic('impact', 'medium');
+      openYclientsWidget(masterName);
+    }
+
+    function closeModal() {
+      document.getElementById('booking-modal').classList.remove('open');
+    }
+
+    function closeWorksModal() {
+      document.getElementById('works-modal').classList.remove('open');
+    }
+    document.getElementById('works-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeWorksModal();
+    });
+
+    function hasMasterWorks(masterName) {
+      if (MASTER_PHOTOS[masterName] || (dynWorks && dynWorks[masterName])) return true;
+      var m = MASTERS.find(function(x) { return x.name === masterName; });
+      return !!(m && m.has_any_gallery);
+    }
+
+    function renderMasterCard(m) {
+      var card = document.createElement('div');
+      card.className = 'master-card';
+      var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
+      var photoHtml = m.photo
+        ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+          '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
+        : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
+      var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
+      var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
+      var showMasterWorksBtnCard = (m.show_works_button === 1 || m.show_works_button === undefined);
+      var worksBtn = showMasterWorksBtnCard
+        ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorksPicker(' + m.id + ',\'' + m.name.replace(/'/g, "\\'") + '\')">Примеры работ</button>'
+        : '';
+      var bookBtn = '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>';
+      var footerRight = worksBtn ? '<div style="display:flex;gap:6px;">' + worksBtn + bookBtn + '</div>' : bookBtn;
+      card.innerHTML =
+        '<div class="master-photo">' + photoHtml + '</div>' +
+        '<div class="master-body">' +
+          '<div><div class="master-level" style="color:' + (m.levelColor || '#888') + ';">' + m.level + '</div>' +
+          '<div class="master-name">' + m.name + '</div>' + specHtml + '</div>' +
+          '<div class="master-footer"><div class="master-price">' + m.price + '</div>' + footerRight + '</div>' +
+        '</div>';
+      return card;
+    }
+
+    var MASTER_PHOTOS = {
+      'Крис': {
+        'Брови': [
+          'images/works/kris/IMG_0784.PNG',
+          'images/works/kris/IMG_0785.PNG',
+          'images/works/kris/IMG_0787.PNG',
+          'images/works/kris/IMG_0791.PNG',
+          'images/works/kris/photo_2.jpg',
+        ],
+        'Губы': [
+          'images/works/kris/IMG_0788.PNG',
+          'images/works/kris/IMG_0790.PNG',
+          'images/works/kris/photo_1.jpg',
+        ],
+        'Веки': [
+          'images/works/kris/IMG_6103.JPEG',
+          'images/works/kris/whatsapp_1.jpg',
+        ],
+        'all': [
+          'images/works/kris/IMG_0784.PNG',
+          'images/works/kris/IMG_0785.PNG',
+          'images/works/kris/IMG_0787.PNG',
+          'images/works/kris/IMG_0788.PNG',
+          'images/works/kris/IMG_0790.PNG',
+          'images/works/kris/IMG_0791.PNG',
+          'images/works/kris/IMG_6103.JPEG',
+          'images/works/kris/photo_1.jpg',
+          'images/works/kris/photo_2.jpg',
+          'images/works/kris/whatsapp_1.jpg',
+        ],
+      },
+      'Варвара': {
+        'Брови': [
+          'images/works/varya/img_1.jpg',
+          'images/works/varya/IMG_6101.JPEG',
+          'images/works/varya/whatsapp_2.jpg',
+        ],
+        'Губы': [
+          'images/works/varya/IMG_6136.JPEG',
+          'images/works/varya/img_guby.jpg',
+          'images/works/varya/img_pravki.jpg',
+          'images/works/varya/whatsapp_1.jpg',
+        ],
+        'Веки': [
+          'images/works/varya/IMG_6099.JPEG',
+        ],
+        'all': [
+          'images/works/varya/img_1.jpg',
+          'images/works/varya/IMG_6099.JPEG',
+          'images/works/varya/IMG_6101.JPEG',
+          'images/works/varya/IMG_6136.JPEG',
+          'images/works/varya/img_guby.jpg',
+          'images/works/varya/img_pravki.jpg',
+          'images/works/varya/whatsapp_1.jpg',
+          'images/works/varya/whatsapp_2.jpg',
+        ],
+      },
+      'Лиана': {
+        'Брови': [
+          'images/works/liana/IMG_4148.jpg',
+          'images/works/liana/IMG_4395.JPEG',
+          'images/works/liana/IMG_4978.JPEG',
+          'images/works/liana/IMG_5055.JPEG',
+          'images/works/liana/IMG_5532.JPEG',
+          'images/works/liana/IMG_6882.JPG',
+        ],
+        'Губы': [
+          'images/works/liana/IMG_2717.JPEG',
+          'images/works/liana/IMG_5054.JPEG',
+          'images/works/liana/IMG_6067.JPEG',
+        ],
+        'all': [
+          'images/works/liana/IMG_2717.JPEG',
+          'images/works/liana/IMG_4148.jpg',
+          'images/works/liana/IMG_4395.JPEG',
+          'images/works/liana/IMG_4978.JPEG',
+          'images/works/liana/IMG_5054.JPEG',
+          'images/works/liana/IMG_5055.JPEG',
+          'images/works/liana/IMG_5532.JPEG',
+          'images/works/liana/IMG_6067.JPEG',
+          'images/works/liana/IMG_6882.JPG',
+        ],
+      },
+      'Катрин': {
+        'Брови': [
+          'images/works/katrin/IMG_0012.JPG',
+          'images/works/katrin/IMG_0296.JPEG',
+          'images/works/katrin/IMG_0671.JPG',
+          'images/works/katrin/IMG_3809.JPEG',
+          'images/works/katrin/IMG_4159.jpg',
+          'images/works/katrin/brovi_7.jpg',
+        ],
+        'Губы': [
+          'images/works/katrin/IMG_1362.JPG',
+          'images/works/katrin/IMG_5503.JPEG',
+          'images/works/katrin/IMG_7766.JPEG',
+        ],
+        'Веки': [
+          'images/works/katrin/IMG_7840.JPEG',
+        ],
+        'all': [
+          'images/works/katrin/IMG_0012.JPG',
+          'images/works/katrin/IMG_0296.JPEG',
+          'images/works/katrin/IMG_0671.JPG',
+          'images/works/katrin/IMG_1362.JPG',
+          'images/works/katrin/IMG_3809.JPEG',
+          'images/works/katrin/IMG_4159.jpg',
+          'images/works/katrin/IMG_5503.JPEG',
+          'images/works/katrin/IMG_7766.JPEG',
+          'images/works/katrin/IMG_7840.JPEG',
+          'images/works/katrin/brovi_7.jpg',
+        ],
+      },
+      'Видана': {
+        'Брови': [
+          'images/works/vidana/IMG_6714.JPEG',
+          'images/works/vidana/whatsapp_1.jpg',
+          'images/works/vidana/whatsapp_3.jpg',
+        ],
+        'Губы': [
+          'images/works/vidana/IMG_1251.JPEG',
+          'images/works/vidana/IMG_5291.JPEG',
+          'images/works/vidana/IMG_6321.JPEG',
+          'images/works/vidana/IMG_6713.JPEG',
+        ],
+        'Веки': [
+          'images/works/vidana/IMG_4161.jpg',
+          'images/works/vidana/IMG_5852.JPEG',
+          'images/works/vidana/whatsapp_2.jpg',
+        ],
+        'all': [
+          'images/works/vidana/IMG_1251.JPEG',
+          'images/works/vidana/IMG_4161.jpg',
+          'images/works/vidana/IMG_5291.JPEG',
+          'images/works/vidana/IMG_5852.JPEG',
+          'images/works/vidana/IMG_6321.JPEG',
+          'images/works/vidana/IMG_6713.JPEG',
+          'images/works/vidana/IMG_6714.JPEG',
+          'images/works/vidana/whatsapp_1.jpg',
+          'images/works/vidana/whatsapp_2.jpg',
+          'images/works/vidana/whatsapp_3.jpg',
+        ],
+      },
+      'Светлана': {
+        'Брови': [
+          'images/works/svetlana/IMG_0165.JPG',
+          'images/works/svetlana/IMG_0166.JPG',
+          'images/works/svetlana/IMG_0181.JPG',
+          'images/works/svetlana/IMG_0693.JPG',
+          'images/works/svetlana/IMG_0796.jpg',
+          'images/works/svetlana/IMG_0799.PNG',
+          'images/works/svetlana/IMG_0801.PNG',
+          'images/works/svetlana/IMG_0802.PNG',
+        ],
+        'Губы': [
+          'images/works/svetlana/IMG_0167.JPG',
+          'images/works/svetlana/IMG_0170.JPG',
+          'images/works/svetlana/IMG_0322.JPG',
+          'images/works/svetlana/IMG_0800.PNG',
+        ],
+        'all': [
+          'images/works/svetlana/IMG_0165.JPG',
+          'images/works/svetlana/IMG_0166.JPG',
+          'images/works/svetlana/IMG_0167.JPG',
+          'images/works/svetlana/IMG_0170.JPG',
+          'images/works/svetlana/IMG_0181.JPG',
+          'images/works/svetlana/IMG_0322.JPG',
+          'images/works/svetlana/IMG_0693.JPG',
+          'images/works/svetlana/IMG_0796.jpg',
+          'images/works/svetlana/IMG_0799.PNG',
+          'images/works/svetlana/IMG_0800.PNG',
+          'images/works/svetlana/IMG_0801.PNG',
+          'images/works/svetlana/IMG_0802.PNG',
+        ],
+      },
+      'Камила': {
+        'Брови': [
+          'images/works/kamila/IMG_0804.PNG',
+          'images/works/kamila/IMG_0805.PNG',
+          'images/works/kamila/IMG_0809.PNG',
+          'images/works/kamila/IMG_0811.PNG',
+        ],
+        'Губы': [
+          'images/works/kamila/IMG_0807.PNG',
+          'images/works/kamila/IMG_0808.PNG',
+          'images/works/kamila/IMG_0810.PNG',
+          'images/works/kamila/IMG_0813.PNG',
+        ],
+        'Веки': [
+          'images/works/kamila/IMG_0806.PNG',
+          'images/works/kamila/IMG_0812.PNG',
+        ],
+        'all': [
+          'images/works/kamila/IMG_0804.PNG',
+          'images/works/kamila/IMG_0805.PNG',
+          'images/works/kamila/IMG_0806.PNG',
+          'images/works/kamila/IMG_0807.PNG',
+          'images/works/kamila/IMG_0808.PNG',
+          'images/works/kamila/IMG_0809.PNG',
+          'images/works/kamila/IMG_0810.PNG',
+          'images/works/kamila/IMG_0811.PNG',
+          'images/works/kamila/IMG_0812.PNG',
+          'images/works/kamila/IMG_0813.PNG',
+        ],
+      },
+      'Натали': {
+        'Брови': [
+          'images/works/natali/IMG_1201.JPEG',
+          'images/works/natali/whatsapp_brows.jpg',
+          'images/works/natali/veki_2.jpg',
+        ],
+        'Губы': [
+          'images/works/natali/IMG_4267.JPEG',
+          'images/works/natali/IMG_4593.JPEG',
+          'images/works/natali/IMG_5035.JPG',
+        ],
+        'Веки': [
+          'images/works/natali/IMG_4270.JPEG',
+        ],
+        'all': [
+          'images/works/natali/IMG_1201.JPEG',
+          'images/works/natali/IMG_4267.JPEG',
+          'images/works/natali/IMG_4270.JPEG',
+          'images/works/natali/IMG_4593.JPEG',
+          'images/works/natali/IMG_5035.JPG',
+          'images/works/natali/whatsapp_brows.jpg',
+          'images/works/natali/veki_2.jpg',
+        ],
+      },
+      'Валерия': {
+        'Брови': [
+          'images/works/valeriya/IMG_0823.PNG',
+          'images/works/valeriya/IMG_0826.PNG',
+          'images/works/valeriya/IMG_0828.PNG',
+          'images/works/valeriya/IMG_0822.PNG',
+          'images/works/valeriya/IMG_0824.PNG',
+        ],
+        'Губы': [
+          'images/works/valeriya/IMG_0827.PNG',
+          'images/works/valeriya/IMG_0825.PNG',
+          'images/works/valeriya/IMG_0831.PNG',
+          'images/works/valeriya/IMG_0833.PNG',
+          'images/works/valeriya/IMG_0832.PNG',
+        ],
+        'all': [
+          'images/works/valeriya/IMG_0823.PNG',
+          'images/works/valeriya/IMG_0826.PNG',
+          'images/works/valeriya/IMG_0828.PNG',
+          'images/works/valeriya/IMG_0822.PNG',
+          'images/works/valeriya/IMG_0827.PNG',
+          'images/works/valeriya/IMG_0825.PNG',
+          'images/works/valeriya/IMG_0831.PNG',
+          'images/works/valeriya/IMG_0833.PNG',
+          'images/works/valeriya/IMG_0832.PNG',
+          'images/works/valeriya/IMG_0824.PNG',
+          'images/works/valeriya/IMG_0829.PNG',
+        ],
+      },
+    };
+
+    // Динамические фото работ (загружаются с VPS /master-works)
+    var dynWorks = {};
+
+    // Загружаем мастеров, услуги и уровни из API, затем рендерим
+    loadAllData().then(function() {
+      renderMastersIntoSections();
+    });
+    var DYN_CAT_MAP = {
+      'brows':   'Брови',
+      'lips':    'Губы',
+      'eyes':    'Веки',
+      'removal':    'Удаление',
+      'cosmo':      'Косметология',
+      'camouflage': 'Камуфляж',
+    };
+    var SVC_CAT_MAP = {
+      'Бров':     'brows',
+      'Губ':      'lips',
+      'Век':      'eyes',
+      'удал':     'removal',
+      'космет':   'cosmo',
+      'Камуфляж': 'camouflage',
+    };
+
+    function getMasterPhotos(masterName, categoryFilter) {
+      // Собираем фото из MASTER_PHOTOS (статика) + dynWorks (динамика)
+      var result = [];
+      var staticData = MASTER_PHOTOS[masterName];
+      var dynData = dynWorks[masterName];
+
+      if (categoryFilter) {
+        // Показываем только нужную категорию
+        if (staticData) {
+          var ruKey = DYN_CAT_MAP[categoryFilter];
+          var arr = staticData[ruKey] || [];
+          result = result.concat(arr);
+        }
+        if (dynData && dynData[categoryFilter]) {
+          result = result.concat(dynData[categoryFilter]);
+        }
+        // Если нет фото по категории — возвращаем пустой массив (не fallback)
+      } else {
+        // Все фото
+        if (staticData) {
+          result = result.concat(staticData['all'] || []);
+        }
+        if (dynData) {
+          Object.keys(dynData).forEach(function(cat) {
+            result = result.concat(dynData[cat]);
+          });
+        }
+      }
+      return result;
+    }
+
+    function openMasterWorks(masterName, serviceId) {
+      haptic('impact', 'light');
+      var grid = document.getElementById('works-grid');
+      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      document.getElementById('works-modal').classList.add('open');
+
+      // Find master object for ID
+      var mObj = MASTERS.find(function(x) { return x.name === masterName; });
+      var masterId = mObj ? mObj.id : null;
+
+      // Find service ID from currentService if not passed
+      var svcId = serviceId || null;
+      if (!svcId && currentService && mObj && mObj.gallery_services) {
+        var gs = mObj.gallery_services.find(function(g) {
+          return currentService.indexOf(g.service_name.substring(0, 4)) !== -1;
+        });
+        if (gs) svcId = gs.service_id;
+      }
+
+      function showStaticPhotos() {
+        var service = currentService || '';
+        var catFilter = null;
+        for (var key in SVC_CAT_MAP) {
+          if (service.indexOf(key) !== -1) { catFilter = SVC_CAT_MAP[key]; break; }
+        }
+        var photos = getMasterPhotos(masterName, catFilter);
+        if (!photos || !photos.length) {
+          if (catFilter) {
+            var catName = DYN_CAT_MAP[catFilter] || catFilter;
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ по категории «' + catName + '» пока нет</div>';
+          } else {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
+          }
+          return;
+        }
+        grid.innerHTML = photos.map(function(src) {
+          return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+        }).join('');
+      }
+
+      if (masterId && svcId) {
+        apiFetch('/master-service-gallery/' + masterId + '/' + svcId)
+          .then(function(data) {
+            if (data && data.photos && data.photos.length) {
+              var base = data.photo_base || ('images/works/' + (data.master_slug || '') + '/' + (data.cat_slug || '') + '/');
+              grid.innerHTML = data.photos.map(function(fname) {
+                return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+            } else {
+              showStaticPhotos();
+            }
+          })
+          .catch(function() { showStaticPhotos(); });
+      } else {
+        showStaticPhotos();
+      }
+    }
+
+    function openServiceWorks(folder, serviceId) {
+      haptic('impact', 'light');
+      var titleEl = document.getElementById('works-modal-title');
+      var grid    = document.getElementById('works-grid');
+      var modal   = document.getElementById('works-modal');
+      titleEl.textContent = 'Примеры работ';
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      modal.classList.add('open');
+
+      function renderPhotos(photos, base) {
+        if (!photos || !photos.length) {
+          grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
+        } else {
+          grid.innerHTML = photos.map(function(fname) {
+            return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+          }).join('');
+        }
+      }
+
+      // Try new API first if serviceId provided
+      if (serviceId) {
+        apiFetch('/service-gallery/' + serviceId)
+          .then(function(data) {
+            if (data && data.photos && data.photos.length) {
+              var base = 'images/works/services/' + (data.folder || folder) + '/';
+              renderPhotos(data.photos, base);
+            } else if (folder) {
+              // fallback to photos.json
+              fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+                .catch(function() { renderPhotos([], ''); });
+            } else {
+              renderPhotos([], '');
+            }
+          })
+          .catch(function() {
+            if (folder) {
+              fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
+                .then(function(r) { return r.ok ? r.json() : []; })
+                .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+                .catch(function() { renderPhotos([], ''); });
+            } else { renderPhotos([], ''); }
+          });
+        return;
+      }
+
+      // Old behavior: folder only
+      if (!folder) { renderPhotos([], ''); return; }
+      fetch('images/works/services/' + folder + '/photos.json?t=' + Date.now())
+        .then(function(r) { return r.ok ? r.json() : []; })
+        .then(function(photos) { renderPhotos(photos, 'images/works/services/' + folder + '/'); })
+        .catch(function() { renderPhotos([], ''); });
+    }
+
+    function showEmptyGalleryScreen(title, subtitle, onBookClick) {
+      var existing = document.getElementById('gallery-empty-overlay');
+      if (existing) existing.remove();
+      var overlay = document.createElement('div');
+      overlay.id = 'gallery-empty-overlay';
+      overlay.className = 'gallery-empty-overlay';
+      overlay.innerHTML =
+        '<div class="gallery-empty">' +
+          '<div class="gallery-empty-icon">📷</div>' +
+          '<div class="gallery-empty-title">' + title + '</div>' +
+          '<div class="gallery-empty-subtitle">' + subtitle + '</div>' +
+          '<button class="gallery-empty-book">Записаться</button>' +
+          '<button class="gallery-empty-close">Назад</button>' +
+        '</div>';
+      document.body.appendChild(overlay);
+      overlay.querySelector('.gallery-empty-book').onclick = function() {
+        overlay.remove();
+        if (onBookClick) onBookClick();
+      };
+      overlay.querySelector('.gallery-empty-close').onclick = function() {
+        overlay.remove();
+      };
+    }
+
+    function openServiceGallery(serviceId, serviceName) {
+      haptic('impact', 'light');
+      var titleEl = document.getElementById('works-modal-title');
+      var grid = document.getElementById('works-grid');
+      var modal = document.getElementById('works-modal');
+      titleEl.textContent = serviceName;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      modal.classList.add('open');
+
+      apiFetch('/service-gallery/' + serviceId)
+        .then(function(data) {
+          if (data && data.photos && data.photos.length) {
+            var base = 'images/works/services/' + (data.folder || '') + '/';
+            grid.innerHTML = data.photos.map(function(fname) {
+              return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+            }).join('');
+          } else {
+            modal.classList.remove('open');
+            showEmptyGalleryScreen(
+              'Примеры работ',
+              'Скоро добавим примеры работ по услуге «' + serviceName + '».\nА пока можно записаться:',
+              function() { bookService(serviceName); }
+            );
+          }
+        })
+        .catch(function() {
+          modal.classList.remove('open');
+          showEmptyGalleryScreen(
+            'Примеры работ',
+            'Скоро добавим примеры работ по услуге «' + serviceName + '».\nА пока можно записаться:',
+            function() { bookService(serviceName); }
+          );
+        });
+    }
+
+    function openMasterWorksPicker(masterId, masterName, serviceId) {
+      if (serviceId) {
+        openMasterWorks(masterName, serviceId);
+        return;
+      }
+      haptic('impact', 'light');
+      var grid = document.getElementById('works-grid');
+      var modal = document.getElementById('works-modal');
+      document.getElementById('works-modal-title').textContent = 'Работы — ' + masterName;
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;">Загрузка...</div>';
+      modal.classList.add('open');
+
+      apiFetch('/master-galleries/' + masterId)
+        .then(function(data) {
+          var galleries = (data && data.galleries ? data.galleries : []).filter(function(g) { return g.count > 0; });
+          if (!galleries.length) {
+            var staticPhotos = getMasterPhotos(masterName, null);
+            if (!staticPhotos.length) {
+              modal.classList.remove('open');
+              showEmptyGalleryScreen(
+                masterName,
+                'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
+                function() { openBookingModalForMaster(masterName); }
+              );
+              return;
+            }
+            grid.innerHTML = staticPhotos.map(function(src) {
+              return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+            }).join('');
+            return;
+          }
+
+          var promises = galleries.map(function(g) {
+            return apiFetch('/master-service-gallery/' + masterId + '/' + g.service_id)
+              .then(function(r) { return { gallery: g, result: r }; })
+              .catch(function() { return { gallery: g, result: null }; });
+          });
+
+          return Promise.all(promises).then(function(results) {
+            var html = '';
+            results.forEach(function(item) {
+              var g = item.gallery;
+              var r = item.result;
+              if (!r || !r.photos || !r.photos.length) return;
+              var base = r.photo_base || ('images/works/' + (r.master_slug || '') + '/' + (r.cat_slug || '') + '/');
+              html += '<div style="grid-column:1/-1;font-weight:600;font-size:15px;color:#ffd700;padding:12px 0 4px;">' + g.service_name + '</div>';
+              html += r.photos.map(function(fname) {
+                return '<img src="' + base + fname + '" alt="' + g.service_name + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+            });
+            if (!html) {
+              var staticPhotos = getMasterPhotos(masterName, null);
+              if (!staticPhotos.length) {
+                modal.classList.remove('open');
+                showEmptyGalleryScreen(
+                  masterName,
+                  'У мастера ' + masterName + ' пока нет примеров работ.\nА пока можно записаться:',
+                  function() { openBookingModalForMaster(masterName); }
+                );
+                return;
+              }
+              grid.innerHTML = staticPhotos.map(function(src) {
+                return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+              }).join('');
+              return;
+            }
+            grid.innerHTML = html;
+          });
+        })
+        .catch(function() {
+          openMasterWorks(masterName, null);
+        });
+    }
+
+    document.getElementById('booking-modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    function submitBooking() {
+      var name  = document.getElementById('input-name').value.trim();
+      var phone = document.getElementById('input-phone').value.trim();
+      var tg    = tgUsername || document.getElementById('input-tg').value.trim();
+      var service = bookingService || document.getElementById('modal-service-select').value;
+      if (!name || !phone) {
+        if (!name) document.getElementById('input-name').focus();
+        else document.getElementById('input-phone').focus();
+        return;
+      }
+      if (!service) {
+        document.getElementById('modal-service-select').focus();
+        return;
+      }
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.textContent = 'Отправляем...';
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name, phone: phone, telegram: tg || '—', service: service, master: bookingMaster, initData: (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp.initData : '' })
+      })
+      .then(function(r) { return r.json(); })
+      .then(function() {
+        haptic('notification', 'success');
+        document.getElementById('modal-form-content').style.display = 'none';
+        document.getElementById('modal-success-content').style.display = 'block';
+        setTimeout(closeModal, 4000);
+      })
+      .catch(function() {
+        haptic('notification', 'success');
+        document.getElementById('modal-form-content').style.display = 'none';
+        document.getElementById('modal-success-content').style.display = 'block';
+        setTimeout(closeModal, 4000);
+      });
+    }
+
+    var PRICE_SERVICE_MAP = {
+      'брови':            'Брови',
+      'губы':             'Губы',
+      'веки':             'Веки и стрелки',
+      'RF-лифтинг':       'RF-лифтинг Morpheus8',
+      'Lumecca':          'Фотоомоложение Lumecca',
+      'Удаление лазером': 'Пикосекундные лазеры PicoSure / PicoPlus',
+      'Ботулинотерапия':  'Ботулинотерапия',
+      'Биоревитализация': 'Биоревитализация',
+    };
+    setTimeout(function() {
+      apiFetch('/prices')
+        .then(function(prices) {
+          console.log('[prices] received:', prices);
+          Object.keys(prices).forEach(function(key) {
+            var svcName = PRICE_SERVICE_MAP[key];
+            if (!svcName) return;
+            var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
+            if (!card) return;
+            var el = card.querySelector('.service-price');
+            if (el) el.textContent = 'от ' + String(prices[key]).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+          });
+        })
+        .catch(function(e) { console.error('[prices] fetch error:', e); });
+    }, 500);
+
+    apiFetch('/settings')
+      .then(function(s) {
+        if (!s) return;
+        if (s.phone) {
+          var el = document.getElementById('settings-phone-link');
+          if (el) {
+            var digits = s.phone.replace(/\D/g,'');
+            el.href = 'tel:+' + digits;
+            el.textContent = s.phone;
+          }
+        }
+        if (s.telegram_url) {
+          var tgLink = document.getElementById('settings-tg-link');
+          if (tgLink) {
+            var handle = s.telegram_url.replace('https://t.me/','@');
+            tgLink.href = '#';
+            tgLink.onclick = function(){ openLink(s.telegram_url); return false; };
+            tgLink.textContent = handle;
+          }
+          var tgBtn = document.getElementById('settings-tg-btn');
+          if (tgBtn) {
+            tgBtn.onclick = function(){ Telegram.WebApp.openLink(s.telegram_url); };
+          }
+        }
+      })
+      .catch(function() {});
+
+    setTimeout(function() {
+      apiFetch('/static-master-prices')
+        .then(function(prices) {
+          if (!prices || typeof prices !== 'object') return;
+          document.querySelectorAll('.master-card').forEach(function(card) {
+            var nameEl = card.querySelector('.master-name');
+            if (!nameEl) return;
+            var name = nameEl.textContent.trim();
+            // ищем ключ без учёта регистра
+            var key = Object.keys(prices).find(function(k) {
+              return k.toLowerCase() === name.toLowerCase();
+            });
+            if (key === undefined) return;
+            var priceEl = card.querySelector('.master-price');
+            if (priceEl) priceEl.textContent = 'от ' + String(prices[key]).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
+          });
+        })
+        .catch(function() {});
+    }, 600);
+
+    setTimeout(function() {
+      apiFetch('/hidden-masters')
+        .then(function(hidden) {
+          if (!Array.isArray(hidden) || hidden.length === 0) return;
+          // Скрываем статические карточки мастеров на вкладке Мастера
+          document.querySelectorAll('.master-card').forEach(function(card) {
+            var nameEl = card.querySelector('.master-name');
+            if (nameEl && hidden.indexOf(nameEl.textContent.trim()) !== -1) {
+              card.style.display = 'none';
+            }
+          });
+          // Скрываем из динамического списка MASTERS (выбор в процессе записи)
+          hiddenMasters = hidden;
+        })
+        .catch(function() {});
+    }, 1000);
+
+    var hiddenMasters = [];
+
+    // Translate short service keys (from /addservice command) to full SERVICE_MASTERS keys
+    var SHORT_TO_SERVICE = {
+      'брови':           'Брови',
+      'губы':            'Губы',
+      'веки':            'Веки и стрелки',
+      'камуфляж':        'Камуфляж шрамов, рубцов, трихопигментация',
+      'лазер':           'Лазерное удаление (неодим)',
+      'пикосекундный':   'Пикосекундные лазеры PicoSure / PicoPlus',
+      'ремувер':         'Удаление ремувером',
+      'rf-лифтинг':      'RF-лифтинг Morpheus8',
+      'lumecca':         'Фотоомоложение Lumecca',
+      'smas':            'SMAS-лифтинг Ultraformer',
+      'эндосфера':       'Эндосферотерапия тела/лица',
+      'эндолифт':        'Эндолифтинг лица/тела',
+      'co2':             'Лазерная шлифовка CO2',
+      'ботулинотерапия': 'Ботулинотерапия',
+      'биоревитализация':'Биоревитализация',
+      'контурная':       'Контурная пластика',
+      'плазмотерапия':   'Плазмотерапия PRP CORTEXIL',
+      'коллаген':        'Коллаген и белок лосося (Plinest)',
+    };
+
+    apiFetch('/master-services')
+      .then(function(data) {
+        console.log('[master-services] received:', JSON.stringify(data));
+        if (data && typeof data === 'object') {
+          Object.keys(data).forEach(function(masterName) {
+            (data[masterName] || []).forEach(function(shortSvc) {
+              var svc = SHORT_TO_SERVICE[shortSvc] || shortSvc;
+              if (!SERVICE_MASTERS[svc]) SERVICE_MASTERS[svc] = [];
+              if (SERVICE_MASTERS[svc].indexOf(masterName) === -1) {
+                SERVICE_MASTERS[svc].push(masterName);
+              }
+            });
+          });
+          console.log('[master-services] SERVICE_MASTERS updated:', JSON.stringify(SERVICE_MASTERS));
+        }
+      })
+      .catch(function(e) { console.log('[master-services] error:', e); });
+
+    apiFetch('/master-works')
+      .then(function(data) {
+        if (data && typeof data === 'object') dynWorks = data;
+      })
+      .catch(function() {});
+  </script>
+</body>
+</html>
