@@ -994,9 +994,14 @@
       links.forEach(function(link) {
         var row = document.createElement('div');
         row.className = 'social-row';
-        var icoHtml = SOCIAL_SVG[link.name]
-          ? '<span style="flex-shrink:0;line-height:0">' + SOCIAL_SVG[link.name] + '</span>'
-          : '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>';
+        var icoHtml;
+        if (SOCIAL_SVG[link.name]) {
+          icoHtml = '<span style="flex-shrink:0;line-height:0">' + SOCIAL_SVG[link.name] + '</span>';
+        } else if (link.icon && link.icon.indexOf('images/') === 0) {
+          icoHtml = '<img src="' + link.icon + '" width="28" height="28" style="flex-shrink:0;border-radius:6px;object-fit:cover;vertical-align:middle;">';
+        } else {
+          icoHtml = '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>';
+        }
         var btnLabel = SOCIAL_BTN_LABEL[link.name] || link.name;
         row.innerHTML = icoHtml +
           '<span style="font-size:15px;font-weight:600;color:var(--text);flex:1">' + link.name + '</span>' +
