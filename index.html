@@ -1201,6 +1201,7 @@
 
     function openBookingModalForMaster(masterName) {
       haptic('impact', 'medium');
+      trackEvent('booking_click');
       openYclientsWidget(masterName);
     }
 
