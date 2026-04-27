@@ -567,7 +567,7 @@
       <div class="about-block" style="margin-top:20px;">
         <div class="about-block-title">Наши работы</div>
         <div class="why-text" style="margin-bottom:16px;">Смотрите примеры работ наших мастеров в Instagram</div>
-        <button onclick="window.Telegram&&window.Telegram.WebApp?Telegram.WebApp.openLink('https://www.instagram.com/expert_pmu/'):window.open('https://www.instagram.com/expert_pmu/','_blank')" style="width:100%;background:#c9a96e;color:#000;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Наш Instagram</button>
+        <button id="about-instagram-btn" style="width:100%;background:#c9a96e;color:#000;border:none;border-radius:10px;padding:12px;font-size:15px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent;">Наш Instagram</button>
       </div>
     </div><!-- /tab-about -->
 
@@ -900,6 +900,11 @@
     var LEVEL_ORDER = [];  // заполняется из /master-levels API
     var LEVELS_DATA = []; // [{id, name, color, sort_order}]
     var studioTgUrl = 'https://t.me/+79299910001';
+    var studioInstagramUrl = 'https://www.instagram.com/expert_pmu/';
+    var aboutIgBtn = document.getElementById('about-instagram-btn');
+    if (aboutIgBtn) {
+      aboutIgBtn.onclick = function() { openLink(studioInstagramUrl); };
+    }
     var cachedBranchesData = null;
     var hideWorksMasters = 0;
     var hideWorksServices = 0;
@@ -992,6 +997,9 @@
       if (!c) return;
       c.innerHTML = '';
       links.forEach(function(link) {
+        if (link.name === 'Instagram' && link.url) {
+          studioInstagramUrl = link.url;
+        }
         var row = document.createElement('div');
         row.className = 'social-row';
         var icoHtml;
@@ -1012,6 +1020,10 @@
         };
         c.appendChild(row);
       });
+      var igBtn = document.getElementById('about-instagram-btn');
+      if (igBtn) {
+        igBtn.onclick = function() { openLink(studioInstagramUrl); };
+      }
     }
 
     function bookService(serviceName, serviceId) {
