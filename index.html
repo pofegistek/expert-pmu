@@ -1608,31 +1608,7 @@
       });
     }
 
-    var PRICE_SERVICE_MAP = {
-      'брови':            'Брови',
-      'губы':             'Губы',
-      'веки':             'Веки и стрелки',
-      'RF-лифтинг':       'RF-лифтинг Morpheus8',
-      'Lumecca':          'Фотоомоложение Lumecca',
-      'Удаление лазером': 'Пикосекундные лазеры PicoSure / PicoPlus',
-      'Ботулинотерапия':  'Ботулинотерапия',
-      'Биоревитализация': 'Биоревитализация',
-    };
-    setTimeout(function() {
-      apiFetch('/prices')
-        .then(function(prices) {
-          console.log('[prices] received:', prices);
-          Object.keys(prices).forEach(function(key) {
-            var svcName = PRICE_SERVICE_MAP[key];
-            if (!svcName) return;
-            var card = document.querySelector('.service-card[data-service="' + svcName + '"]');
-            if (!card) return;
-            var el = card.querySelector('.service-price');
-            if (el) el.textContent = 'от ' + String(prices[key]).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
-          });
-        })
-        .catch(function(e) { console.error('[prices] fetch error:', e); });
-    }, 500);
+    // Prices are sourced from /services-sections (price_text) to avoid dual-source conflicts.
 
     apiFetch('/settings')
       .then(function(s) {
