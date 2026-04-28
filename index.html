@@ -1049,7 +1049,7 @@
 
       if (m.photo) {
         var img = document.createElement('img');
-        img.src = m.photo;
+        img.src = m.photo + (m.photo.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
         img.alt = m.name;
         var av = document.createElement('div');
         av.className = 'master-avatar';
@@ -1246,8 +1246,9 @@
       var card = document.createElement('div');
       card.className = 'master-card';
       var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
+      var photoSrc = m.photo ? (m.photo + (m.photo.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now()) : '';
       var photoHtml = m.photo
-        ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="if(!this.dataset.rawTried&&this.getAttribute(\'src\').indexOf(\'http\')!==0){this.dataset.rawTried=1;this.src=\'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/\'+this.getAttribute(\'src\').replace(/^\\/+/,\'\');return;}this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        ? '<img src="' + photoSrc + '" alt="' + m.name + '" onerror="if(!this.dataset.rawTried&&this.getAttribute(\'src\').indexOf(\'http\')!==0){this.dataset.rawTried=1;this.src=\'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/\'+this.getAttribute(\'src\').replace(/^\\/+/,\'\');return;}this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = '';
