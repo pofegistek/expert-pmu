@@ -1073,14 +1073,12 @@
         m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
       var hwScopes = m.hide_works_scopes || [];
       var svcIdStr = currentServiceId ? String(currentServiceId) : '';
-      var levelLower = String(m.level || '').toLowerCase();
-      var isDoctorProfile = levelLower.indexOf('врач') !== -1 || levelLower.indexOf('косметолог') !== -1;
       var showMasterWorksBtn = !hideWorksServices &&
         hwScopes.indexOf('all') === -1 && hwScopes.indexOf('services_tab') === -1 &&
         (!svcIdStr || hwScopes.indexOf(svcIdStr) === -1) &&
         (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
       var worksBtn = showMasterWorksBtn
-        ? '<button class="btn-works js-works-btn">' + (isDoctorProfile ? 'Описание' : 'Примеры работ') + '</button>'
+        ? '<button class="btn-works js-works-btn">Примеры работ</button>'
         : '';
       var effectiveColor = (m.service_colors && currentServiceId && m.service_colors[currentServiceId])
         || m.levelColor;
@@ -1111,14 +1109,10 @@
         }
         var wBtn = body.querySelector('.js-works-btn');
         if (wBtn) {
-          wBtn.addEventListener('click', (function(mid, mname, svcId, isDoctor, specText) { return function(e) {
+          wBtn.addEventListener('click', (function(mid, mname, svcId) { return function(e) {
             e.stopPropagation();
-            if (isDoctor) {
-              showMasterDescription(mname, specText);
-              return;
-            }
             openMasterWorksPicker(mid, mname, svcId);
-          }; })(m.id, m.name, currentServiceId, isDoctorProfile, m.spec));
+          }; })(m.id, m.name, currentServiceId));
         }
       }, 0);
 
@@ -1250,12 +1244,14 @@
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
+      var levelLower = String(m.level || '').toLowerCase();
+      var isDoctorProfile = levelLower.indexOf('врач') !== -1 || levelLower.indexOf('косметолог') !== -1;
       var hwScopes = m.hide_works_scopes || [];
       var showMasterWorksBtnCard = !hideWorksMasters &&
         hwScopes.indexOf('all') === -1 && hwScopes.indexOf('masters_tab') === -1 &&
         (m.show_works_button === 1 || m.show_works_button === undefined);
       var worksBtn = showMasterWorksBtnCard
-        ? '<button class="btn-works" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'light\')}catch(e){}; openMasterWorksPicker(' + m.id + ',\'' + m.name.replace(/'/g, "\\'") + '\')">Примеры работ</button>'
+        ? '<button class="btn-works js-master-works">' + (isDoctorProfile ? 'Описание' : 'Примеры работ') + '</button>'
         : '';
       var bookBtn = '<button class="btn-book" onclick="try{window.Telegram.WebApp.HapticFeedback.impactOccurred(\'medium\')}catch(e){}; openBookingModalForMaster(\'' + m.name + '\')">Выбрать</button>';
       var footerRight = worksBtn ? '<div style="display:flex;gap:6px;">' + worksBtn + bookBtn + '</div>' : bookBtn;
@@ -1266,6 +1262,19 @@
           '<div class="master-name">' + m.name + '</div>' + specHtml + '</div>' +
           '<div class="master-footer"><div class="master-price">' + m.price + '</div>' + footerRight + '</div>' +
         '</div>';
+      setTimeout(function() {
+        var wBtn = card.querySelector('.js-master-works');
+        if (!wBtn) return;
+        wBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          haptic('impact', 'light');
+          if (isDoctorProfile) {
+            showMasterDescription(m.name, m.spec);
+          } else {
+            openMasterWorksPicker(m.id, m.name);
+          }
+        });
+      }, 0);
       return card;
     }
 
