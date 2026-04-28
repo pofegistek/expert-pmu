@@ -1465,7 +1465,7 @@
         apiFetch('/service-gallery/' + serviceId)
           .then(function(data) {
             if (data && data.photos && data.photos.length) {
-              var base = 'images/works/services/' + (data.folder || folder) + '/';
+              var base = data.photo_base || ('images/works/services/' + (data.folder || folder) + '/');
               renderPhotos(data.photos, base);
             } else if (folder) {
               // fallback to photos.json
@@ -1532,7 +1532,7 @@
       apiFetch('/service-gallery/' + serviceId)
         .then(function(data) {
           if (data && data.photos && data.photos.length) {
-            var base = 'images/works/services/' + (data.folder || '') + '/';
+            var base = data.photo_base || ('images/works/services/' + (data.folder || '') + '/');
             grid.innerHTML = data.photos.map(function(fname) {
               return '<img src="' + withAssetVer(base + fname) + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
             }).join('');
