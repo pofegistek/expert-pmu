@@ -1055,15 +1055,7 @@
         av.className = 'master-avatar';
         av.style.cssText = 'display:none;background:' + m.avatarBg + ';';
         av.textContent = m.avatarLetter;
-        img.onerror = function() {
-          if (!img.dataset.rawTried && String(m.photo || '').indexOf('http') !== 0) {
-            img.dataset.rawTried = '1';
-            img.src = 'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + String(m.photo).replace(/^\/+/, '');
-            return;
-          }
-          img.style.display = 'none';
-          av.style.display = 'flex';
-        };
+        img.onerror = function() { handleImageFallback(img, true); };
         photoDiv.appendChild(img);
         photoDiv.appendChild(av);
       } else {
@@ -1248,7 +1240,7 @@
       var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
       var photoSrc = m.photo ? (m.photo + (m.photo.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now()) : '';
       var photoHtml = m.photo
-        ? '<img src="' + photoSrc + '" alt="' + m.name + '" onerror="if(!this.dataset.rawTried&&this.getAttribute(\'src\').indexOf(\'http\')!==0){this.dataset.rawTried=1;this.src=\'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/\'+this.getAttribute(\'src\').replace(/^\\/+/,\'\');return;}this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        ? '<img src="' + photoSrc + '" alt="' + m.name + '" onerror="handleImageFallback(this,true)">' +
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = '';
@@ -1304,7 +1296,33 @@
       'cosmo':      'Косметология',
       'camouflage': 'Камуфляж',
     };
-    var IMG_FALLBACK_ONERROR = "if(!this.dataset.rawTried&&this.getAttribute('src').indexOf('http')!==0){this.dataset.rawTried=1;this.src='https://raw.githubusercontent.com/pofegistek/expert-pmu/main/'+this.getAttribute('src').replace(/^\\/+/,'');return;}this.style.display='none'";
+    function _relPathFromSrc(src) {
+      var s = String(src || '');
+      if (!s) return '';
+      if (s.indexOf('images/') >= 0) s = s.slice(s.indexOf('images/'));
+      return s.replace(/^\/+/, '');
+    }
+    function handleImageFallback(el, showAvatar) {
+      var rel = _relPathFromSrc(el.getAttribute('src'));
+      if (!rel) {
+        el.style.display = 'none';
+        if (showAvatar && el.nextElementSibling) el.nextElementSibling.style.display = 'flex';
+        return;
+      }
+      if (!el.dataset.tryCdn) {
+        el.dataset.tryCdn = '1';
+        el.src = 'https://cdn.jsdelivr.net/gh/pofegistek/expert-pmu@main/' + rel;
+        return;
+      }
+      if (!el.dataset.tryRaw) {
+        el.dataset.tryRaw = '1';
+        el.src = 'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + rel;
+        return;
+      }
+      el.style.display = 'none';
+      if (showAvatar && el.nextElementSibling) el.nextElementSibling.style.display = 'flex';
+    }
+    var IMG_FALLBACK_ONERROR = "handleImageFallback(this,false)";
     function withAssetVer(src) {
       var s = String(src || '');
       if (!s) return s;
