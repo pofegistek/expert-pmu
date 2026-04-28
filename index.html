@@ -1049,7 +1049,7 @@
 
       if (m.photo) {
         var img = document.createElement('img');
-        img.src = m.photo + (m.photo.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
+        img.src = withAssetVer(m.photo);
         img.alt = m.name;
         var av = document.createElement('div');
         av.className = 'master-avatar';
@@ -1238,7 +1238,7 @@
       var card = document.createElement('div');
       card.className = 'master-card';
       var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
-      var photoSrc = m.photo ? (m.photo + (m.photo.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now()) : '';
+      var photoSrc = m.photo ? withAssetVer(m.photo) : '';
       var photoHtml = m.photo
         ? '<img src="' + photoSrc + '" alt="' + m.name + '" onerror="handleImageFallback(this,true)">' +
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
@@ -1296,11 +1296,17 @@
       'cosmo':      'Косметология',
       'camouflage': 'Камуфляж',
     };
+    var ASSET_VER = Date.now();
     function _relPathFromSrc(src) {
       var s = String(src || '');
       if (!s) return '';
       if (s.indexOf('images/') >= 0) s = s.slice(s.indexOf('images/'));
+      var q = s.indexOf('?');
+      if (q !== -1) s = s.slice(0, q);
       return s.replace(/^\/+/, '');
+    }
+    function _withVer(src) {
+      return src + (src.indexOf('?') === -1 ? '?' : '&') + 'v=' + ASSET_VER;
     }
     function handleImageFallback(el, showAvatar) {
       var rel = _relPathFromSrc(el.getAttribute('src'));
@@ -1309,14 +1315,14 @@
         if (showAvatar && el.nextElementSibling) el.nextElementSibling.style.display = 'flex';
         return;
       }
-      if (!el.dataset.tryCdn) {
-        el.dataset.tryCdn = '1';
-        el.src = 'https://cdn.jsdelivr.net/gh/pofegistek/expert-pmu@main/' + rel;
-        return;
-      }
       if (!el.dataset.tryRaw) {
         el.dataset.tryRaw = '1';
-        el.src = 'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + rel;
+        el.src = _withVer('https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + rel);
+        return;
+      }
+      if (!el.dataset.tryLocal) {
+        el.dataset.tryLocal = '1';
+        el.src = _withVer(rel);
         return;
       }
       el.style.display = 'none';
@@ -1326,7 +1332,10 @@
     function withAssetVer(src) {
       var s = String(src || '');
       if (!s) return s;
-      return s + (s.indexOf('?') === -1 ? '?' : '&') + 'v=' + Date.now();
+      if (/^https?:\/\//i.test(s)) return _withVer(s);
+      var rel = _relPathFromSrc(s);
+      if (!rel) return _withVer(s);
+      return _withVer('https://cdn.jsdelivr.net/gh/pofegistek/expert-pmu@main/' + rel);
     }
     var SVC_CAT_MAP = {
       'Бров':     'brows',
