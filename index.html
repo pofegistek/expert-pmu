@@ -1006,7 +1006,7 @@
         if (SOCIAL_SVG[link.name]) {
           icoHtml = '<span style="flex-shrink:0;line-height:0">' + SOCIAL_SVG[link.name] + '</span>';
         } else if (link.icon && link.icon.indexOf('images/') === 0) {
-          icoHtml = '<img src="' + link.icon + '" width="28" height="28" style="flex-shrink:0;border-radius:6px;object-fit:cover;vertical-align:middle;">';
+          icoHtml = '<img src="' + withAssetVer(link.icon) + '" width="28" height="28" style="flex-shrink:0;border-radius:6px;object-fit:cover;vertical-align:middle;" onerror="' + IMG_FALLBACK_ONERROR + '">';
         } else {
           icoHtml = '<span style="font-size:22px;flex-shrink:0">' + (link.icon || '🔗') + '</span>';
         }
