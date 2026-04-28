@@ -1320,6 +1320,11 @@
         el.src = _withVer('https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + rel);
         return;
       }
+      if (!el.dataset.tryCdn) {
+        el.dataset.tryCdn = '1';
+        el.src = _withVer('https://cdn.jsdelivr.net/gh/pofegistek/expert-pmu@main/' + rel);
+        return;
+      }
       if (!el.dataset.tryLocal) {
         el.dataset.tryLocal = '1';
         el.src = _withVer(rel);
@@ -1335,7 +1340,7 @@
       if (/^https?:\/\//i.test(s)) return _withVer(s);
       var rel = _relPathFromSrc(s);
       if (!rel) return _withVer(s);
-      return _withVer('https://cdn.jsdelivr.net/gh/pofegistek/expert-pmu@main/' + rel);
+      return _withVer(VPS_URL + '/' + rel);
     }
     var SVC_CAT_MAP = {
       'Бров':     'brows',
