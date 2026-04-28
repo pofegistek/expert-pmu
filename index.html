@@ -1073,12 +1073,14 @@
         m.hidden_works_service_ids.indexOf(currentServiceId) !== -1;
       var hwScopes = m.hide_works_scopes || [];
       var svcIdStr = currentServiceId ? String(currentServiceId) : '';
+      var levelLower = String(m.level || '').toLowerCase();
+      var isDoctorProfile = levelLower.indexOf('врач') !== -1 || levelLower.indexOf('косметолог') !== -1;
       var showMasterWorksBtn = !hideWorksServices &&
         hwScopes.indexOf('all') === -1 && hwScopes.indexOf('services_tab') === -1 &&
         (!svcIdStr || hwScopes.indexOf(svcIdStr) === -1) &&
         (m.show_works_button === 1 || m.show_works_button === undefined) && !hiddenInCurrentSvc;
       var worksBtn = showMasterWorksBtn
-        ? '<button class="btn-works js-works-btn">Примеры работ</button>'
+        ? '<button class="btn-works js-works-btn">' + (isDoctorProfile ? 'Описание' : 'Примеры работ') + '</button>'
         : '';
       var effectiveColor = (m.service_colors && currentServiceId && m.service_colors[currentServiceId])
         || m.levelColor;
@@ -1109,10 +1111,14 @@
         }
         var wBtn = body.querySelector('.js-works-btn');
         if (wBtn) {
-          wBtn.addEventListener('click', (function(mid, mname, svcId) { return function(e) {
+          wBtn.addEventListener('click', (function(mid, mname, svcId, isDoctor, specText) { return function(e) {
             e.stopPropagation();
+            if (isDoctor) {
+              showMasterDescription(mname, specText);
+              return;
+            }
             openMasterWorksPicker(mid, mname, svcId);
-          }; })(m.id, m.name, currentServiceId));
+          }; })(m.id, m.name, currentServiceId, isDoctorProfile, m.spec));
         }
       }, 0);
 
@@ -1565,6 +1571,23 @@
         .catch(function() {
           openMasterWorks(masterName, null);
         });
+    }
+
+    function showMasterDescription(masterName, specText) {
+      haptic('impact', 'light');
+      var titleEl = document.getElementById('works-modal-title');
+      var grid = document.getElementById('works-grid');
+      var modal = document.getElementById('works-modal');
+      titleEl.textContent = 'Описание — ' + masterName;
+      var text = (specText || '').trim();
+      if (!text) text = 'Описание скоро добавим';
+      var safeText = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\n/g, '<br>');
+      grid.innerHTML = '<div style="grid-column:1/-1;padding:8px 4px 18px;font-size:15px;line-height:1.55;color:#ddd;">' + safeText + '</div>';
+      modal.classList.add('open');
     }
 
     document.getElementById('booking-modal').addEventListener('click', function(e) {
