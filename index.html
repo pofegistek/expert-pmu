@@ -1303,6 +1303,7 @@
       'cosmo':      'Косметология',
       'camouflage': 'Камуфляж',
     };
+    var IMG_FALLBACK_ONERROR = "if(!this.dataset.rawTried&&this.getAttribute('src').indexOf('http')!==0){this.dataset.rawTried=1;this.src='https://raw.githubusercontent.com/pofegistek/expert-pmu/main/'+this.getAttribute('src').replace(/^\\/+/,'');return;}this.style.display='none'";
     var SVC_CAT_MAP = {
       'Бров':     'brows',
       'Губ':      'lips',
@@ -1380,7 +1381,7 @@
           return;
         }
         grid.innerHTML = photos.map(function(src) {
-          return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+          return '<img src="' + src + '" alt="' + masterName + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
         }).join('');
       }
 
@@ -1390,7 +1391,7 @@
             if (data && data.photos && data.photos.length) {
               var base = data.photo_base || ('images/works/' + (data.master_slug || '') + '/' + (data.cat_slug || '') + '/');
               grid.innerHTML = data.photos.map(function(fname) {
-                return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+                return '<img src="' + base + fname + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
               }).join('');
             } else {
               showStaticPhotos();
@@ -1416,7 +1417,7 @@
           grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 16px;color:#888;font-size:15px;">Фото работ скоро появятся</div>';
         } else {
           grid.innerHTML = photos.map(function(fname) {
-            return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+            return '<img src="' + base + fname + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
           }).join('');
         }
       }
@@ -1495,7 +1496,7 @@
           if (data && data.photos && data.photos.length) {
             var base = 'images/works/services/' + (data.folder || '') + '/';
             grid.innerHTML = data.photos.map(function(fname) {
-              return '<img src="' + base + fname + '" onerror="this.style.display=\'none\'">';
+              return '<img src="' + base + fname + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
             }).join('');
           } else {
             modal.classList.remove('open');
@@ -1543,7 +1544,7 @@
               return;
             }
             grid.innerHTML = staticPhotos.map(function(src) {
-              return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+              return '<img src="' + src + '" alt="' + masterName + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
             }).join('');
             return;
           }
@@ -1563,7 +1564,7 @@
               var base = r.photo_base || ('images/works/' + (r.master_slug || '') + '/' + (r.cat_slug || '') + '/');
               html += '<div style="grid-column:1/-1;font-weight:600;font-size:15px;color:#ffd700;padding:12px 0 4px;">' + g.service_name + '</div>';
               html += r.photos.map(function(fname) {
-                return '<img src="' + base + fname + '" alt="' + g.service_name + '" onerror="this.style.display=\'none\'">';
+                return '<img src="' + base + fname + '" alt="' + g.service_name + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
               }).join('');
             });
             if (!html) {
@@ -1578,7 +1579,7 @@
                 return;
               }
               grid.innerHTML = staticPhotos.map(function(src) {
-                return '<img src="' + src + '" alt="' + masterName + '" onerror="this.style.display=\'none\'">';
+                return '<img src="' + src + '" alt="' + masterName + '" onerror="' + IMG_FALLBACK_ONERROR + '">';
               }).join('');
               return;
             }
