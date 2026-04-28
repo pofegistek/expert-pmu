@@ -1055,7 +1055,15 @@
         av.className = 'master-avatar';
         av.style.cssText = 'display:none;background:' + m.avatarBg + ';';
         av.textContent = m.avatarLetter;
-        img.onerror = function() { img.style.display = 'none'; av.style.display = 'flex'; };
+        img.onerror = function() {
+          if (!img.dataset.rawTried && String(m.photo || '').indexOf('http') !== 0) {
+            img.dataset.rawTried = '1';
+            img.src = 'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/' + String(m.photo).replace(/^\/+/, '');
+            return;
+          }
+          img.style.display = 'none';
+          av.style.display = 'flex';
+        };
         photoDiv.appendChild(img);
         photoDiv.appendChild(av);
       } else {
@@ -1239,7 +1247,7 @@
       card.className = 'master-card';
       var avStyle = 'background:' + (m.avatarBg || '#1e1e2e') + (m.avatarColor ? ';color:' + m.avatarColor : '');
       var photoHtml = m.photo
-        ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
+        ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="if(!this.dataset.rawTried&&this.getAttribute(\'src\').indexOf(\'http\')!==0){this.dataset.rawTried=1;this.src=\'https://raw.githubusercontent.com/pofegistek/expert-pmu/main/\'+this.getAttribute(\'src\').replace(/^\\/+/,\'\');return;}this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
       var specHtml = '';
