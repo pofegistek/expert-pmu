@@ -1242,7 +1242,10 @@
         ? '<img src="' + m.photo + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">' +
           '<div class="master-avatar" style="display:none;' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>'
         : '<div class="master-avatar" style="' + avStyle + ';">' + (m.avatarLetter || m.name[0]) + '</div>';
-      var specHtml = m.spec ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + m.spec + '</div>' : '';
+      var specRaw = String(m.spec || '').trim();
+      var specPreview = specRaw.replace(/\s+/g, ' ');
+      if (specPreview.length > 140) specPreview = specPreview.slice(0, 140) + '…';
+      var specHtml = specPreview ? '<div class="master-spec" style="font-size:11px;color:#888;margin-top:3px;">' + specPreview + '</div>' : '';
       var isCamouflage = currentService && currentService.toLowerCase().indexOf('камуфляж') !== -1;
       var levelLower = String(m.level || '').toLowerCase();
       var isDoctorProfile = levelLower.indexOf('врач') !== -1 || levelLower.indexOf('косметолог') !== -1;
